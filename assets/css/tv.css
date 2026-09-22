@@ -3,12 +3,16 @@
  * The stage and the lens show renders at one source pixel per device pixel.
  * The script sets the stage's width and height from the source size and the
  * device pixel ratio and moves it onto whole device pixels; before it runs,
- * --tv-w/--tv-h (the include's poster size) and --tv-dpr size the poster the
- * same way. Nothing that contains a video or image gets a filter, clip-path,
- * blend mode or opacity below 1.
+ * the seed poster's size and --tv-dpr size the stage the same way. The seed
+ * poster is --tv-w x --tv-h, or --tv-w2 x --tv-h2 where the include's 2x
+ * poster fits at one source pixel per device pixel (the same media query as
+ * the include's <source>). Nothing that contains a video or image gets a
+ * filter, clip-path, blend mode or opacity below 1.
  */
 .tv {
   --tv-dpr: 1;
+  --tv-sw: var(--tv-w, 960);
+  --tv-sh: var(--tv-h, 720);
   /* 960 px wide where the window allows, centred on the 880 px column. */
   width: min(960px, calc(100vw - 2 * var(--gutter)));
   margin: 0 0 1.2rem calc(50% - min(480px, calc(50vw - var(--gutter))));
@@ -17,6 +21,9 @@
 @media (min-resolution: 1.5dppx) { .tv { --tv-dpr: 1.5; } }
 @media (min-resolution: 2dppx) { .tv { --tv-dpr: 2; } }
 @media (min-resolution: 3dppx) { .tv { --tv-dpr: 3; } }
+@media (min-resolution: 2dppx) and (min-width: 992px), (min-resolution: 3dppx) and (min-width: 672px) {
+  .tv[data-width2] { --tv-sw: var(--tv-w2); --tv-sh: var(--tv-h2); }
+}
 .tv [hidden] { display: none !important; }
 
 .tv-tabs { display: flex; gap: 0.2rem 0.6rem; overflow-x: auto; min-height: 2.3rem; margin-bottom: 0.5rem; scrollbar-width: none; }
@@ -30,8 +37,8 @@
 
 .tv-stage {
   position: relative; left: 0; top: 0; display: block; margin: 0 auto; overflow: hidden;
-  width: calc(var(--tv-w, 960) * 1px / var(--tv-dpr)); max-width: 100%;
-  aspect-ratio: var(--tv-w, 960) / var(--tv-h, 720);
+  width: calc(var(--tv-sw) * 1px / var(--tv-dpr)); max-width: 100%;
+  aspect-ratio: var(--tv-sw) / var(--tv-sh);
   background: #000; cursor: pointer; user-select: none; -webkit-user-select: none;
 }
 .tv-stage.is-inspecting { touch-action: none; }

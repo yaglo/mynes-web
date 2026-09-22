@@ -555,4 +555,25 @@ test('no canvas, no media effects, CSS moved to tv.css', () => {
   assert.ok(/<noscript>/.test(html), 'noscript fallback');
 });
 
+test('2x seed poster: the include and tv.css use the same media query', () => {
+  const html = read('_includes/tv-switcher.html'), css = read('assets/css/tv.css');
+  const inc = /tv_media_2x = "([^"]+)"/.exec(html);
+  assert.ok(inc && html.includes('<source media="{{ tv_media_2x }}"'), 'include: <source> with the 2x media query');
+  const rule = /@media ([^{]+)\{\s*\.tv\[data-width2\]\s*\{\s*--tv-sw:\s*var\(--tv-w2\);\s*--tv-sh:\s*var\(--tv-h2\);/.exec(css);
+  assert.ok(rule, 'tv.css: stage sized from --tv-w2 under a media query');
+  assert.strictEqual(rule[1].trim(), inc[1]);
+  // The query holds where the 2x poster fits the switcher (min(960px, 100vw - 2 gutters)) at
+  // each --tv-dpr step of tv.css: 1920/2 = 960 CSS px needs a 992 px window, 1920/3 = 640 needs 672.
+  const gutter = Number(/--gutter:\s*(\d+)px/.exec(read('assets/css/style.css'))[1]);
+  const steps = [...css.matchAll(/@media \(min-resolution: [\d.]+dppx\) \{ \.tv \{ --tv-dpr: ([\d.]+); \} \}/g)].map((m) => Number(m[1]));
+  assert.deepStrictEqual(steps, [1.25, 1.5, 2, 3]);
+  const expect = [1, ...steps].filter((d) => 1920 / d <= 960).map((d) => `(min-resolution: ${d}dppx) and (min-width: ${1920 / d + 2 * gutter}px)`);
+  assert.strictEqual(inc[1], expect.join(', '));
+  // The fixture page seeds both posters of its first clip.
+  const page = read('tools/tv-fixture/index.html');
+  const g = TV.clipFor(fixture, 'test-pattern', 'fixture_grille');
+  assert.strictEqual(TV.choosePoster(g.posters, 960).src, /poster="([^"]+)"/.exec(page)[1]);
+  assert.strictEqual(TV.choosePoster(g.posters, 1920).src, /poster_2x="([^"]+)"/.exec(page)[1]);
+});
+
 console.log('tv-switcher: ' + n + ' tests passed' + (haveFfprobe ? '' : ' (ffprobe not found: clip probes skipped)'));

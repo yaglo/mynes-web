@@ -466,8 +466,7 @@
       lensOn: false, pointer: { x: 0, y: 0, touch: false }, down: null, dragged: false,
       prefetching: false, seekLag: 0.06, syncGen: 0,
       dpr: 1, availW: 0, box: { w: 0, h: 0 }, shown: null,
-      seed: { w: Number(root.getAttribute('data-width')) || 960, h: Number(root.getAttribute('data-height')) || 720 },
-      firstPoster: true
+      seed: null, firstPoster: true
     };
     var url = function (p) { return /^(https?:|blob:|data:)/.test(p) || p.charAt(0) === '/' ? p : base + p; };
     var noop = function () {};
@@ -482,6 +481,7 @@
 
     /* The static poster from the include is the stage picture until a clip has a frame. */
     el.frame.setAttribute('aria-hidden', 'true');
+    st.seed = seedSize();
     layout();
     watchEnvironment();
 
@@ -627,7 +627,7 @@
         if (!s) return;
         // Siblings get preload="none": the initial payload is one poster and one clip.
         var v = makeVideo(s.src, 'none');
-        el.stage.insertBefore(v, el.frame);
+        el.stage.insertBefore(v, el.frame.parentNode === el.stage ? el.frame : el.frame.parentNode);   // below the poster (or its <picture>)
         wire(v, gameId, p.id, s.src);
         st.videos[p.id] = v; st.sources[p.id] = s;
       });
@@ -755,6 +755,26 @@
       });
     }
 
+    /**
+     * Size of the include's poster as the browser picked it: the 2x poster
+     * when the <source> media query matches, which is also when tv.css sizes
+     * the stage for it.
+     */
+    function seedSize() {
+      var w = Number(root.getAttribute('data-width')) || 960, h = Number(root.getAttribute('data-height')) || 720;
+      var w2 = Number(root.getAttribute('data-width2')), h2 = Number(root.getAttribute('data-height2'));
+      var source = el.frame.parentNode.tagName === 'PICTURE' && el.frame.parentNode.querySelector('source');
+      var q = source && w2 && h2 ? mq(source.getAttribute('media')) : null;
+      return q && q.matches ? { w: w2, h: h2 } : { w: w, h: h };
+    }
+
+    /** Remove the include's <source>, which would otherwise override the frame's src. */
+    function dropSources() {
+      var p = el.frame.parentNode, list = p.tagName === 'PICTURE' ? p.querySelectorAll('source') : [];
+      Array.prototype.forEach.call(list, function (x) { x.remove(); });
+      return list.length > 0;
+    }
+
     /** Point the frame image at `src` and call back with its natural size once decoded. */
     function setFrame(src, cb) {
       var abs = url(src), mine = el.frame.dataset.want = abs;
@@ -762,7 +782,7 @@
         if (el.frame.dataset.want !== mine || !el.frame.naturalWidth) return;
         cb(el.frame.naturalWidth, el.frame.naturalHeight);
       };
-      if (el.frame.getAttribute('src') === abs && el.frame.complete) { done(); return; }
+      if (!dropSources() && el.frame.getAttribute('src') === abs && el.frame.complete) { done(); return; }
       el.frame.addEventListener('load', done, { once: true });
       el.frame.src = abs;
     }

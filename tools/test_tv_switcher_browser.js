@@ -279,6 +279,36 @@ check('stage clip at one source pixel per device pixel at DPR 1, 2 and 3', async
 });
 
 
+check('2x display: the seed poster matches the stage clip, no layout shift', async (ctx) => {
+  ctx.srv.rules.push({ re: /stage-.*\.mp4$/, delay: 1200 });
+  const page = await ctx.open({ dpr: 2, init: `
+    window.__samples = []; window.__cls = 0;
+    new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; })
+      .observe({ type: 'layout-shift', buffered: true });
+    (function sample() {
+      const st = document.querySelector('.tv-stage');
+      if (st) {
+        const f = st.querySelector('.tv-frame'), r = st.getBoundingClientRect(), a = st.querySelector('.tv-video.is-active');
+        window.__samples.push({ w: r.width, h: r.height, hidden: f.hidden, nw: f.naturalWidth, video: !!a && a.readyState >= 2 });
+      }
+      if (performance.now() < 5000) requestAnimationFrame(sample);
+    })();` });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  await sleep(300);
+  const samples = await page.eval('window.__samples');
+  const cls = await page.eval('window.__cls');
+  const st = await page.eval(STATE);
+  assert(st.active === 'fixture_grille/stage-1920-sdr.mp4', 'stage clip ' + st.active);
+  const sizes = [...new Set(samples.map((x) => x.w + 'x' + x.h))];
+  assert(sizes.length === 1 && sizes[0] === '960x720', 'stage CSS sizes seen: ' + sizes.join(', '));
+  const waiting = samples.filter((x) => x.nw > 0 && !x.video);
+  assert(waiting.length > 0, 'the poster never loaded before the clip');
+  assert(waiting.every((x) => !x.hidden && x.nw === 1920), 'poster hidden or of the wrong size before the clip had a frame');
+  assert(cls < 0.01, 'layout shift ' + cls.toFixed(4));
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();
@@ -304,13 +334,16 @@ check('stage clip at one source pixel per device pixel at DPR 1, 2 and 3', async
         passed++; console.log('ok    ' + c.name);
       }
     } catch (e) {
-      failed++; console.log('FAIL  ' + c.name + '\n      ' + e.message);
+      const errs = pages.flatMap((p) => p.errors);
+      failed++; console.log('FAIL  ' + c.name + '\n      ' + e.message + (errs.length ? '\n      page errors: ' + errs.join(' | ') : ''));
     }
     for (const p of pages) await p.close().catch(() => {});
   }
+  const exited = new Promise((r) => chrome.proc.once('exit', r));
   chrome.proc.kill();
+  await exited;
   srv.close();
-  fs.rmSync(chrome.profile, { recursive: true, force: true });
+  try { fs.rmSync(chrome.profile, { recursive: true, force: true }); } catch (e) { /* Chrome may still be closing files */ }
   console.log('tv-switcher browser checks: ' + passed + ' passed, ' + failed + ' failed' + (skipped ? ', ' + skipped + ' skipped' : ''));
   process.exitCode = failed ? 1 : 0;
 })().catch((e) => { console.error(e); process.exit(1); });
