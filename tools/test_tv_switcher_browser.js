@@ -405,6 +405,21 @@ check('a lens clip that fails falls back to the still', async (ctx) => {
   return p2;
 });
 
+check('sibling prefetch goes on after a sibling file fails', async (ctx) => {
+  ctx.srv.rules.push({ re: /fixture_slot\/stage-1920-sdr\.mp4$/, corrupt: true });
+  const page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  const t0 = Date.now();
+  while (!ctx.srv.log.some((r) => /fixture_dots\/stage-1920-sdr\.mp4$/.test(r.path))) {
+    assert(Date.now() - t0 < 10000, 'fixture_dots was never fetched; requests: ' +
+      [...new Set(ctx.srv.log.map((r) => r.path.split('/').slice(-2).join('/')).filter((p) => /mp4$/.test(p)))].join(', '));
+    await sleep(100);
+  }
+  assert(ctx.srv.log.some((r) => /fixture_slot\/stage-960-sdr\.mp4$/.test(r.path)), 'the failed sibling was not replaced by its next source');
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

@@ -891,12 +891,15 @@
         wire(v, gameId, presetId, s.src);
         st.videos[presetId] = v; st.sources[presetId] = s;
         if (presetId === st.preset) activate(false, null, t);
+        else if (v.dataset.loading && st.playing && !st.frozen) tryPlay(v);   // in step behind the stage
+        if (st.prefetching === presetId) watchPrefetch(presetId, v);        // the replacement finishes the prefetch
         return;
       }
       dispose(old);
       delete st.videos[presetId]; delete st.sources[presetId];
       st.broken[gameId + '/' + presetId] = true;
-      if (presetId === st.preset) activate(true); else refreshTabsChips();
+      if (st.prefetching === presetId) st.prefetching = false;
+      if (presetId === st.preset) activate(true); else { refreshTabsChips(); prefetch(); }
     }
 
     /** Prefetch sibling clips one at a time after the active one is ready. */
@@ -905,18 +908,28 @@
       var next = Object.keys(st.videos).filter(function (id) { return !st.videos[id].dataset.loading; })[0];
       if (!next) return;
       var v = st.videos[next];
-      st.prefetching = true;
-      var timer = setTimeout(done, 20000);
-      function done() {
-        clearTimeout(timer); v.removeEventListener('canplaythrough', done); v.removeEventListener('error', done);
-        if (st.videos[next] !== v) return;     // the stack was replaced meanwhile
-        st.prefetching = false; prefetch();
-      }
-      v.addEventListener('canplaythrough', done); v.addEventListener('error', done);
+      st.prefetching = next;
+      watchPrefetch(next, v);
       ensureLoading(v);
       var a = video();
       if (st.frozen) { if (a) seekThen(v, a.currentTime, 250, noop); }
       else if (st.playing) tryPlay(v);         // keeps it in step behind the stage
+    }
+
+    /**
+     * Move on to the next sibling once the prefetched one can play through,
+     * fails, or after 20 s. Nothing happens when the stack was rebuilt or
+     * the element was replaced after an error (the replacement is watched
+     * instead).
+     */
+    function watchPrefetch(id, v) {
+      var timer = setTimeout(done, 20000);
+      function done() {
+        clearTimeout(timer); v.removeEventListener('canplaythrough', done); v.removeEventListener('error', done);
+        if (st.prefetching !== id || st.videos[id] !== v) return;
+        st.prefetching = false; prefetch();
+      }
+      v.addEventListener('canplaythrough', done); v.addEventListener('error', done);
     }
 
     /* ---- Stage size and position ------------------------------------- */
