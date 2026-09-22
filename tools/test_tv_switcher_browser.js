@@ -1,0 +1,316 @@
+#!/usr/bin/env node
+/* Browser checks for the television switcher. The fixture preview and the
+ * landing page run in headless Chrome, driven through the DevTools protocol
+ * (Node 22's WebSocket, no packages), and a local server that can delay,
+ * throttle or corrupt single files. These cover what the Node tests of the
+ * pure helpers cannot reach: focus, live regions, the seed poster, prefetch,
+ * the lens sync and the fallbacks after a file fails.
+ *
+ * Run:  node tools/test_tv_switcher_browser.js [site-dir]
+ * site-dir is a build that includes the fixture page:
+ *   bundle exec jekyll build --config _config.yml,tools/tv-fixture/preview.yml --destination DIR
+ * Without it the script runs that build into a temporary directory.
+ * The browser is $CHROME, else Chrome for Testing under ~/.cache/puppeteer;
+ * without one the checks are skipped.
+ */
+'use strict';
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const http = require('http');
+const { spawn, spawnSync } = require('child_process');
+
+const root = path.resolve(__dirname, '..');
+const PREFIX = '/mynes-web/';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* ---- site ---- */
+function siteDir() {
+  if (process.argv[2]) return path.resolve(process.argv[2]);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tv-preview-'));
+  const r = spawnSync('bundle', ['exec', 'jekyll', 'build', '--config', '_config.yml,tools/tv-fixture/preview.yml', '--destination', dir],
+    { cwd: root, encoding: 'utf8' });
+  if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); throw new Error('jekyll build failed'); }
+  return dir;
+}
+
+/* ---- server: range requests, and per-test rules that delay, throttle or corrupt files ---- */
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
+  '.mp4': 'video/mp4', '.webp': 'image/webp', '.png': 'image/png', '.avif': 'image/avif', '.jpg': 'image/jpeg',
+  '.svg': 'image/svg+xml', '.xml': 'application/xml', '.ico': 'image/x-icon' };
+
+function junk(n) {
+  const b = Buffer.alloc(n);
+  let x = 12345;
+  for (let i = 0; i < n; i++) { x = (x * 1103515245 + 12345) >>> 0; b[i] = x >>> 24; }
+  return b;
+}
+
+function startServer(dir) {
+  const srv = { rules: [], log: [] };
+  const server = http.createServer((req, res) => {
+    const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    srv.log.push({ path: p, range: req.headers.range || null, t: Date.now() });
+    let file = p.startsWith(PREFIX) ? path.join(dir, p.slice(PREFIX.length)) : null;
+    if (file && fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+    if (!file || !file.startsWith(dir) || !fs.existsSync(file)) { res.writeHead(404); res.end(); return; }
+    const rule = srv.rules.find((r) => r.re.test(p)) || {};
+    let body = rule.corrupt ? junk(2000) : fs.readFileSync(file);
+    const head = { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-store' };
+    let status = 200;
+    const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (m) {
+      const size = body.length;
+      const start = m[1] ? Number(m[1]) : Math.max(0, size - Number(m[2]));
+      const end = m[1] && m[2] ? Math.min(Number(m[2]), size - 1) : size - 1;
+      if (start >= size) { res.writeHead(416, { 'Content-Range': 'bytes */' + size }); res.end(); return; }
+      head['Content-Range'] = 'bytes ' + start + '-' + end + '/' + size;
+      body = body.subarray(start, end + 1);
+      status = 206;
+    }
+    head['Content-Length'] = body.length;
+    const send = () => {
+      if (res.destroyed) return;
+      res.writeHead(status, head);
+      if (!rule.rate) { res.end(body); return; }
+      const step = Math.max(1, Math.round(rule.rate / 20));
+      let at = 0;
+      const pump = () => {
+        if (res.destroyed) return;
+        res.write(body.subarray(at, at + step)); at += step;
+        if (at >= body.length) res.end(); else setTimeout(pump, 50);
+      };
+      pump();
+    };
+    if (rule.delay) setTimeout(send, rule.delay); else send();
+  });
+  return new Promise((resolve) => server.listen(0, '127.0.0.1', () => {
+    srv.base = 'http://127.0.0.1:' + server.address().port + PREFIX;
+    srv.close = () => server.close();
+    resolve(srv);
+  }));
+}
+
+/* ---- browser ---- */
+function findChrome() {
+  if (process.env.CHROME) return process.env.CHROME;
+  const cache = path.join(os.homedir(), '.cache/puppeteer');
+  const found = [];
+  const walk = (d, depth) => {
+    if (depth > 6 || !fs.existsSync(d)) return;
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, e.name);
+      if (e.name === 'Google Chrome for Testing' && !e.isDirectory()) found.push(p);
+      else if (e.name === 'chrome' && !e.isDirectory() && /chrome-linux/.test(p)) found.push(p);
+      else if (e.isDirectory()) walk(p, depth + 1);
+    }
+  };
+  walk(path.join(cache, 'chrome'), 0);
+  found.sort();
+  if (found.length) return found[found.length - 1];
+  const mac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  return fs.existsSync(mac) ? mac : null;
+}
+
+function launch(bin) {
+  const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'tv-chrome-'));
+  const proc = spawn(bin, ['--headless=new', '--remote-debugging-port=0', '--user-data-dir=' + profile, '--no-first-run',
+    '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required', '--mute-audio', '--hide-scrollbars',
+    '--disable-background-timer-throttling', '--disable-renderer-backgrounding', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+  return new Promise((resolve, reject) => {
+    let err = '';
+    const t = setTimeout(() => reject(new Error('Chrome did not start: ' + err.slice(-400))), 20000);
+    proc.stderr.on('data', (d) => {
+      err += d;
+      const m = /DevTools listening on (ws:\/\/\S+)/.exec(err);
+      if (m) { clearTimeout(t); resolve({ proc, ws: m[1], profile }); }
+    });
+  });
+}
+
+class CDP {
+  static connect(url) {
+    const ws = new WebSocket(url);
+    return new Promise((ok, bad) => { ws.onopen = () => ok(new CDP(ws)); ws.onerror = () => bad(new Error('no DevTools connection')); });
+  }
+  constructor(ws) {
+    this.ws = ws; this.n = 0; this.calls = new Map(); this.subs = new Set();
+    ws.onmessage = (e) => {
+      const m = JSON.parse(e.data);
+      if (m.id) {
+        const c = this.calls.get(m.id);
+        this.calls.delete(m.id);
+        if (m.error) c.bad(new Error(c.method + ': ' + m.error.message)); else c.ok(m.result);
+      } else for (const f of this.subs) f(m);
+    };
+  }
+  send(method, params, sessionId) {
+    const id = ++this.n;
+    this.ws.send(JSON.stringify({ id, method, params: params || {}, sessionId }));
+    return new Promise((ok, bad) => this.calls.set(id, { ok, bad, method }));
+  }
+  wait(method, sessionId, ms) {
+    return new Promise((ok, bad) => {
+      const f = (m) => { if (m.method === method && m.sessionId === sessionId) { clearTimeout(t); this.subs.delete(f); ok(m.params); } };
+      const t = setTimeout(() => { this.subs.delete(f); bad(new Error('timed out waiting for ' + method)); }, ms || 15000);
+      this.subs.add(f);
+    });
+  }
+}
+
+const KEYS = { ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, ' ': 32, Enter: 13, Tab: 9, Home: 36, End: 35 };
+
+async function openPage(cdp, opt) {
+  const { browserContextId } = await cdp.send('Target.createBrowserContext');
+  const { targetId } = await cdp.send('Target.createTarget', { url: 'about:blank', browserContextId });
+  const { sessionId } = await cdp.send('Target.attachToTarget', { targetId, flatten: true });
+  const s = (m, p) => cdp.send(m, p, sessionId);
+  const errors = [];
+  const onEvent = (m) => {
+    if (m.sessionId === sessionId && m.method === 'Runtime.exceptionThrown') {
+      const d = m.params.exceptionDetails;
+      errors.push((d.exception && d.exception.description) || d.text);
+    }
+  };
+  cdp.subs.add(onEvent);
+  await s('Page.enable');
+  await s('Runtime.enable');
+  await s('Emulation.setFocusEmulationEnabled', { enabled: true });
+  await s('Emulation.setDeviceMetricsOverride', { width: opt.width || 1280, height: opt.height || 900, deviceScaleFactor: opt.dpr || 1, mobile: false });
+  if (opt.noScript) await s('Emulation.setScriptExecutionDisabled', { value: true });
+  if (opt.init) await s('Page.addScriptToEvaluateOnNewDocument', { source: opt.init });
+  const page = {
+    errors,
+    async eval(expr) {
+      const r = await s('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true });
+      if (r.exceptionDetails) throw new Error('page: ' + ((r.exceptionDetails.exception && r.exceptionDetails.exception.description) || r.exceptionDetails.text));
+      return r.result.value;
+    },
+    async goto(url) {
+      const load = cdp.wait('Page.loadEventFired', sessionId, 20000);
+      await s('Page.navigate', { url });
+      await load;
+    },
+    async until(expr, what, ms) {
+      const end = Date.now() + (ms || 10000);
+      for (;;) {
+        const v = await page.eval(expr);
+        if (v) return v;
+        if (Date.now() > end) throw new Error('timed out: ' + (what || expr));
+        await sleep(50);
+      }
+    },
+    async key(key) {
+      const code = /^[0-9]$/.test(key) ? 'Digit' + key : key === ' ' ? 'Space' : key;
+      const vk = KEYS[key] || key.toUpperCase().charCodeAt(0);
+      const text = key.length === 1 ? key : undefined;
+      await s('Input.dispatchKeyEvent', { type: text ? 'keyDown' : 'rawKeyDown', key, code, windowsVirtualKeyCode: vk, text });
+      await s('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode: vk });
+    },
+    async close() {
+      cdp.subs.delete(onEvent);
+      await cdp.send('Target.closeTarget', { targetId });
+      await cdp.send('Target.disposeBrowserContext', { browserContextId });
+    }
+  };
+  return page;
+}
+
+/* ---- page-side helpers ---- */
+const STATE = `(() => {
+  const r = document.querySelector('.tv'), a = r.querySelector('.tv-video.is-active'), f = r.querySelector('.tv-frame');
+  const chip = r.querySelector('.tv-chip[aria-checked="true"]'), n = r.querySelector('.tv-notice'), b = r.querySelector('.tv-stage').getBoundingClientRect();
+  return {
+    ready: r.classList.contains('is-ready'), tier: r.dataset.tier || null, preset: chip ? chip.dataset.preset : null,
+    active: a ? a.getAttribute('src').split('/').slice(-2).join('/') : null, activeReady: !!a && a.readyState >= 2,
+    stageW: b.width, stageH: b.height, frameHidden: f.hidden, frameW: f.naturalWidth,
+    notice: n.hidden ? '' : n.textContent, note: r.querySelector('.tv-inspect-note').textContent,
+    inspecting: r.querySelector('.tv-inspect').getAttribute('aria-pressed') === 'true', chips: r.querySelectorAll('.tv-chip').length,
+    fit: !r.querySelector('.tv-fit').hidden, focusInside: r.contains(document.activeElement), focus: document.activeElement.className
+  };
+})()`;
+
+/** Median drift of the lens clip against the stage clip, in frames (both clips loop). */
+const DRIFT = `(async () => {
+  const lv = document.querySelector('.tv-lens video'), sv = document.querySelector('.tv-video.is-active'), out = [];
+  for (let i = 0; i < 9; i++) {
+    const dur = sv.duration;
+    let d = ((lv.currentTime - sv.currentTime) % dur + dur) % dur;
+    if (d > dur / 2) d -= dur;
+    out.push(d * 60.0988);
+    await new Promise((r) => setTimeout(r, 25));
+  }
+  out.sort((a, b) => Math.abs(a) - Math.abs(b));
+  return out[4];
+})()`;
+
+const OFFSET = `(() => {
+  const lv = document.querySelector('.tv-lens video'), sv = document.querySelector('.tv-video.is-active');
+  lv.currentTime = (sv.currentTime + 0.25) % sv.duration;
+  return true;
+})()`;
+
+async function lensPage(ctx, opt) {
+  const page = await ctx.open(Object.assign({ dpr: 2 }, opt));
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  await page.until(STATE + '.tier', 'inspect tier');
+  return page;
+}
+
+/* ---- checks ---- */
+const checks = [];
+const check = (name, fn) => checks.push({ name, fn });
+const assert = (ok, msg) => { if (!ok) throw new Error(msg); };
+
+check('stage clip at one source pixel per device pixel at DPR 1, 2 and 3', async (ctx) => {
+  for (const [dpr, clip] of [[1, 'stage-960-sdr.mp4'], [2, 'stage-1920-sdr.mp4'], [3, 'stage-1920-sdr.mp4']]) {
+    const page = await ctx.open({ dpr });
+    await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+    await page.until(STATE + '.activeReady', 'stage clip playing at ' + dpr + 'x');
+    const r = await page.eval(`(() => { const a = document.querySelector('.tv-video.is-active'), b = document.querySelector('.tv-stage').getBoundingClientRect();
+      return { src: a.getAttribute('src').split('/').pop(), vw: a.videoWidth, vh: a.videoHeight, w: b.width * devicePixelRatio, h: b.height * devicePixelRatio,
+        x: b.left * devicePixelRatio, fit: !document.querySelector('.tv-fit').hidden }; })()`);
+    assert(r.src === clip, dpr + 'x: ' + r.src);
+    assert(Math.abs(r.w - r.vw) < 1e-6 && Math.abs(r.h - r.vh) < 1e-6 && !r.fit, dpr + 'x: ' + JSON.stringify(r));
+    assert(Math.abs(r.x - Math.round(r.x)) < 1e-3, dpr + 'x: stage not on a device pixel: ' + r.x);
+  }
+  return null;
+});
+
+
+/* ---- run ---- */
+(async () => {
+  const bin = findChrome();
+  if (!bin) { console.log('tv-switcher browser checks skipped: no Chrome found (set CHROME)'); return; }
+  const dir = siteDir();
+  assert(fs.existsSync(path.join(dir, 'tools/tv-fixture/index.html')), dir + ' has no fixture page; build with tools/tv-fixture/preview.yml');
+  const srv = await startServer(dir);
+  const chrome = await launch(bin);
+  const cdp = await CDP.connect(chrome.ws);
+  const only = process.env.ONLY ? new RegExp(process.env.ONLY) : null;
+  let passed = 0, failed = 0, skipped = 0;
+  for (const c of checks) {
+    if (only && !only.test(c.name)) continue;
+    srv.rules = []; srv.log = [];
+    const pages = [];
+    const ctx = { srv, open: async (opt) => { const p = await openPage(cdp, opt || {}); pages.push(p); return p; } };
+    try {
+      const r = await c.fn(ctx);
+      if (r && r.skip) { skipped++; console.log('skip  ' + c.name + ': ' + r.skip); }
+      else {
+        const errs = pages.flatMap((p) => p.errors);
+        assert(!errs.length, 'page errors: ' + errs.join(' | '));
+        passed++; console.log('ok    ' + c.name);
+      }
+    } catch (e) {
+      failed++; console.log('FAIL  ' + c.name + '\n      ' + e.message);
+    }
+    for (const p of pages) await p.close().catch(() => {});
+  }
+  chrome.proc.kill();
+  srv.close();
+  fs.rmSync(chrome.profile, { recursive: true, force: true });
+  console.log('tv-switcher browser checks: ' + passed + ' passed, ' + failed + ' failed' + (skipped ? ', ' + skipped + ' skipped' : ''));
+  process.exitCode = failed ? 1 : 0;
+})().catch((e) => { console.error(e); process.exit(1); });

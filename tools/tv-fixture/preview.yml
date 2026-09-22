@@ -12,5 +12,6 @@ exclude:
   - .sass-cache
   - tools/check_site.py
   - tools/test_tv_switcher.js
+  - tools/test_tv_switcher_browser.js
   - tools/tv-fixture/make_fixture.py
   - tools/tv-fixture/preview.yml
