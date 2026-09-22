@@ -671,9 +671,15 @@ test('caption, labels, sizes', () => {
   assert.strictEqual(TV.formatBytes(48012345), '48.0 MB');
   assert.strictEqual(TV.formatBytes(262188), '262 kB');
   assert.strictEqual(TV.formatBytes(0), '');
-  assert.strictEqual(TV.loadingText('clip', 3840, 2880, 12400000, 48000000), 'Loading the 3840×2880 clip: 12.4 MB of 48.0 MB');
-  assert.strictEqual(TV.loadingText('frame', 3840, 2880, 0, 0), 'Loading the 3840×2880 frame');
-  assert.strictEqual(TV.loadingText('frame', null, null, 2e6, 0), 'Loading the full-resolution frame: 2.0 MB');
+  assert.strictEqual(TV.loadingText('clip', 3840, 2880, 48000000), 'Loading the 3840×2880 clip, 48.0 MB');
+  assert.strictEqual(TV.loadingText('frame', 3840, 2880, 0), 'Loading the 3840×2880 frame');
+  assert.strictEqual(TV.loadingText('frame', null, null, null), 'Loading the full-resolution frame');
+  // Progress: nothing before the first byte, then percent, or bytes without a total.
+  assert.strictEqual(TV.loadedText(0, 48000000), '');
+  assert.strictEqual(TV.loadedText(12400000, 48000000), ' · 25 %');
+  assert.strictEqual(TV.loadedText(48000000, 48000000), ' · 100 %');
+  assert.strictEqual(TV.loadedText(50000000, 48000000), ' · 100 %');   // Content-Length and manifest disagree
+  assert.strictEqual(TV.loadedText(2e6, 0), ' · 2.0 MB');
   assert.strictEqual(TV.gameById(live, 'nope'), null);
   assert.strictEqual(TV.presetById(live, 'nope'), null);
 });
@@ -708,6 +714,8 @@ test('no canvas, no media effects, CSS moved to tv.css', () => {
   assert.ok(html.includes("'/assets/css/tv.css' | relative_url"), 'include links tv.css');
   assert.ok(html.includes(TV.FIT_NOTE), 'fit note text');
   assert.ok(/<noscript>/.test(html), 'noscript fallback');
+  // The notice is a live region; its progress counter is not.
+  assert.ok(html.includes('<p class="tv-notice" role="status" hidden><span class="tv-notice-text"></span><span class="tv-notice-bytes" aria-hidden="true"></span></p>'), 'notice markup');
   // Controls that can become unavailable keep their focus: aria-disabled, never the disabled property.
   assert.ok(!/<button[^>]*\sdisabled[\s>]/.test(html), 'no disabled buttons in the markup');
   assert.ok(!/\.disabled\s*=/.test(js), 'the script never sets .disabled');

@@ -478,11 +478,18 @@
 
   TV.sizeLabel = function (w, h) { return w && h ? w + '×' + h : 'full-resolution'; };
 
-  /** "Loading the 3840×2880 clip: 12.4 MB of 48.0 MB" */
-  TV.loadingText = function (what, w, h, loaded, total) {
-    var s = 'Loading the ' + TV.sizeLabel(w, h) + ' ' + what;
-    if (total > 0) return s + ': ' + TV.formatBytes(loaded || 1) + ' of ' + TV.formatBytes(total);
-    return loaded > 0 ? s + ': ' + TV.formatBytes(loaded) : s;
+  /**
+   * "Loading the 3840×2880 clip, 48.0 MB": the notice's live text, set once
+   * per file so a screen reader announces it once.
+   */
+  TV.loadingText = function (what, w, h, total) {
+    return 'Loading the ' + TV.sizeLabel(w, h) + ' ' + what + (total > 0 ? ', ' + TV.formatBytes(total) : '');
+  };
+
+  /** " · 26 %" (or " · 12.4 MB" without a total): progress after the live text, outside the live region. */
+  TV.loadedText = function (loaded, total) {
+    if (!(loaded > 0)) return '';
+    return ' · ' + (total > 0 ? Math.min(100, Math.floor(100 * loaded / total)) + ' %' : TV.formatBytes(loaded));
   };
 
   /** Text next to the Inspect button. */
@@ -528,6 +535,7 @@
     var el = {
       tabs: q('.tv-tabs'), stage: q('.tv-stage'), frame: q('.tv-frame'), lens: q('.tv-lens'),
       lensLabel: q('.tv-lens-label'), play: q('.tv-play'), notice: q('.tv-notice'), fit: q('.tv-fit'),
+      noticeText: q('.tv-notice-text'), noticeBytes: q('.tv-notice-bytes'),
       chips: q('.tv-chips'), next: q('.tv-next'), mute: q('.tv-mute'), freeze: q('.tv-freeze'),
       inspect: q('.tv-inspect'), inspectNote: q('.tv-inspect-note'), zooms: root.querySelectorAll('.tv-zoom button'),
       range: q('.tv-range'), linkFrame: q('.tv-link-frame'), linkClip: q('.tv-link-clip'), caption: q('.tv-caption-line')
@@ -548,7 +556,7 @@
     };
     var url = function (p) { return /^(https?:|blob:|data:)/.test(p) || p.charAt(0) === '/' ? p : base + p; };
     var noop = function () {};
-    var msgs = { problem: '', loading: '' };   // the notice shows the loading text over a standing problem
+    var msgs = { problem: '', loading: '', bytes: '' };   // the notice shows the loading text over a standing problem
     var video = function () { return st.videos[st.preset] || null; };
     var clip = function () { return st.m ? TV.clipFor(st.m, st.game, st.preset) : null; };
     var fps = function () { return st.m ? st.m.fps : TV.DEFAULT_FPS; };
@@ -1064,13 +1072,26 @@
       el.stage.classList.toggle('is-frozen', st.frozen);
     }
 
-    /** `kind` is 'problem' (stands until the selection changes) or 'loading' (transient, shown on top). */
+    /**
+     * `kind` is 'problem' (stands until the selection changes) or 'loading'
+     * (transient, shown on top). The notice is a live region, so its text
+     * changes once per message; download progress goes to the aria-hidden
+     * span after it (noticeBytes).
+     */
     function notice(kind, text) {
       msgs[kind] = text || '';
+      if (kind === 'loading') msgs.bytes = '';
       var shown = msgs.loading || msgs.problem;
-      el.notice.textContent = shown;
+      if (el.noticeText.textContent !== shown) el.noticeText.textContent = shown;
+      el.noticeBytes.textContent = msgs.loading ? msgs.bytes : '';
       el.notice.hidden = !shown;
       root.classList.toggle('is-loading', !!msgs.loading);
+    }
+
+    function noticeBytes(text) {
+      if (!msgs.loading || msgs.bytes === text) return;
+      msgs.bytes = text;
+      el.noticeBytes.textContent = text;
     }
 
     /* ---- Controls ------------------------------------------------------ */
@@ -1241,11 +1262,12 @@
       var what = t.tier === 'lens' ? 'clip' : 'frame';
       var progress = function (loaded, total) {
         if (st.insp !== ins) return;
-        ins.pct = total ? Math.floor(100 * loaded / total) : null;
-        notice('loading', TV.loadingText(what, ins.w, ins.h, loaded, total));
+        ins.pct = total ? Math.min(100, Math.floor(100 * loaded / total)) : null;
+        noticeBytes(TV.loadedText(loaded, total));
         updateLensLabel();
       };
-      progress(0, file.bytes);
+      notice('loading', TV.loadingText(what, ins.w, ins.h, file.bytes));
+      updateLensLabel();
       ins.abort = loadBlob(url(file.src), file.bytes, progress, function (objectUrl) {
         if (st.insp !== ins) return;
         notice('loading', '');

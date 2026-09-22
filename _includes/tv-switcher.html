@@ -38,7 +38,7 @@ must stay the same (tools/test_tv_switcher.js checks this).
 <div class="tv-stage" role="button" tabindex="0" aria-pressed="false" aria-label="Freeze the picture">
 {% if tv_poster_2x %}<picture><source media="{{ tv_media_2x }}" srcset="{{ tv_poster_2x | prepend: '/' | relative_url }}" width="{{ tv_w2 }}" height="{{ tv_h2 }}">{% endif %}<img class="tv-frame" src="{{ tv_poster | prepend: '/' | relative_url }}" width="{{ tv_w }}" height="{{ tv_h }}" alt="{{ tv_game_title }} on the {{ tv_preset_name }} preset, first frame of the clip">{% if tv_poster_2x %}</picture>{% endif %}
 <span class="tv-play" hidden><span class="tv-play-glyph" aria-hidden="true"></span>Play</span>
-<p class="tv-notice" role="status" hidden></p>
+<p class="tv-notice" role="status" hidden><span class="tv-notice-text"></span><span class="tv-notice-bytes" aria-hidden="true"></span></p>
 <div class="tv-lens" aria-hidden="true"><span class="tv-lens-label"></span></div>
 </div>
 <p class="tv-fit" hidden>Scaled to fit this window. Inspect shows 1:1.</p>

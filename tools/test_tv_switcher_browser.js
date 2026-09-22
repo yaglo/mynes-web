@@ -461,6 +461,35 @@ check('focus stays in the switcher when a preset switch disables the focused but
   return page;
 });
 
+check('Inspect progress is not announced chunk by chunk', async (ctx) => {
+  ctx.srv.rules.push({ re: /\/(lens|still)-[^/]*$/, rate: 60000 });
+  const page = await lensPage(ctx);
+  await page.eval(`(() => {
+    window.__live = [];
+    const text = (n) => n.nodeType === 3 ? n.data : n.nodeType === 1 && n.getAttribute('aria-hidden') === 'true' ? '' : [...n.childNodes].map(text).join('');
+    const regions = [...document.querySelectorAll('.tv [role="status"], .tv [aria-live]:not([aria-live="off"])')];
+    const last = regions.map(text);
+    window.__shown = [];
+    new MutationObserver(() => {
+      regions.forEach((r, i) => { const t = text(r); if (t !== last[i]) { last[i] = t; window.__live.push(t); } });
+      const n = document.querySelector('.tv-notice');
+      if (!n.hidden && window.__shown[window.__shown.length - 1] !== n.textContent) window.__shown.push(n.textContent);
+    })
+      .observe(document.querySelector('.tv'), { subtree: true, childList: true, characterData: true, attributes: true });
+    return true;
+  })()`);
+  await page.eval(`document.querySelector('.tv-inspect').click(), true`);
+  await page.until(`(() => { const m = document.querySelector('.tv-lens-media'); return m && (m.tagName === 'IMG' ? m.complete && m.naturalWidth > 0 : m.readyState >= 2); })()`, 'lens media loaded', 20000);
+  const live = await page.eval('window.__live');
+  const loading = live.filter((t) => /Loading/.test(t));
+  assert(loading.length >= 1 && loading.length <= 2, 'loading announcements: ' + JSON.stringify(loading.slice(0, 6)) + ' (' + loading.length + ')');
+  assert(!live.some((t) => /\b1 kB of/.test(t)), 'announced 1 kB before any byte arrived');
+  // The visible notice still counts up.
+  const shown = await page.eval('window.__shown');
+  assert(shown.some((t) => /^Loading the 3840×2880 (clip|frame), [\d.]+ [kM]B · \d+ %$/.test(t)), 'visible progress: ' + JSON.stringify(shown.slice(0, 4)));
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();
