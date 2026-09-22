@@ -281,6 +281,15 @@
 
   /* ---- Geometry ------------------------------------------------------ */
 
+  /**
+   * Width available to the stage: the switcher's CSS width (fractional at
+   * browser zoom levels) cut down to whole device pixels, so a source chosen
+   * to fit is never narrowed by max-width: 100%.
+   */
+  TV.availWidth = function (cssW, dpr) {
+    return cssW > 0 ? Math.floor(cssW * dpr + 1e-3) / dpr : 0;
+  };
+
   /** CSS offset that moves `pos` (CSS px from the page origin) onto a whole device pixel. */
   TV.snapOffset = function (pos, dpr) {
     return Math.round(pos * dpr) / dpr - pos;
@@ -868,7 +877,7 @@
     function layout() {
       st.dpr = currentDpr();
       root.style.setProperty('--tv-dpr', String(st.dpr));
-      st.availW = root.clientWidth || st.availW;
+      st.availW = measureWidth();
       var d = st.shown || st.seed;
       var s = TV.stageSize(d.w, d.h, st.dpr, st.availW);
       st.box = { w: s.w, h: s.h };
@@ -878,6 +887,11 @@
       root.classList.toggle('is-scaled', s.scaled);
       snap();
       if (st.lensOn) placeLens();
+    }
+
+    /** The switcher's width in whole device pixels (clientWidth rounds to whole CSS px). */
+    function measureWidth() {
+      return TV.availWidth(root.getBoundingClientRect().width, st.dpr) || st.availW;
     }
 
     function snap() {
@@ -896,7 +910,7 @@
     function onEnvironment() {
       if (!st.m) { layout(); return; }
       st.dpr = currentDpr();
-      st.availW = root.clientWidth || st.availW;
+      st.availW = measureWidth();
       var c = clip(), cur = st.sources[st.preset];
       var want = c ? TV.chooseStage(c.stage, env()) : null;
       if (want && (!cur || want.src !== cur.src)) {

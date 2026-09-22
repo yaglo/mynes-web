@@ -384,6 +384,28 @@ test('stageSize: native pixels, scaled only when nothing fits', () => {
   assert.ok(q.scaled && q.devW === 900 && q.devH === 675);
 });
 
+test('availWidth: whole device pixels, never wider than the box', () => {
+  assert.strictEqual(TV.availWidth(960, 2), 960);
+  assert.strictEqual(TV.availWidth(959.6, 2), 959.5);            // 1919.2 device px: the 1920 clip does not fit
+  assert.strictEqual(TV.availWidth(357.6, 2), 357.5);
+  assert.strictEqual(TV.availWidth(959.9996, 2), 960);           // layout rounding noise
+  assert.ok(near(TV.availWidth(872.7, 2.2), 1919 / 2.2));
+  assert.strictEqual(TV.availWidth(0, 2), 0);
+  for (const dpr of [1, 1.1, 1.25, 1.5, 1.75, 2, 2.2, 2.5, 3]) {
+    for (const w of [343.5, 357.6, 480.3, 767.99, 959.59375, 960]) {
+      const a = TV.availWidth(w, dpr);
+      assert.ok(a <= w + 1e-3 / dpr && isInt(a * dpr) && w - a < 1 / dpr + 1e-9, w + '@' + dpr);
+    }
+  }
+  // With the floored width the chosen clip fits: 959.6 px at 2x takes the 960 clip at 480 CSS px.
+  const caps = capsAll(grille);
+  const pick = (w) => name(TV.chooseStage(grille.stage, { dpr: 2, availW: TV.availWidth(w, 2), hdrDisplay: false, caps }));
+  assert.strictEqual(pick(959.6), 'stage-960-sdr.mp4');
+  assert.strictEqual(pick(960), 'stage-1920-sdr.mp4');
+  const s = TV.stageSize(960, 720, 2, TV.availWidth(357.6, 2));
+  assert.ok(s.scaled && s.devW === 715 && s.w <= 357.6);
+});
+
 test('snapOffset puts the stage on whole device pixels', () => {
   for (const dpr of [1, 1.25, 1.5, 2, 3]) {
     for (const pos of [0, 0.5, 16.25, 60.8, 123.4567, 480.3333333]) {

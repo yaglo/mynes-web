@@ -309,6 +309,28 @@ check('2x display: the seed poster matches the stage clip, no layout shift', asy
   return page;
 });
 
+check('fractional switcher width: no source wider than the box', async (ctx) => {
+  const page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  const measure = async (w) => {
+    await page.eval(`(() => { let s = document.getElementById('tv-test-width'); if (!s) { s = document.createElement('style'); s.id = 'tv-test-width'; document.head.appendChild(s); }
+      s.textContent = '.tv { width: ${w}px !important; }'; window.dispatchEvent(new Event('resize')); return true; })()`);
+    await sleep(400);
+    await page.until(STATE + '.activeReady', 'stage clip playing at ' + w);
+    return page.eval(`(() => { const a = document.querySelector('.tv-video.is-active'), r = document.querySelector('.tv-stage').getBoundingClientRect();
+      return { src: a.getAttribute('src').split('/').pop(), vw: a.videoWidth, dev: r.width * devicePixelRatio, box: document.querySelector('.tv').getBoundingClientRect().width,
+        fit: !document.querySelector('.tv-fit').hidden }; })()`);
+  };
+  let m = await measure(959.6);
+  assert(m.src === 'stage-960-sdr.mp4' && Math.abs(m.dev - 960) < 1e-6 && !m.fit, '959.6 px: ' + JSON.stringify(m));
+  m = await measure(960);
+  assert(m.src === 'stage-1920-sdr.mp4' && Math.abs(m.dev - 1920) < 1e-6 && !m.fit, '960 px: ' + JSON.stringify(m));
+  m = await measure(357.6);
+  assert(m.fit && Number.isInteger(Math.round(m.dev * 1e6) / 1e6) && m.dev <= 357.6 * 2, '357.6 px: ' + JSON.stringify(m));
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();
