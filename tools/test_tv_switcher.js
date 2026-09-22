@@ -684,6 +684,23 @@ test('caption, labels, sizes', () => {
   assert.strictEqual(TV.presetById(live, 'nope'), null);
 });
 
+test('stageControl: play, freeze, inspect a still, or nothing', () => {
+  const still = { tier: 'still', still: { width: 3840, height: 2880 } }, none = { tier: 'none', reason: TV.NO_CAPTURE };
+  const lens = { tier: 'lens', lens: {} };
+  const sc = (o) => TV.stageControl(Object.assign({ video: true, playing: true, frozen: false, inspecting: false, tier: lens }, o));
+  assert.deepStrictEqual(sc({ playing: false }), { mode: 'play', label: 'Play the clip', pressed: false, off: false });
+  assert.deepStrictEqual(sc({}), { mode: 'freeze', label: 'Freeze the picture', pressed: false, off: false });
+  assert.deepStrictEqual(sc({ frozen: true }), { mode: 'freeze', label: 'Resume the clip', pressed: true, off: false });
+  assert.strictEqual(sc({ tier: still }).mode, 'freeze');                 // a clip and a still: the stage freezes the clip
+  // No clip: the stage opens the still, whether or not playback has started.
+  for (const playing of [true, false]) {
+    assert.deepStrictEqual(sc({ video: false, playing, tier: still }), { mode: 'inspect', label: 'Inspect the 3840×2880 frame', pressed: false, off: false });
+  }
+  assert.strictEqual(sc({ video: false, tier: still, inspecting: true, frozen: true }).pressed, true);
+  assert.strictEqual(sc({ video: false, tier: { tier: 'still', still: {} } }).label, 'Inspect the full-resolution frame');
+  assert.deepStrictEqual(sc({ video: false, tier: none }), { mode: 'none', label: 'Freeze the picture', pressed: false, off: true });
+});
+
 test('rangeChip', () => {
   const hdr = grille.stage.find((s) => s.hdr);
   const c = TV.rangeChip(hdr, grille, { hdrDisplay: true });

@@ -41,6 +41,7 @@
   aspect-ratio: var(--tv-sw) / var(--tv-sh);
   background: #000; cursor: pointer; user-select: none; -webkit-user-select: none;
 }
+.tv-stage[aria-disabled="true"] { cursor: default; }
 .tv-stage.is-inspecting { touch-action: none; }
 @media (hover: hover) and (pointer: fine) { .tv-stage.is-inspecting { cursor: crosshair; } }
 .tv-video, .tv-frame {

@@ -492,6 +492,25 @@
     return ' · ' + (total > 0 ? Math.min(100, Math.floor(100 * loaded / total)) + ' %' : TV.formatBytes(loaded));
   };
 
+  /**
+   * What the stage (role=button) does on a click, Space or Enter, and how it
+   * is labelled. With a clip: play it, or freeze and resume it. Without one
+   * (a preset with a poster or still only): toggle Inspect when there is a
+   * still, else nothing, and the stage is marked unavailable.
+   * s: {video, playing, frozen, inspecting, tier (st.tier)}.
+   */
+  TV.stageControl = function (s) {
+    var t = s.tier || {};
+    if (s.video) {
+      if (!s.playing) return { mode: 'play', label: 'Play the clip', pressed: false, off: false };
+      return { mode: 'freeze', label: s.frozen ? 'Resume the clip' : 'Freeze the picture', pressed: !!s.frozen, off: false };
+    }
+    if (t.tier === 'still') {
+      return { mode: 'inspect', label: 'Inspect the ' + TV.sizeLabel(t.still.width, t.still.height) + ' frame', pressed: !!s.inspecting, off: false };
+    }
+    return { mode: 'none', label: 'Freeze the picture', pressed: false, off: true };
+  };
+
   /** Text next to the Inspect button. */
   TV.inspectNote = function (t) {
     if (t.tier === 'lens') return [TV.sizeLabel(t.lens.width, t.lens.height) + ' clip', TV.formatBytes(t.lens.bytes)].filter(Boolean).join(', ');
@@ -1063,8 +1082,10 @@
       el.freeze.textContent = st.frozen ? 'Resume' : 'Freeze';
       el.freeze.setAttribute('aria-pressed', st.frozen);
       setOff(el.freeze, !video());
-      el.stage.setAttribute('aria-pressed', st.frozen);
-      el.stage.setAttribute('aria-label', !st.playing ? 'Play the clip' : st.frozen ? 'Resume the clip' : 'Freeze the picture');
+      var sc = stageControl();
+      el.stage.setAttribute('aria-pressed', sc.pressed);
+      el.stage.setAttribute('aria-label', sc.label);
+      setOff(el.stage, sc.off);
       el.play.hidden = st.playing || !video();
       el.mute.textContent = st.muted ? 'Unmute' : 'Mute';
       el.mute.setAttribute('aria-pressed', !st.muted);
@@ -1112,10 +1133,16 @@
       });
     }
 
-    /** What a click on the stage (or Space) does: start playback, else toggle freeze. */
+    function stageControl() {
+      return TV.stageControl({ video: !!video(), playing: st.playing, frozen: st.frozen, inspecting: st.inspecting, tier: st.tier });
+    }
+
+    /** A click on the stage, or Space or Enter on it (see TV.stageControl). */
     function stageAction() {
-      if (!st.playing) startPlayback();
-      else if (video()) toggleFreeze();
+      var mode = stageControl().mode;
+      if (mode === 'play') startPlayback();
+      else if (mode === 'freeze') toggleFreeze();
+      else if (mode === 'inspect') setInspecting(!st.inspecting);
     }
 
     /** In the still tier the stage is held on the still's frame; resuming ends the inspection. */

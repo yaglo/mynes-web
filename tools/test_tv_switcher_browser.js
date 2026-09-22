@@ -490,6 +490,23 @@ check('Inspect progress is not announced chunk by chunk', async (ctx) => {
   return page;
 });
 
+check('the stage toggles Inspect on a preset with only a still', async (ctx) => {
+  const page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base);
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  await page.eval(`document.querySelector('.tv-chip[data-preset="jvc_d_series_2000"]').click(), true`);
+  await page.until(STATE + '.tier === "still"', 'still tier');
+  const label = await page.eval(`document.querySelector('.tv-stage').getAttribute('aria-label')`);
+  assert(label === 'Inspect the 3840×2880 frame', 'stage label ' + label);
+  await page.eval(`document.querySelector('.tv-stage').click(), true`);
+  let st = await page.eval(STATE);
+  assert(st.inspecting && (await page.eval(`document.querySelector('.tv-stage').getAttribute('aria-pressed')`)) === 'true', 'stage click did not start Inspect');
+  await page.eval(`document.querySelector('.tv-stage').click(), true`);
+  st = await page.eval(STATE);
+  assert(!st.inspecting, 'second stage click did not stop Inspect');
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();
