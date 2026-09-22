@@ -322,6 +322,28 @@ test('chooseLens and chooseStill', () => {
   assert.strictEqual(name(TV.chooseStill(s, { hdrDisplay: false })), 'still-sdr.png');
   assert.strictEqual(name(TV.chooseStill({ hdr: 'x/h.avif', sdr: null, frame: 0 }, { hdrDisplay: false })), 'h.avif');
   assert.strictEqual(TV.chooseStill(null, {}), null);
+  // A file that failed is skipped: the HDR AVIF falls back to the PNG, then nothing is left.
+  assert.strictEqual(name(TV.chooseStill(s, { hdrDisplay: true, broken: { [s.hdr]: true } })), 'still-sdr.png');
+  assert.strictEqual(TV.chooseStill(s, { hdrDisplay: true, broken: { [s.hdr]: true, [s.sdr]: true } }), null);
+  assert.strictEqual(name(TV.chooseStill(s, { hdrDisplay: false, broken: { [s.sdr]: true } })), 'still-hdr.avif');
+});
+
+test('inspectTier after lens files fail: the next lens clip, then the still', () => {
+  const caps = capsAll(grille);
+  const env = (broken) => ({ dpr: 2, availW: 960, hdrDisplay: true, caps, broken });
+  const stage = TV.chooseStage(grille.stage, env({}));
+  const lens = (b) => { const t = TV.inspectTier(grille, env(b), stage); return t.tier === 'lens' ? name(t.lens) : t.tier + ':' + name(t.still); };
+  const src = (n) => grille.lens.find((x) => name(x) === n).src;
+  assert.strictEqual(lens({}), 'lens-hdr-hevc.mp4');
+  assert.strictEqual(lens({ [src('lens-hdr-hevc.mp4')]: true }), 'lens-hdr-av1.mp4');
+  assert.strictEqual(lens({ [src('lens-hdr-hevc.mp4')]: true, [src('lens-hdr-av1.mp4')]: true }), 'lens-sdr-hevc.mp4');
+  const all = {};
+  grille.lens.forEach((x) => { all[x.src] = true; });
+  assert.strictEqual(lens(all), 'still:still-hdr.avif');
+  all[grille.still.hdr] = true;
+  assert.strictEqual(lens(all), 'still:still-sdr.png');
+  all[grille.still.sdr] = true;
+  assert.strictEqual(TV.inspectTier(grille, env(all), stage).tier, 'none');
 });
 
 test('inspectTier: lens, still, none', () => {

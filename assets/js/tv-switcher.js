@@ -250,11 +250,17 @@
     return best(hdr.length ? hdr : ok, env.caps);
   };
 
-  /** Still for the lens: the HDR AVIF on an HDR display that decodes AVIF, else the lossless SDR file. */
+  /**
+   * Still for the lens: the HDR AVIF on an HDR display that decodes AVIF,
+   * else the lossless SDR file. Files in env.broken are skipped.
+   */
   TV.chooseStill = function (still, env) {
-    if (!still || !(still.hdr || still.sdr)) return null;
-    var useHdr = !!still.hdr && (!!env.hdrDisplay && env.avif !== false || !still.sdr);
-    var src = useHdr ? still.hdr : still.sdr;
+    if (!still) return null;
+    var broken = env.broken || {};
+    var hdr = still.hdr && !broken[still.hdr] ? still.hdr : null, sdr = still.sdr && !broken[still.sdr] ? still.sdr : null;
+    if (!hdr && !sdr) return null;
+    var useHdr = !!hdr && (!!env.hdrDisplay && env.avif !== false || !sdr);
+    var src = useHdr ? hdr : sdr;
     return { src: src, hdr: useHdr, width: still.width, height: still.height, frame: still.frame };
   };
 
@@ -1179,6 +1185,7 @@
       if (held && t.tier !== 'still' && st.frozen) setFrozen(false);
       var ins = st.insp = { key: key, tier: t.tier, ready: false, lead: 0.08, busy: false, rec: null };
       var file = t.tier === 'lens' ? t.lens : t.still;
+      ins.src = file.src;
       ins.w = file.width; ins.h = file.height;
       var media;
       if (t.tier === 'lens') {
@@ -1224,11 +1231,18 @@
       placeLens();
     }
 
+    /**
+     * A lens clip or still that did not load or decode: skip that file from
+     * now on and try what is left (the other lens clip, then the still).
+     * Only when nothing is left does Inspect stop with a notice.
+     */
     function failed(ins, what) {
       if (st.insp !== ins) return;
       notice('loading', '');
-      notice('problem', 'The full-resolution ' + what + ' could not be loaded.');
-      setInspecting(false);
+      st.brokenSrc[ins.src] = true;
+      forgetBlob(url(ins.src));
+      refreshInspector();
+      if (!st.inspecting) notice('problem', 'The full-resolution ' + what + ' could not be loaded.');
     }
 
     /** Still tier: every clip paused on the still's frame. */
@@ -1255,6 +1269,14 @@
       }
       if (!replacing) hideLens();
       return held;
+    }
+
+    function forgetBlob(src) {
+      st.blobs = st.blobs.filter(function (b) {
+        if (b.src !== src) return true;
+        URL.revokeObjectURL(b.url);
+        return false;
+      });
     }
 
     /**

@@ -379,6 +379,32 @@ check('lens sync keeps working when it is restarted during its own seek', async 
   return page;
 });
 
+check('a lens clip that fails falls back to the still', async (ctx) => {
+  ctx.srv.rules.push({ re: /\/lens-[^/]*\.mp4$/, corrupt: true });
+  const page = await lensPage(ctx);
+  const before = await page.eval(STATE);
+  if (before.tier !== 'lens') return { page, skip: 'this browser has no lens tier (' + before.tier + ')' };
+  await page.eval(`document.querySelector('.tv-inspect').click(), true`);
+  await page.until(`(() => { const i = document.querySelector('.tv-lens img'); return i && i.complete && i.naturalWidth > 0; })()`, 'still in the lens');
+  const st = await page.eval(STATE);
+  assert(st.tier === 'still' && st.inspecting, 'tier ' + st.tier + ', inspecting ' + st.inspecting);
+  assert(st.note === '3840×2880 frame', 'note ' + st.note);
+  assert(!/could not be loaded/.test(st.notice), 'notice ' + st.notice);
+  const src = await page.eval(`document.querySelector('.tv-lens img').getAttribute('src')`);
+  assert(/^blob:/.test(src), 'lens image ' + src);
+  await page.close();
+  // Every lens clip and both still files fail: Inspect stops with a notice.
+  ctx.srv.rules.push({ re: /\/still-[^/]*$/, corrupt: true });
+  const p2 = await lensPage(ctx);
+  await p2.eval(`document.querySelector('.tv-inspect').click(), true`);
+  await p2.until(STATE + '.notice.includes("could not be loaded")', 'problem notice');
+  const end = await p2.eval(STATE);
+  assert(!end.inspecting && /could not be loaded/.test(end.notice), JSON.stringify(end));
+  const tried = ctx.srv.log.map((r) => r.path.split('/').pop()).filter((f) => /^(lens|still)-/.test(f));
+  assert(['lens-sdr-hevc.mp4', 'still-sdr.png', 'still-hdr.avif'].every((f) => tried.includes(f)), 'files tried: ' + tried.join(', '));
+  return p2;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();
