@@ -15,6 +15,7 @@ full= to change the seed.
 {%- assign tv_video = include.video | default: "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4" -%}
 {%- assign tv_poster = include.poster | default: "assets/hero/mega-man-2-title/sony_pvm_14l2.poster.webp" -%}
 {%- assign tv_full = include.full | default: "assets/images/showcase/4k/sony_pvm_14l2.png" -%}
+<link rel="stylesheet" href="{{ '/assets/css/tv.css' | relative_url }}">
 <div class="tv" data-manifest="{{ '/assets/hero/manifest.json' | relative_url }}" data-base="{{ '/' | relative_url }}" data-game="{{ tv_game }}" data-preset="{{ tv_preset }}">
 <div class="tv-tabs" role="tablist" aria-label="Game recording">
 <button type="button" class="tv-tab" role="tab" aria-selected="true" data-game="{{ tv_game }}">{{ tv_game_title }}</button>
