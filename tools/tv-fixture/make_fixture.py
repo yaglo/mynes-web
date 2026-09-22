@@ -19,6 +19,12 @@ Run from the site root:
 
     python3 tools/tv-fixture/make_fixture.py
 
+Preview (the fixture is not part of the published site):
+
+    PATH=/opt/homebrew/opt/ruby@3.3/bin:$PATH bundle exec jekyll serve \\
+      --config _config.yml,tools/tv-fixture/preview.yml \\
+      --destination "$TMPDIR/mynes-web-preview" --port 4011
+    open http://127.0.0.1:4011/mynes-web/tools/tv-fixture/
 """
 import json
 import os

@@ -1,0 +1,16 @@
+# Overlay config that also builds the switcher fixture page
+# (/tools/tv-fixture/). The published site excludes tools/ entirely.
+#   bundle exec jekyll serve --config _config.yml,tools/tv-fixture/preview.yml \
+#     --destination "$TMPDIR/mynes-web-preview" --port 4011
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - node_modules
+  - .jekyll-cache
+  - .sass-cache
+  - tools/check_site.py
+  - tools/test_tv_switcher.js
+  - tools/tv-fixture/make_fixture.py
+  - tools/tv-fixture/preview.yml
