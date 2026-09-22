@@ -61,7 +61,7 @@ The complete map is in the repository's [`docs/gpu-controls.md`]({{ site.project
 | Fast-forward (hold) | ` (grave) | Right shoulder |
 | Save state, load state, next slot | F5, F7, F6 | |
 | Reset, room reflections, next preset | R, G, P | |
-| ROM browser, fullscreen, screenshot | O, F11, F12 | |
+| ROM browser, fullscreen, screenshot | O, F, F12 | |
 
 Player 2 uses W/A/S/D with J, H, U and Y, or the second gamepad. Two gamepads hot-plug in the order they connect.
 
