@@ -1,0 +1,66 @@
+# MyNES project site — built by GitHub Pages (Jekyll 3.10 via the github-pages gem).
+title: MyNES
+tagline: A NES emulator that follows the picture from the console's video signal to the glow of a CRT
+description: >-
+  MyNES is a NES emulator that generates the console's composite video
+  waveform, decodes it like a television, and models the beam, phosphor,
+  mask and glass of a CRT. Cycle-accurate 6502 core generated from a timing
+  DSL; 23 CRT presets.
+url: https://yaglo.github.io
+baseurl: /mynes-web
+lang: en
+author:
+  name: Stanislav Yaglo
+project:
+  code_repo: https://github.com/yaglo/mynes
+  releases: https://github.com/yaglo/mynes/releases
+  issues: https://github.com/yaglo/mynes/issues
+  license: https://github.com/yaglo/mynes/blob/master/LICENSE
+  blob: https://github.com/yaglo/mynes/blob/master
+  site_repo: https://github.com/yaglo/mynes-web
+  # Last code-repository commit that still contains the migrated docs and media.
+  source_blob: https://github.com/yaglo/mynes/blob/af99543b987168ac5bb785ea2490d3656de536c0
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  gfm_quirks: paragraph_end
+  syntax_highlighter: rouge
+highlighter: rouge
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: false
+
+# Blog posts: /blog/<slug>/
+permalink: /blog/:title/
+timezone: UTC
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - tools
+  - vendor
+  - node_modules
+  - .jekyll-cache
+  - .sass-cache
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      series_title: Building a NES Emulator That Thinks Like Hardware
+  - scope:
+      path: ""
+    values:
+      layout: page

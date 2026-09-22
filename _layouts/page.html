@@ -1,0 +1,29 @@
+---
+layout: default
+---
+{% if page.section == 'gallery' %}
+<nav class="subnav" aria-label="Gallery pages">
+  <a href="{{ '/gallery/showcase/' | relative_url }}"{% if page.url == '/gallery/showcase/' %} class="active"{% endif %}>Showcase</a>
+  <a href="{{ '/gallery/presets/' | relative_url }}"{% if page.url == '/gallery/presets/' %} class="active"{% endif %}>Presets</a>
+  <a href="{{ '/gallery/closeups/' | relative_url }}"{% if page.url == '/gallery/closeups/' %} class="active"{% endif %}>Close-ups</a>
+  <a href="{{ '/gallery/feature-tour/' | relative_url }}"{% if page.url == '/gallery/feature-tour/' %} class="active"{% endif %}>Feature tour</a>
+  <a href="{{ '/gallery/contra/' | relative_url }}"{% if page.url == '/gallery/contra/' %} class="active"{% endif %}>Contra gallery</a>
+  <a href="{{ '/gallery/motion/' | relative_url }}"{% if page.url == '/gallery/motion/' %} class="active"{% endif %}>Motion</a>
+  <a href="{{ '/gallery/visual-review/' | relative_url }}"{% if page.url == '/gallery/visual-review/' %} class="active"{% endif %}>Visual review</a>
+  <a href="{{ '/gallery/consumer-crt/' | relative_url }}"{% if page.url == '/gallery/consumer-crt/' %} class="active"{% endif %}>Consumer CRT review</a>
+</nav>
+{% elsif page.section == 'research' %}
+<nav class="subnav" aria-label="Research pages">
+  <a href="{{ '/research/hardware/' | relative_url }}"{% if page.url == '/research/hardware/' %} class="active"{% endif %}>Hardware research</a>
+  <a href="{{ '/research/pvm-14l2/' | relative_url }}"{% if page.url == '/research/pvm-14l2/' %} class="active"{% endif %}>PVM-14L2</a>
+  <a href="{{ '/research/fw900/' | relative_url }}"{% if page.url == '/research/fw900/' %} class="active"{% endif %}>GDM-FW900</a>
+  <a href="{{ '/research/measurements/' | relative_url }}"{% if page.url == '/research/measurements/' %} class="active"{% endif %}>Measurements</a>
+  <a href="{{ '/research/sharpening/' | relative_url }}"{% if page.url == '/research/sharpening/' %} class="active"{% endif %}>Sharpening audit</a>
+</nav>
+{% endif %}
+<article class="page">
+<h1>{{ page.title }}</h1>
+{% if page.lede %}<p class="lede">{{ page.lede }}</p>{% endif %}
+{% if page.source %}<p class="source-note">Migrated from <a href="{{ site.project.source_blob }}/{{ page.source }}"><code>{{ page.source }}</code></a> in the code repository (at the commit before the move){% if page.source_note %}. {{ page.source_note }}{% endif %}. Captions and measurement caveats are kept as written there.</p>{% endif %}
+{{ content }}
+</article>

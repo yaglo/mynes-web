@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+{% seo %}
+{% feed_meta %}
+<link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="{{ '/' | relative_url }}">MyNES</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="{{ '/gallery/' | relative_url }}"{% if page.section == 'gallery' and page.url != '/gallery/presets/' %} class="active"{% endif %}>Gallery</a>
+      <a href="{{ '/gallery/presets/' | relative_url }}"{% if page.url == '/gallery/presets/' %} class="active"{% endif %}>Presets</a>
+      <a href="{{ '/blog/' | relative_url }}"{% if page.section == 'blog' or page.layout == 'post' %} class="active"{% endif %}>Blog</a>
+      <a href="{{ '/research/' | relative_url }}"{% if page.section == 'research' %} class="active"{% endif %}>Research</a>
+      <a href="{{ '/download/' | relative_url }}"{% if page.url == '/download/' %} class="active"{% endif %}>Download</a>
+      <a href="{{ site.project.code_repo }}">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap" id="main">
+{{ content }}
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="Footer">
+      <a href="{{ site.project.code_repo }}">GitHub</a>
+      <a href="{{ site.project.releases }}">Releases</a>
+      <a href="{{ '/blog/' | relative_url }}">Blog</a>
+      <a href="{{ '/gallery/' | relative_url }}">Gallery</a>
+      <a href="{{ '/research/' | relative_url }}">Research</a>
+      <a href="{{ site.project.license }}">License</a>
+    </nav>
+    <p>MyNES by {{ site.author.name }}. The emulator is released under the Apache License 2.0. This site holds the project's images and videos so the code repository stays small; <a href="{{ site.project.site_repo }}">site source</a>.</p>
+    <p>No commercial ROMs are distributed here or with the emulator.</p>
+  </div>
+</footer>
+</body>
+</html>
