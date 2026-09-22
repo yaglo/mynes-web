@@ -331,6 +331,22 @@ check('fractional switcher width: no source wider than the box', async (ctx) => 
   return page;
 });
 
+check('no JavaScript: the fit note shows exactly when the poster is scaled', async (ctx) => {
+  const cases = [[2, 1280, false], [1, 1280, false], [3, 1280, false], [2.5, 1280, true], [1.75, 1280, true], [2.2, 1280, true], [2, 400, true], [3, 400, false]];
+  for (const [dpr, width, scaled] of cases) {
+    const page = await ctx.open({ dpr, width, noScript: true });
+    await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+    const r = await page.eval(`(() => { const f = document.querySelector('.tv-frame'), b = f.getBoundingClientRect();
+      const notes = [...document.querySelectorAll('.tv-fit')].filter((n) => getComputedStyle(n).display !== 'none' && n.offsetParent);
+      return { dev: b.width * devicePixelRatio, nw: f.naturalWidth, note: notes.length > 0, noteText: notes.map((n) => n.textContent).join('|') }; })()`);
+    await page.close();
+    const resampled = Math.abs(r.dev - r.nw) > 0.01;
+    assert(resampled === scaled, `dpr ${dpr} width ${width}: poster ${r.nw} px shown at ${r.dev.toFixed(2)} device px`);
+    assert(r.note === scaled, `dpr ${dpr} width ${width}: note ${r.note ? 'shown' : 'hidden'} (${r.noteText})`);
+  }
+  return null;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

@@ -87,6 +87,14 @@
 .tv-lens-label:empty { display: none; }
 
 .tv-fit { margin: 0.4rem 0 0; text-align: center; color: var(--muted); font-size: 0.85rem; }
+/* Without JavaScript the poster keeps the size set above, which is one poster
+ * pixel per device pixel only at the exact --tv-dpr steps and only when it
+ * fits the window (960 / step + 2 gutters). Everywhere else the browser
+ * scales it, and this note (in the include's <noscript>) says so. */
+@media (resolution: 1dppx) and (min-width: 992px), (resolution: 1.25dppx) and (min-width: 800px),
+  (resolution: 1.5dppx) and (min-width: 672px), (resolution: 2dppx) and (min-width: 512px), (resolution: 3dppx) and (min-width: 352px) {
+  .tv-fit-static { display: none; }
+}
 
 .tv-chips-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem; min-height: 2.4rem; }
 .tv-chips { display: flex; gap: 0.4rem; overflow-x: auto; flex: 1 1 auto; min-width: 0; padding: 2px; scrollbar-width: none; }

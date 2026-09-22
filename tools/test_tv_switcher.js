@@ -577,7 +577,7 @@ test('no canvas, no media effects, CSS moved to tv.css', () => {
   assert.ok(/<noscript>/.test(html), 'noscript fallback');
 });
 
-test('2x seed poster: the include and tv.css use the same media query', () => {
+test('seed poster: 2x media query and the no-script fit note', () => {
   const html = read('_includes/tv-switcher.html'), css = read('assets/css/tv.css');
   const inc = /tv_media_2x = "([^"]+)"/.exec(html);
   assert.ok(inc && html.includes('<source media="{{ tv_media_2x }}"'), 'include: <source> with the 2x media query');
@@ -591,6 +591,13 @@ test('2x seed poster: the include and tv.css use the same media query', () => {
   assert.deepStrictEqual(steps, [1.25, 1.5, 2, 3]);
   const expect = [1, ...steps].filter((d) => 1920 / d <= 960).map((d) => `(min-resolution: ${d}dppx) and (min-width: ${1920 / d + 2 * gutter}px)`);
   assert.strictEqual(inc[1], expect.join(', '));
+  // Without JavaScript the note under the poster shows except where the 960 poster (or the 2x
+  // poster, which uses a subset of these windows) is at one pixel per device pixel.
+  const note = /@media ([^{]+)\{\s*\.tv-fit-static \{ display: none; \}/.exec(css);
+  assert.ok(note, 'tv.css: rule that hides the static fit note');
+  assert.strictEqual(note[1].replace(/\s+/g, ' ').trim(),
+    [1, ...steps].map((d) => `(resolution: ${d}dppx) and (min-width: ${960 / d + 2 * gutter}px)`).join(', '));
+  assert.ok(/<noscript><p class="tv-fit tv-fit-static">[^<]+<\/p><\/noscript>/.test(html), 'include: static fit note in <noscript>');
   // The fixture page seeds both posters of its first clip.
   const page = read('tools/tv-fixture/index.html');
   const g = TV.clipFor(fixture, 'test-pattern', 'fixture_grille');
