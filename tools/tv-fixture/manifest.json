@@ -1,0 +1,237 @@
+{
+ "version": 2,
+ "fps": 60.0988,
+ "aspect": [
+  4,
+  3
+ ],
+ "presets": [
+  {
+   "id": "fixture_grille",
+   "name": "Aperture grille",
+   "blurb": "Lens clip, still and HDR stage clips"
+  },
+  {
+   "id": "fixture_slot",
+   "name": "Slot mask",
+   "blurb": "Still only, no lens clip"
+  },
+  {
+   "id": "fixture_dots",
+   "name": "Dot mask",
+   "blurb": "SDR stage clips only, no full-resolution capture"
+  },
+  {
+   "id": "fixture_missing",
+   "name": "Not rendered",
+   "blurb": "Listed without clips"
+  }
+ ],
+ "games": [
+  {
+   "id": "test-pattern",
+   "title": "Test pattern",
+   "scene": "Moving block, frame counter, 60 frames",
+   "default_preset": "fixture_grille"
+  },
+  {
+   "id": "small-clip",
+   "title": "960 only",
+   "scene": "One 960x720 SDR clip",
+   "default_preset": "fixture_grille"
+  }
+ ],
+ "clips": {
+  "test-pattern": {
+   "fixture_grille": {
+    "poster": [
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/poster.webp",
+      "width": 960,
+      "height": 720
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/poster-1920.webp",
+      "width": 1920,
+      "height": 1440
+     }
+    ],
+    "stage": [
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-1920-hdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.2.4.L150.B0\"",
+      "hdr": true,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 44993
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-1920-hdr-av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+      "hdr": true,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 29054
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-1920-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640033\"",
+      "hdr": false,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 63522
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-960-hdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.2.4.L120.B0\"",
+      "hdr": true,
+      "width": 960,
+      "height": 720,
+      "bytes": 22115
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-960-hdr-av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+      "hdr": true,
+      "width": 960,
+      "height": 720,
+      "bytes": 15256
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/stage-960-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640020\"",
+      "hdr": false,
+      "width": 960,
+      "height": 720,
+      "bytes": 26730
+     }
+    ],
+    "lens": [
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/lens-hdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.2.4.L180.B0\"",
+      "hdr": true,
+      "width": 3840,
+      "height": 2880,
+      "bytes": 68656
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/lens-hdr-av1.mp4",
+      "type": "video/mp4; codecs=\"av01.0.16M.10.0.110.09.16.09.0\"",
+      "hdr": true,
+      "width": 3840,
+      "height": 2880,
+      "bytes": 59408
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_grille/lens-sdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.1.6.L180.B0\"",
+      "hdr": false,
+      "width": 3840,
+      "height": 2880,
+      "bytes": 139921
+     }
+    ],
+    "still": {
+     "hdr": "tools/tv-fixture/test-pattern/fixture_grille/still-hdr.avif",
+     "sdr": "tools/tv-fixture/test-pattern/fixture_grille/still-sdr.png",
+     "width": 3840,
+     "height": 2880,
+     "frame": 30
+    },
+    "hdr": {
+     "white_nits": 203.0,
+     "headroom": 4.0,
+     "max_cll": 812,
+     "max_fall": 50
+    }
+   },
+   "fixture_slot": {
+    "poster": "tools/tv-fixture/test-pattern/fixture_slot/poster.webp",
+    "stage": [
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_slot/stage-1920-hdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.2.4.L150.B0\"",
+      "hdr": true,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 67467
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_slot/stage-1920-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640033\"",
+      "hdr": false,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 90946
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_slot/stage-960-hdr-hevc.mp4",
+      "type": "video/mp4; codecs=\"hvc1.2.4.L120.B0\"",
+      "hdr": true,
+      "width": 960,
+      "height": 720,
+      "bytes": 26487
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_slot/stage-960-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640020\"",
+      "hdr": false,
+      "width": 960,
+      "height": 720,
+      "bytes": 31498
+     }
+    ],
+    "still": {
+     "hdr": "tools/tv-fixture/test-pattern/fixture_slot/still-hdr.avif",
+     "sdr": "tools/tv-fixture/test-pattern/fixture_slot/still-sdr.png",
+     "width": 3840,
+     "height": 2880,
+     "frame": 30
+    },
+    "hdr": {
+     "white_nits": 203.0,
+     "headroom": 4.0,
+     "max_cll": 812,
+     "max_fall": 50
+    }
+   },
+   "fixture_dots": {
+    "poster": "tools/tv-fixture/test-pattern/fixture_dots/poster.webp",
+    "stage": [
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_dots/stage-1920-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640033\"",
+      "hdr": false,
+      "width": 1920,
+      "height": 1440,
+      "bytes": 95368
+     },
+     {
+      "src": "tools/tv-fixture/test-pattern/fixture_dots/stage-960-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640020\"",
+      "hdr": false,
+      "width": 960,
+      "height": 720,
+      "bytes": 32885
+     }
+    ]
+   }
+  },
+  "small-clip": {
+   "fixture_grille": {
+    "poster": "tools/tv-fixture/small-clip/fixture_grille/poster.webp",
+    "stage": [
+     {
+      "src": "tools/tv-fixture/small-clip/fixture_grille/stage-960-sdr.mp4",
+      "type": "video/mp4; codecs=\"avc1.640020\"",
+      "hdr": false,
+      "width": 960,
+      "height": 720,
+      "bytes": 25567
+     }
+    ]
+   }
+  }
+ }
+}
