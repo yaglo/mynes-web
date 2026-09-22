@@ -368,6 +368,16 @@ test('inspectTier: lens, still, none', () => {
   const noLens = { dpr: 2, availW: 960, hdrDisplay: false, caps: capsAll(grille, (s) => ({ supported: s.width !== 3840 })) };
   const lensOnly = Object.assign({}, grille, { still: null });
   assert.strictEqual(TV.inspectTier(lensOnly, noLens, stage).reason, TV.NO_DECODER);
+  // The reason names the cause: no stage clip to follow, failed files, an HDR-only lens on an SDR display.
+  assert.strictEqual(TV.inspectTier(lensOnly, env, null).reason, TV.NO_STAGE);
+  const allLens = {};
+  grille.lens.forEach((x) => { allLens[x.src] = true; });
+  assert.strictEqual(TV.inspectTier(lensOnly, Object.assign({ broken: allLens }, env), stage).reason, TV.LENS_FAILED);
+  const hdrLensOnly = Object.assign({}, lensOnly, { lens: grille.lens.filter((x) => x.hdr) });
+  assert.strictEqual(TV.inspectTier(hdrLensOnly, env, stage).reason, TV.LENS_HDR_ONLY);
+  assert.strictEqual(TV.inspectTier(hdrLensOnly, Object.assign({}, env, { hdrDisplay: true, caps: noLens.caps }), stage).reason, TV.NO_DECODER);
+  const stillOnly = Object.assign({}, slot, { lens: [] });
+  assert.strictEqual(TV.inspectTier(stillOnly, Object.assign({ broken: { [slot.still.hdr]: true, [slot.still.sdr]: true } }, env), null).reason, TV.STILL_FAILED);
   assert.strictEqual(TV.inspectTier(null, env, null).tier, 'none');
   // Version 1: the Mega Man clips have the 4K PNG, the others nothing.
   const e1 = { dpr: 2, availW: 960, hdrDisplay: true, caps: {} };
@@ -707,9 +717,28 @@ test('rangeChip', () => {
   assert.deepStrictEqual(c, { text: 'HDR', title: 'HDR10 source (PQ, BT.2020), SDR white at 203 nits, brightest pixel 812 nits' });
   const sdr = grille.stage.find((s) => !s.hdr);
   assert.strictEqual(TV.rangeChip(sdr, grille, { hdrDisplay: false }).title, 'SDR source: this display does not report HDR');
-  assert.strictEqual(TV.rangeChip(sdr, grille, { hdrDisplay: true }).title, 'SDR source: this browser cannot decode the HDR file');
+  const noPq = capsAll(grille, (s) => ({ supported: !s.hdr }));
+  assert.strictEqual(TV.rangeChip(sdr, grille, { hdrDisplay: true, caps: noPq }).title, 'SDR source: this browser cannot decode the HDR file');
+  assert.strictEqual(TV.rangeChip(sdr, grille, { hdrDisplay: true, caps: {} }).title, 'SDR source: this browser did not confirm it can decode the HDR file');
   assert.strictEqual(TV.rangeChip(dots.stage[0], dots, { hdrDisplay: true }).title, 'SDR source: no HDR render of this clip yet');
   assert.strictEqual(TV.rangeChip(null, slot, { hdrDisplay: true }).text, 'SDR');
+  // The reason follows chooseStage (size first) instead of guessing.
+  const why = (sources, env) => TV.rangeChip(TV.chooseStage(sources, env), { stage: sources }, env).title;
+  const src = (hdr, w, type) => ({ src: (hdr ? 'hdr-' : 'sdr-') + w + '.mp4', type: type || 'video/mp4; codecs="x"', hdr, width: w, height: w * 3 / 4 });
+  const onlyHdr960 = [src(true, 960), src(false, 1920), src(false, 960)];
+  const capsOk = {};
+  onlyHdr960.forEach((s) => { capsOk[TV.capKey(s)] = { supported: true }; });
+  const e2 = { dpr: 2, availW: 960, hdrDisplay: true, caps: capsOk };
+  assert.strictEqual(why(onlyHdr960, e2), 'SDR source: no HDR render at 1920×1440');
+  assert.strictEqual(why(onlyHdr960, Object.assign({}, e2, { dpr: 1 })), 'HDR10 source (PQ, BT.2020)');
+  const both = [src(true, 1920), src(false, 1920)];
+  const capsBoth = { [TV.capKey(both[1])]: { supported: true } };
+  assert.strictEqual(why(both, Object.assign({}, e2, { caps: capsBoth })), 'SDR source: this browser did not confirm it can decode the HDR file');
+  capsBoth[TV.capKey(both[0])] = { supported: false };
+  assert.strictEqual(why(both, Object.assign({}, e2, { caps: capsBoth })), 'SDR source: this browser cannot decode the HDR file');
+  capsBoth[TV.capKey(both[0])] = { supported: true };
+  assert.strictEqual(why(both, Object.assign({}, e2, { caps: capsBoth, broken: { 'hdr-1920.mp4': true } })), 'SDR source: the HDR file could not be loaded');
+  assert.strictEqual(why(both, Object.assign({}, e2, { caps: capsBoth, hdrDisplay: false })), 'SDR source: this display does not report HDR');
 });
 
 /* ---- markup and CSS ---- */

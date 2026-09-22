@@ -38,6 +38,10 @@
   TV.DEFAULT_FPS = 60.0988;
   TV.NO_CAPTURE = 'Full-resolution capture not rendered yet';
   TV.NO_DECODER = 'This browser cannot decode the full-resolution clip';
+  TV.NO_STAGE = 'The full-resolution clip needs the stage clip, which could not be played';
+  TV.LENS_FAILED = 'The full-resolution clip could not be loaded';
+  TV.LENS_HDR_ONLY = 'The full-resolution clip is HDR only, and this display does not report HDR';
+  TV.STILL_FAILED = 'The full-resolution frame could not be loaded';
   TV.FIT_NOTE = 'Scaled to fit this window. Inspect shows 1:1.';
 
   function num(v) { var n = Number(v); return v !== null && v !== '' && isFinite(n) && n > 0 ? n : null; }
@@ -299,7 +303,20 @@
     if (lens) return { tier: 'lens', lens: lens };
     var still = TV.chooseStill(clip.still, env);
     if (still) return { tier: 'still', still: still };
-    return { tier: 'none', reason: clip.lens && clip.lens.length ? TV.NO_DECODER : TV.NO_CAPTURE };
+    return { tier: 'none', reason: TV.noInspectReason(clip, env, stageSource) };
+  };
+
+  /** Why a clip that has lens clips or a still still cannot be inspected (inspectTier gave 'none'). */
+  TV.noInspectReason = function (clip, env, stageSource) {
+    var lens = clip.lens || [], broken = env.broken || {};
+    if (lens.length) {
+      if (!stageSource) return TV.NO_STAGE;
+      var left = lens.filter(function (s) { return !broken[s.src]; });
+      if (!left.length) return TV.LENS_FAILED;
+      if (!env.hdrDisplay && left.every(function (s) { return s.hdr; })) return TV.LENS_HDR_ONLY;
+      return TV.NO_DECODER;
+    }
+    return clip.still ? TV.STILL_FAILED : TV.NO_CAPTURE;
   };
 
   /* ---- Geometry ------------------------------------------------------ */
@@ -519,6 +536,24 @@
   };
 
   /**
+   * Why the stage plays an SDR source when the clip has HDR ones. Follows
+   * chooseStage: the size is chosen first, so only HDR files of the chosen
+   * source's width count.
+   */
+  TV.sdrReason = function (sources, source, env) {
+    var hdr = (sources || []).filter(function (s) { return s.hdr; });
+    if (!hdr.length) return 'no HDR render of this clip yet';
+    if (!env.hdrDisplay) return 'this display does not report HDR';
+    var same = hdr.filter(function (s) { return s.width === source.width; });
+    if (!same.length) return 'no HDR render at ' + TV.sizeLabel(source.width, source.height);
+    var broken = env.broken || {}, caps = env.caps || {};
+    var left = same.filter(function (s) { return !broken[s.src]; });
+    if (!left.length) return 'the HDR file could not be loaded';
+    if (left.some(function (s) { return !caps[TV.capKey(s)]; })) return 'this browser did not confirm it can decode the HDR file';
+    return 'this browser cannot decode the HDR file';
+  };
+
+  /**
    * The HDR/SDR chip: {text, title}. `source` is the stage source (null for
    * a still picture), `clip` the normalised clip, env as for chooseStage.
    */
@@ -530,10 +565,7 @@
       if (h.max_cll) bits.push('brightest pixel ' + h.max_cll + ' nits');
       return { text: 'HDR', title: bits.join(', ') };
     }
-    var hasHdr = !!(clip && clip.stage.some(function (s) { return s.hdr; }));
-    var why = !source ? 'still picture' :
-      !hasHdr ? 'no HDR render of this clip yet' :
-      !env.hdrDisplay ? 'this display does not report HDR' : 'this browser cannot decode the HDR file';
+    var why = source ? TV.sdrReason(clip && clip.stage, source, env) : 'still picture';
     return { text: 'SDR', title: 'SDR source: ' + why };
   };
 
