@@ -1,32 +1,38 @@
 {%- comment -%}
-Television switcher hero. The manifest (assets/hero/manifest.json) drives the
-tabs, chips and media at run time; the parameters below only seed the static
-HTML so one poster and one clip load before the script runs and so the page
-still shows a picture without JavaScript. Schema: assets/hero/README.md.
-Usage: {% include tv-switcher.html %} or with game=, preset=, video=, poster=,
-full= to change the seed.
+Television switcher hero. The manifest (assets/hero/manifest.json, version 1
+or 2) drives the tabs, chips and media at run time; the parameters below only
+seed the static HTML: the first frame shown before the script runs and
+without JavaScript, the links, and the clip the script starts with. The
+initial load is the manifest, this poster and one stage clip chosen by the
+script for the display. Schema: assets/hero/README.md.
+Usage: {% include tv-switcher.html %} or with manifest=, game=, game_title=,
+scene=, preset=, preset_name=, blurb=, poster=, poster_width=,
+poster_height=, video=, full= to change the seed.
 {%- endcomment -%}
+{%- assign tv_manifest = include.manifest | default: "/assets/hero/manifest.json" -%}
 {%- assign tv_game = include.game | default: "mega-man-2-title" -%}
 {%- assign tv_game_title = include.game_title | default: "Mega Man 2" -%}
 {%- assign tv_scene = include.scene | default: "Rooftop title" -%}
 {%- assign tv_preset = include.preset | default: "sony_pvm_14l2" -%}
 {%- assign tv_preset_name = include.preset_name | default: "Sony PVM-14L2" -%}
 {%- assign tv_blurb = include.blurb | default: "Focused beam, fine aperture grille, D65, composite" -%}
-{%- assign tv_video = include.video | default: "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4" -%}
 {%- assign tv_poster = include.poster | default: "assets/hero/mega-man-2-title/sony_pvm_14l2.poster.webp" -%}
+{%- assign tv_w = include.poster_width | default: 960 -%}
+{%- assign tv_h = include.poster_height | default: 720 -%}
+{%- assign tv_video = include.video | default: "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4" -%}
 {%- assign tv_full = include.full | default: "assets/images/showcase/4k/sony_pvm_14l2.png" -%}
 <link rel="stylesheet" href="{{ '/assets/css/tv.css' | relative_url }}">
-<div class="tv" data-manifest="{{ '/assets/hero/manifest.json' | relative_url }}" data-base="{{ '/' | relative_url }}" data-game="{{ tv_game }}" data-preset="{{ tv_preset }}">
+<div class="tv" data-manifest="{{ tv_manifest | relative_url }}" data-base="{{ '/' | relative_url }}" data-game="{{ tv_game }}" data-preset="{{ tv_preset }}" data-width="{{ tv_w }}" data-height="{{ tv_h }}" style="--tv-w: {{ tv_w }}; --tv-h: {{ tv_h }}">
 <div class="tv-tabs" role="tablist" aria-label="Game recording">
 <button type="button" class="tv-tab" role="tab" aria-selected="true" data-game="{{ tv_game }}">{{ tv_game_title }}</button>
 </div>
-<div class="tv-stage" role="button" tabindex="0" aria-pressed="false" aria-label="Freeze the picture at full detail">
-<video class="tv-video is-active" muted loop playsinline preload="auto" width="960" height="720" data-game="{{ tv_game }}" data-preset="{{ tv_preset }}" poster="{{ tv_poster | prepend: '/' | relative_url }}" src="{{ tv_video | prepend: '/' | relative_url }}" aria-hidden="true"></video>
-<img class="tv-frame" alt="" hidden>
+<div class="tv-stage" role="button" tabindex="0" aria-pressed="false" aria-label="Freeze the picture">
+<img class="tv-frame" src="{{ tv_poster | prepend: '/' | relative_url }}" width="{{ tv_w }}" height="{{ tv_h }}" alt="{{ tv_game_title }} on the {{ tv_preset_name }} preset, first frame of the clip">
 <span class="tv-play" hidden><span class="tv-play-glyph" aria-hidden="true"></span>Play</span>
 <p class="tv-notice" role="status" hidden></p>
-<div class="tv-lens" aria-hidden="true" hidden><canvas width="480" height="480"></canvas><span class="tv-lens-label"></span></div>
+<div class="tv-lens" aria-hidden="true"><span class="tv-lens-label"></span></div>
 </div>
+<p class="tv-fit" hidden>Scaled to fit this window. Inspect shows 1:1.</p>
 <div class="tv-chips-row">
 <div class="tv-chips" role="radiogroup" aria-label="Television preset">
 <button type="button" class="tv-chip" role="radio" aria-checked="true" data-preset="{{ tv_preset }}"><span class="tv-chip-n">1</span>{{ tv_preset_name }}</button>
@@ -34,20 +40,22 @@ full= to change the seed.
 <button type="button" class="tv-btn tv-next">Next TV</button>
 </div>
 <div class="tv-controls">
-<button type="button" class="tv-btn tv-mute" aria-pressed="false">Unmute</button>
-<button type="button" class="tv-btn tv-freeze" aria-pressed="false">Freeze at full detail</button>
-<button type="button" class="tv-btn tv-inspect" aria-pressed="false">Inspect</button>
-<span class="tv-zoom" role="group" aria-label="Lens scale on the frozen 4K frame">
-<button type="button" class="tv-btn" data-zoom="1" aria-pressed="true" title="One source pixel per screen pixel">1:1</button>
-<button type="button" class="tv-btn" data-zoom="2" aria-pressed="false" title="Two screen pixels per source pixel">2:1</button>
-<button type="button" class="tv-btn" data-zoom="4" aria-pressed="false" title="Four screen pixels per source pixel">4:1</button>
+<button type="button" class="tv-btn tv-freeze" aria-pressed="false">Freeze</button>
+<button type="button" class="tv-btn tv-inspect" aria-pressed="false" disabled>Inspect</button>
+<span class="tv-zoom" role="group" aria-label="Lens scale">
+<button type="button" class="tv-btn" data-zoom="1" aria-pressed="true" disabled title="One source pixel per screen pixel">1:1</button>
+<button type="button" class="tv-btn" data-zoom="2" aria-pressed="false" disabled title="Two screen pixels per source pixel">2:1</button>
+<button type="button" class="tv-btn" data-zoom="4" aria-pressed="false" disabled title="Four screen pixels per source pixel">4:1</button>
 </span>
+<span class="tv-range" title="SDR source">SDR</span>
+<button type="button" class="tv-btn tv-mute" aria-pressed="false">Unmute</button>
+<span class="tv-inspect-note" role="status"></span>
 <span class="tv-links">
-<a class="tv-link-frame" href="{{ tv_full | prepend: '/' | relative_url }}">Open 4K frame</a>
+<a class="tv-link-frame" href="{{ tv_full | prepend: '/' | relative_url }}">Open 3840×2880 frame</a>
 <a class="tv-link-clip" href="{{ tv_video | prepend: '/' | relative_url }}" download>Download clip</a>
 </span>
 </div>
-<p class="hero-caption tv-caption"><span class="tv-caption-line">{{ tv_game_title }} · {{ tv_scene }} · {{ tv_preset_name }} — {{ tv_blurb }}</span><br>What you are watching is what the emulator put out: every frame is actual MyNES output at 60.1 fps, alternating NTSC phases kept separate, nothing averaged, blended or added. Switch televisions while the game keeps running; move over the picture to inspect the beam, scanlines and mask, and click to freeze on the 3840×2880 frame. <a href="{{ '/gallery/showcase/' | relative_url }}">More clips and stills</a> · <a href="{{ '/gallery/presets/' | relative_url }}">all 23 presets</a>.</p>
-<noscript><style>.tv-chips-row, .tv-controls { display: none; }</style><p class="hero-caption">The television switcher needs JavaScript. This is {{ tv_game_title }} on the {{ tv_preset_name }} preset; the <a href="{{ '/gallery/showcase/' | relative_url }}">gallery</a> has every clip and 4K frame.</p></noscript>
+<p class="hero-caption tv-caption"><span class="tv-caption-line">{{ tv_game_title }} · {{ tv_scene }} · {{ tv_preset_name }} · {{ tv_blurb }}</span><br>MyNES output at 60.1 fps, one emulator frame per video frame, shown at one source pixel per screen pixel. Switch televisions while the game runs. Inspect puts a lens over the picture with the 3840×2880 render at 1:1; click the picture or press Space to freeze. <a href="{{ '/gallery/showcase/' | relative_url }}">More clips and stills</a> · <a href="{{ '/gallery/presets/' | relative_url }}">all 23 presets</a>.</p>
+<noscript><style>.tv-chips-row, .tv-controls { display: none; }</style><p class="hero-caption">The television switcher needs JavaScript. This is the first frame of {{ tv_game_title }} on the {{ tv_preset_name }} preset; the <a href="{{ '/gallery/showcase/' | relative_url }}">gallery</a> has every clip and 4K frame.</p></noscript>
 <script src="{{ '/assets/js/tv-switcher.js' | relative_url }}" defer></script>
 </div>

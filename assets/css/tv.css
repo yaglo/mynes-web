@@ -1,6 +1,24 @@
-/* Television switcher hero (_includes/tv-switcher.html, assets/js/tv-switcher.js) */
-.tv { margin: 0 0 1.2rem; }
+/* Television switcher (_includes/tv-switcher.html, assets/js/tv-switcher.js).
+ *
+ * The stage and the lens show renders at one source pixel per device pixel.
+ * The script sets the stage's width and height from the source size and the
+ * device pixel ratio and moves it onto whole device pixels; before it runs,
+ * --tv-w/--tv-h (the include's poster size) and --tv-dpr size the poster the
+ * same way. Nothing that contains a video or image gets a filter, clip-path,
+ * blend mode or opacity below 1.
+ */
+.tv {
+  --tv-dpr: 1;
+  /* 960 px wide where the window allows, centred on the 880 px column. */
+  width: min(960px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 0 1.2rem calc(50% - min(480px, calc(50vw - var(--gutter))));
+}
+@media (min-resolution: 1.25dppx) { .tv { --tv-dpr: 1.25; } }
+@media (min-resolution: 1.5dppx) { .tv { --tv-dpr: 1.5; } }
+@media (min-resolution: 2dppx) { .tv { --tv-dpr: 2; } }
+@media (min-resolution: 3dppx) { .tv { --tv-dpr: 3; } }
 .tv [hidden] { display: none !important; }
+
 .tv-tabs { display: flex; gap: 0.2rem 0.6rem; overflow-x: auto; min-height: 2.3rem; margin-bottom: 0.5rem; scrollbar-width: none; }
 .tv-tabs::-webkit-scrollbar { display: none; }
 .tv-tab {
@@ -9,27 +27,32 @@
 }
 .tv-tab:hover { color: var(--fg); }
 .tv-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+
 .tv-stage {
-  position: relative; width: 100%; aspect-ratio: 4 / 3; background: #000;
-  border-radius: 6px; overflow: hidden; cursor: pointer; user-select: none; -webkit-user-select: none;
+  position: relative; left: 0; top: 0; display: block; margin: 0 auto; overflow: hidden;
+  width: calc(var(--tv-w, 960) * 1px / var(--tv-dpr)); max-width: 100%;
+  aspect-ratio: var(--tv-w, 960) / var(--tv-h, 720);
+  background: #000; cursor: pointer; user-select: none; -webkit-user-select: none;
 }
 .tv-stage.is-inspecting { touch-action: none; }
 @media (hover: hover) and (pointer: fine) { .tv-stage.is-inspecting { cursor: crosshair; } }
 .tv-video, .tv-frame {
-  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
-  object-fit: contain; background: #000; opacity: 0; pointer-events: none;
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none;
+  object-fit: contain; background: #000; pointer-events: none; z-index: 0;
+  dynamic-range-limit: no-limit;
 }
-.tv-video.is-active, .tv-frame { opacity: 1; }
+.tv-video.is-active { z-index: 1; }
+.tv-frame { z-index: 2; }
 .tv-play {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  position: absolute; left: 50%; top: 50%; z-index: 4; transform: translate(-50%, -50%);
   display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem 0.55rem 0.9rem;
-  background: rgba(20, 19, 17, 0.85); color: var(--fg); border: 1px solid var(--accent); border-radius: 999px;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--accent); border-radius: 999px;
   font-weight: 650; pointer-events: none;
 }
 .tv-play-glyph { width: 0; height: 0; border-style: solid; border-width: 0.45rem 0 0.45rem 0.75rem; border-color: transparent transparent transparent var(--accent); }
 .tv-notice {
-  position: absolute; left: 0.6rem; top: 0.6rem; margin: 0; max-width: calc(100% - 1.2rem);
-  padding: 0.25rem 0.6rem; background: rgba(20, 19, 17, 0.85); color: var(--fg);
+  position: absolute; left: 0.6rem; top: 0.6rem; z-index: 4; margin: 0; max-width: calc(100% - 1.2rem);
+  padding: 0.25rem 0.6rem; background: var(--bg); color: var(--fg);
   border-radius: 4px; font-size: 0.82rem; pointer-events: none;
 }
 .tv.is-loading .tv-notice::before {
@@ -37,16 +60,27 @@
   border: 2px solid var(--accent); border-right-color: transparent; border-radius: 50%; animation: tv-spin 0.8s linear infinite;
 }
 @keyframes tv-spin { to { transform: rotate(360deg); } }
+
+/* The lens: a round window onto the full-resolution clip or still. */
 .tv-lens {
-  position: absolute; left: 0; top: 0; width: 240px; height: 240px; border-radius: 50%; overflow: hidden;
-  background: #000; pointer-events: none; will-change: transform;
-  box-shadow: 0 0 0 2px rgba(232, 227, 218, 0.85), 0 0 0 4px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.6);
+  position: absolute; left: 0; top: 0; z-index: 3; width: 240px; height: 240px;
+  border-radius: 50%; overflow: hidden; background: #000; pointer-events: none; visibility: hidden;
+  box-shadow: 0 0 0 2px var(--fg), 0 0 0 4px #000, 0 8px 24px #000;
 }
-.tv-lens canvas { display: block; width: 100%; height: 100%; }
+.tv-lens.is-on { visibility: visible; }
+.tv-lens-media {
+  position: absolute; left: 0; top: 0; display: block; max-width: none; max-height: none;
+  dynamic-range-limit: no-limit;
+}
+.tv-lens-media.is-zoomed { image-rendering: pixelated; }
 .tv-lens-label {
   position: absolute; left: 50%; bottom: 10%; transform: translateX(-50%); white-space: nowrap;
-  padding: 0.1rem 0.5rem; background: rgba(20, 19, 17, 0.8); color: var(--fg); border-radius: 999px; font-size: 0.72rem;
+  padding: 0.1rem 0.5rem; background: var(--bg); color: var(--fg); border-radius: 999px; font-size: 0.72rem;
 }
+.tv-lens-label:empty { display: none; }
+
+.tv-fit { margin: 0.4rem 0 0; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
 .tv-chips-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem; min-height: 2.4rem; }
 .tv-chips { display: flex; gap: 0.4rem; overflow-x: auto; flex: 1 1 auto; min-width: 0; padding: 2px; scrollbar-width: none; }
 .tv-chips::-webkit-scrollbar { display: none; }
@@ -77,6 +111,12 @@
 .tv-zoom .tv-btn:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
 .tv-zoom .tv-btn:last-child { border-radius: 0 6px 6px 0; }
 .tv-zoom .tv-btn[aria-pressed="true"] { position: relative; z-index: 1; }
+.tv-range {
+  padding: 0.05rem 0.45rem; border: 1px solid var(--line); border-radius: 4px;
+  color: var(--muted); font-size: 0.75rem; font-weight: 650; letter-spacing: 0.05em; cursor: help;
+}
+.tv-range.is-hdr { color: #1a1408; background: var(--accent); border-color: var(--accent); }
+.tv-inspect-note { color: var(--muted); font-size: 0.85rem; }
 .tv-links { display: inline-flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-left: auto; }
 .tv-caption { margin-top: 0.7rem; }
 .tv-caption-line { color: var(--fg); }
