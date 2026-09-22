@@ -26,12 +26,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ---- site ---- */
 function siteDir() {
-  if (process.argv[2]) return path.resolve(process.argv[2]);
+  if (process.argv[2]) return { dir: path.resolve(process.argv[2]), temp: false };
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tv-preview-'));
   const r = spawnSync('bundle', ['exec', 'jekyll', 'build', '--config', '_config.yml,tools/tv-fixture/preview.yml', '--destination', dir],
     { cwd: root, encoding: 'utf8' });
   if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); throw new Error('jekyll build failed'); }
-  return dir;
+  return { dir, temp: true };
 }
 
 /* ---- server: range requests, and per-test rules that delay, throttle or corrupt files ---- */
@@ -520,7 +520,7 @@ check('the reason for HDR or SDR is visible text', async (ctx) => {
 (async () => {
   const bin = findChrome();
   if (!bin) { console.log('tv-switcher browser checks skipped: no Chrome found (set CHROME)'); return; }
-  const dir = siteDir();
+  const site = siteDir(), dir = site.dir;
   assert(fs.existsSync(path.join(dir, 'tools/tv-fixture/index.html')), dir + ' has no fixture page; build with tools/tv-fixture/preview.yml');
   const srv = await startServer(dir);
   const chrome = await launch(bin);
@@ -551,6 +551,7 @@ check('the reason for HDR or SDR is visible text', async (ctx) => {
   await exited;
   srv.close();
   try { fs.rmSync(chrome.profile, { recursive: true, force: true }); } catch (e) { /* Chrome may still be closing files */ }
+  if (site.temp) fs.rmSync(dir, { recursive: true, force: true });
   console.log('tv-switcher browser checks: ' + passed + ' passed, ' + failed + ' failed' + (skipped ? ', ' + skipped + ' skipped' : ''));
   process.exitCode = failed ? 1 : 0;
 })().catch((e) => { console.error(e); process.exit(1); });
