@@ -510,6 +510,26 @@
   };
 
   /**
+   * The line under the switcher that says what the stage plays and why, in
+   * words (the chip only says HDR or SDR). w, h: the picture's size in
+   * source pixels, when known.
+   */
+  TV.sourceLine = function (source, clip, env, w, h) {
+    if (!source) {
+      return clip && clip.stage.length ? 'Showing a still picture: the clip could not be played.' :
+        'Showing a still picture: no clip of this television yet.';
+    }
+    var what = 'Playing the ' + (w && h ? TV.sizeLabel(w, h) + ' ' : '');
+    if (source.hdr) {
+      var hd = (clip && clip.hdr) || {}, bits = [what + 'HDR10 clip (PQ, BT.2020)'];
+      if (hd.white_nits) bits.push('SDR white at ' + hd.white_nits + ' nits');
+      if (hd.max_cll) bits.push('brightest pixel ' + hd.max_cll + ' nits');
+      return bits.join(', ') + '.';
+    }
+    return what + 'SDR clip: ' + TV.sdrReason(clip && clip.stage, source, env) + '.';
+  };
+
+  /**
    * What the stage (role=button) does on a click, Space or Enter, and how it
    * is labelled. With a clip: play it, or freeze and resume it. Without one
    * (a preset with a poster or still only): toggle Inspect when there is a
@@ -589,7 +609,7 @@
       noticeText: q('.tv-notice-text'), noticeBytes: q('.tv-notice-bytes'),
       chips: q('.tv-chips'), next: q('.tv-next'), mute: q('.tv-mute'), freeze: q('.tv-freeze'),
       inspect: q('.tv-inspect'), inspectNote: q('.tv-inspect-note'), zooms: root.querySelectorAll('.tv-zoom button'),
-      range: q('.tv-range'), linkFrame: q('.tv-link-frame'), linkClip: q('.tv-link-clip'), caption: q('.tv-caption-line')
+      range: q('.tv-range'), source: q('.tv-source'), linkFrame: q('.tv-link-frame'), linkClip: q('.tv-link-clip'), caption: q('.tv-caption-line')
     };
     var mq = function (s) { return global.matchMedia ? global.matchMedia(s) : null; };
     var reducedQuery = mq('(prefers-reduced-motion: reduce)');
@@ -1101,6 +1121,9 @@
       var chip = TV.rangeChip(s, c, env());
       el.range.textContent = chip.text; el.range.title = chip.title;
       el.range.classList.toggle('is-hdr', chip.text === 'HDR');
+      var shownW = s && (s.width || (st.shown && st.shown.el === video() ? st.shown.w : null));
+      var shownH = s && (s.height || (st.shown && st.shown.el === video() ? st.shown.h : null));
+      el.source.textContent = TV.sourceLine(s, c, env(), shownW, shownH);
       root.setAttribute('data-range', chip.text.toLowerCase());
       var t = st.tier, off = t.tier === 'none';
       Array.prototype.forEach.call(el.zooms, function (b) {

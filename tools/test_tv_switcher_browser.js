@@ -507,6 +507,15 @@ check('the stage toggles Inspect on a preset with only a still', async (ctx) => 
   return page;
 });
 
+check('the reason for HDR or SDR is visible text', async (ctx) => {
+  const page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  const r = await page.eval(`(() => { const n = document.querySelector('.tv-source'); return n ? { text: n.textContent, shown: !!n.offsetParent } : null; })()`);
+  assert(r && r.shown && /^Playing the 1920×1440 (SDR|HDR10) clip/.test(r.text), 'source line ' + JSON.stringify(r));
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

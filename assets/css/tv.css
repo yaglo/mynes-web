@@ -136,6 +136,8 @@
 .tv-links { display: inline-flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-left: auto; }
 .tv-caption { margin-top: 0.7rem; }
 .tv-caption-line { color: var(--fg); }
+/* What the stage plays and why; one line kept free before the script fills it. */
+.tv-source { display: block; min-height: 1.6em; }
 .tv-tab:focus-visible, .tv-chip:focus-visible, .tv-btn:focus-visible, .tv-stage:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .tv.is-loading .tv-notice::before { animation: none; } }
 @media (max-width: 640px) {

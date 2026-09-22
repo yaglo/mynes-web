@@ -741,6 +741,21 @@ test('rangeChip', () => {
   assert.strictEqual(why(both, Object.assign({}, e2, { caps: capsBoth, hdrDisplay: false })), 'SDR source: this display does not report HDR');
 });
 
+test('sourceLine: what plays and why, in words', () => {
+  const hdr = grille.stage.find((s) => s.hdr && s.width === 1920), sdr = grille.stage.find((s) => !s.hdr && s.width === 1920);
+  const caps = capsAll(grille);
+  assert.strictEqual(TV.sourceLine(hdr, grille, { hdrDisplay: true, caps }, 1920, 1440),
+    'Playing the 1920×1440 HDR10 clip (PQ, BT.2020), SDR white at 203 nits, brightest pixel 812 nits.');
+  assert.strictEqual(TV.sourceLine(sdr, grille, { hdrDisplay: false, caps }, 1920, 1440),
+    'Playing the 1920×1440 SDR clip: this display does not report HDR.');
+  const k = TV.clipFor(live, 'kirby-title', 'jvc_d_series_2000');
+  assert.strictEqual(TV.sourceLine(k.stage[0], k, { hdrDisplay: true }, null, null), 'Playing the SDR clip: no HDR render of this clip yet.');
+  assert.strictEqual(TV.sourceLine(k.stage[0], k, { hdrDisplay: true }, 960, 720), 'Playing the 960×720 SDR clip: no HDR render of this clip yet.');
+  assert.strictEqual(TV.sourceLine(null, TV.clipFor(live, 'mega-man-2-title', 'jvc_d_series_2000'), {}),
+    'Showing a still picture: no clip of this television yet.');
+  assert.strictEqual(TV.sourceLine(null, k, {}), 'Showing a still picture: the clip could not be played.');
+});
+
 /* ---- markup and CSS ---- */
 test('no canvas, no media effects, CSS moved to tv.css', () => {
   const js = read('assets/js/tv-switcher.js'), html = read('_includes/tv-switcher.html');
