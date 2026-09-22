@@ -192,6 +192,23 @@
   };
 
   /**
+   * Capability entry for one source, or a promise of one: {supported,
+   * smooth, powerEfficient}. canPlay is the page's canPlayType, mc is
+   * navigator.mediaCapabilities (may be missing). A decodingInfo that throws,
+   * rejects or is missing leaves the answer unknown: an SDR source is
+   * assumed to play, an HDR source is not used.
+   */
+  TV.probeSource = function (s, fps, canPlay, mc) {
+    var unknown = { supported: !s.hdr };
+    if (!canPlay(s.type)) return { supported: false };
+    var cfg = TV.decodingConfig(s, fps);
+    if (!cfg || !mc || typeof mc.decodingInfo !== 'function') return unknown;
+    return new Promise(function (resolve) { resolve(mc.decodingInfo(cfg)); }).then(function (r) {
+      return { supported: !!(r && r.supported), smooth: !!(r && r.smooth), powerEfficient: !!(r && r.powerEfficient) };
+    }, function () { return unknown; });
+  };
+
+  /**
    * Whether a source may be used. `env.caps[capKey]` holds the page's probe
    * ({supported, smooth, powerEfficient}). An HDR source needs an HDR
    * display and a positive probe; an SDR source without a probe is assumed
@@ -562,6 +579,7 @@
     function probe(m) {
       var jobs = [], seen = {}, tester = document.createElement('video');
       var mc = navigator.mediaCapabilities;
+      var canPlay = function (type) { try { return !!tester.canPlayType(type); } catch (e) { return false; } };
       Object.keys(m.clips).forEach(function (g) {
         Object.keys(m.clips[g]).forEach(function (p) {
           var c = m.clips[g][p];
@@ -569,12 +587,9 @@
             var k = TV.capKey(s);
             if (seen[k]) return;
             seen[k] = true;
-            if (!tester.canPlayType(s.type)) { st.caps[k] = { supported: false }; return; }
-            var cfg = TV.decodingConfig(s, m.fps);
-            if (!cfg || !mc || !mc.decodingInfo) { st.caps[k] = { supported: !s.hdr }; return; }
-            jobs.push(mc.decodingInfo(cfg).then(function (r) {
-              st.caps[k] = { supported: !!r.supported, smooth: !!r.smooth, powerEfficient: !!r.powerEfficient };
-            }, function () { st.caps[k] = { supported: !s.hdr }; }));
+            var r = TV.probeSource(s, m.fps, canPlay, mc);
+            if (r && typeof r.then === 'function') jobs.push(r.then(function (c) { st.caps[k] = c; }));
+            else st.caps[k] = r;
           });
         });
       });

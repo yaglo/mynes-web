@@ -420,6 +420,15 @@ check('sibling prefetch goes on after a sibling file fails', async (ctx) => {
   return page;
 });
 
+check('a decodingInfo that throws does not stop the switcher', async (ctx) => {
+  const page = await ctx.open({ dpr: 2, init: `navigator.mediaCapabilities.decodingInfo = function () { throw new TypeError('stub'); };` });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  const st = await page.eval(STATE);
+  assert(st.ready && st.chips === 4 && !st.notice, JSON.stringify(st));
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

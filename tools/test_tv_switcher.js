@@ -20,9 +20,13 @@ const live = TV.normalize(liveRaw);
 const fixture = TV.normalize(fixtureRaw);
 
 let n = 0;
+const pending = [];
 function test(name, fn) {
-  try { fn(); } catch (e) { e.message = name + ': ' + e.message; throw e; }
-  n++;
+  const fail = (e) => { e.message = name + ': ' + e.message; throw e; };
+  let r;
+  try { r = fn(); } catch (e) { fail(e); }
+  if (r && typeof r.then === 'function') pending.push(r.then(() => { n++; }, fail));
+  else n++;
 }
 const near = (a, b, eps = 1e-9) => Math.abs(a - b) < eps;
 const isInt = (v) => Math.abs(v - Math.round(v)) < 1e-9;
@@ -386,6 +390,35 @@ test('decodingConfig', () => {
   assert.strictEqual(TV.decodingConfig({ type: 'video/mp4', hdr: false }, FPS), null);   // version 1: no codec named
 });
 
+test('probeSource: decodingInfo answers, rejects, throws or is missing', async () => {
+  const hdr = grille.stage.find((s) => s.hdr), sdr = grille.stage.find((s) => !s.hdr);
+  const yes = () => true;
+  const mcs = {
+    answers: { decodingInfo: () => Promise.resolve({ supported: true, smooth: true, powerEfficient: false }) },
+    rejects: { decodingInfo: () => Promise.reject(new TypeError('bad config')) },
+    throws: { decodingInfo: () => { throw new TypeError('not a promise API'); } },
+    returnsJunk: { decodingInfo: () => undefined },
+    notAFunction: { decodingInfo: 5 }
+  };
+  const results = {};
+  for (const [k, mc] of Object.entries(mcs)) {
+    for (const s of [hdr, sdr]) {
+      let r;
+      assert.doesNotThrow(() => { r = TV.probeSource(s, FPS, yes, mc); }, k);
+      results[k + (s.hdr ? ' hdr' : ' sdr')] = await Promise.resolve(r);
+    }
+  }
+  assert.deepStrictEqual(results['answers hdr'], { supported: true, smooth: true, powerEfficient: false });
+  for (const k of ['rejects', 'throws', 'notAFunction']) {
+    assert.deepStrictEqual(results[k + ' hdr'], { supported: false }, k);
+    assert.deepStrictEqual(results[k + ' sdr'], { supported: true }, k);
+  }
+  assert.deepStrictEqual(results['returnsJunk hdr'], { supported: false, smooth: false, powerEfficient: false });
+  assert.deepStrictEqual(TV.probeSource(hdr, FPS, () => false, mcs.answers), { supported: false });
+  assert.deepStrictEqual(TV.probeSource(hdr, FPS, yes, undefined), { supported: false });
+  assert.deepStrictEqual(TV.probeSource({ src: 'v1.mp4', type: 'video/mp4', hdr: false }, FPS, yes, mcs.throws), { supported: true });
+});
+
 /* ---- stage size and snapping ---- */
 test('stageSize: native pixels, scaled only when nothing fits', () => {
   for (const [w, h, dpr, avail, cssW, cssH] of [
@@ -705,4 +738,6 @@ test('seed poster: 2x media query and the no-script fit note', () => {
   assert.strictEqual(TV.choosePoster(g.posters, 1920).src, /poster_2x="([^"]+)"/.exec(page)[1]);
 });
 
-console.log('tv-switcher: ' + n + ' tests passed' + (haveFfprobe ? '' : ' (ffprobe not found: clip probes skipped)'));
+Promise.all(pending).then(() => {
+  console.log('tv-switcher: ' + n + ' tests passed' + (haveFfprobe ? '' : ' (ffprobe not found: clip probes skipped)'));
+}, (e) => { console.error(e); process.exit(1); });
