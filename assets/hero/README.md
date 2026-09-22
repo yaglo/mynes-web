@@ -27,7 +27,16 @@ key is version 1.
   reports it can decode the file (`canPlayType` and
   `mediaCapabilities.decodingInfo` with `transferFunction: 'pq'`,
   `colorGamut: 'rec2020'`); otherwise the SDR render. A chip next to the
-  controls says which one plays.
+  controls says which one plays, and a line under the switcher says why
+  (for example "Playing the 1920×1440 SDR clip: this display does not
+  report HDR.").
+- Before the script runs, the include's poster is the stage picture. It
+  takes `poster` (960x720) and `poster_2x` (the same frame at 1920x1440);
+  a `<source>` media query shows the 2x poster where it fits at one pixel
+  per device pixel, and `assets/css/tv.css` sizes the stage with the same
+  query, so the stage keeps its size when the clip starts. Without
+  JavaScript a note says when the browser scales the poster (a pixel ratio
+  other than 1, 1.25, 1.5, 2 or 3, or a window too narrow).
 
 ## What Inspect does
 
@@ -36,6 +45,11 @@ key is version 1.
 | `lens` clips (version 2) | Loads the 3840x2880 lens clip, showing its size and progress, and keeps it on the stage clip's frame with `requestVideoFrameCallback`: a seek above 1.5 frames of drift, otherwise `playbackRate` within 3 % of 1. Freeze pauses both clips at once. |
 | a `still` only | Freezes the stage on the still's frame and shows the still at 1:1: the HDR AVIF on an HDR display, else the lossless PNG. |
 | neither | Disabled, with "Full-resolution capture not rendered yet". |
+
+When a lens clip or still fails to load or decode, Inspect tries the other
+lens clips, then the still, and reports the failure only when nothing is
+left. On a preset with a still and no stage clip, clicking the picture (or
+Space) opens Inspect.
 
 ## manifest.json, version 2
 
@@ -88,7 +102,7 @@ pipeline's choice; the script only reads the fields.
 | `stage[]` | Stage clips, one per size and range: `src`, `type` (MIME type with the `codecs` parameter from ffprobe), `hdr` (PQ, BT.2020), `width`, `height`, `bytes`. The script picks the size first, then HDR over SDR, then a decoder the browser reports as power-efficient and smooth, then manifest order. |
 | `lens[]` | 3840x2880 clips in the same shape, with the same frame count and start as the stage clips. |
 | `still` | One frame at full size: `hdr` (AVIF, CICP 9/16/9, 10-bit 4:4:4), `sdr` (lossless PNG), `width`, `height`, and `frame`, the index of that frame in the stage clips. |
-| `hdr` | Mastering data of the HDR files: `white_nits` (SDR white), `headroom`, `max_cll`, `max_fall`. Shown in the chip's tooltip. |
+| `hdr` | Mastering data of the HDR files: `white_nits` (SDR white), `headroom`, `max_cll`, `max_fall`. Shown in the line under the switcher. |
 
 Paths are relative to the site root, without a leading slash and without
 the `baseurl`; the script prefixes them.
@@ -134,7 +148,8 @@ manifest and the version 2 fixture in `tools/tv-fixture/` against these
 rules as far as they can be checked offline: ids are unique, every
 `default_preset` has a clip, referenced files exist with the sizes, byte
 counts, frame counts and HDR tags the manifest claims, and paths carry no
-leading slash.
+leading slash. `node tools/test_tv_switcher_browser.js` runs the fixture
+and the landing page in headless Chrome (see the site README).
 
 ## Seed contents (version 1)
 
