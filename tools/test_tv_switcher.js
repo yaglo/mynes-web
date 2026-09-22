@@ -708,6 +708,9 @@ test('no canvas, no media effects, CSS moved to tv.css', () => {
   assert.ok(html.includes("'/assets/css/tv.css' | relative_url"), 'include links tv.css');
   assert.ok(html.includes(TV.FIT_NOTE), 'fit note text');
   assert.ok(/<noscript>/.test(html), 'noscript fallback');
+  // Controls that can become unavailable keep their focus: aria-disabled, never the disabled property.
+  assert.ok(!/<button[^>]*\sdisabled[\s>]/.test(html), 'no disabled buttons in the markup');
+  assert.ok(!/\.disabled\s*=/.test(js), 'the script never sets .disabled');
 });
 
 test('seed poster: 2x media query and the no-script fit note', () => {

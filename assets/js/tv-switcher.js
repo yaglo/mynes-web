@@ -661,7 +661,7 @@
         b.setAttribute('aria-disabled', !ok);
         b.title = ok ? '' : b.dataset.tip;
       });
-      el.next.disabled = avail.length < 2;
+      setOff(el.next, avail.length < 2);
     }
 
     /* ---- Game and preset selection ---------------------------------- */
@@ -1045,16 +1045,16 @@
       root.setAttribute('data-range', chip.text.toLowerCase());
       var t = st.tier, off = t.tier === 'none';
       Array.prototype.forEach.call(el.zooms, function (b) {
-        b.disabled = off; b.setAttribute('aria-pressed', Number(b.dataset.zoom) === st.zoom);
+        setOff(b, off); b.setAttribute('aria-pressed', Number(b.dataset.zoom) === st.zoom);
       });
-      el.inspect.disabled = off;
+      setOff(el.inspect, off);
       el.inspect.setAttribute('aria-pressed', st.inspecting);
       el.inspect.title = off ? t.reason : '';
       el.inspectNote.textContent = TV.inspectNote(t);
       root.setAttribute('data-tier', t.tier);
       el.freeze.textContent = st.frozen ? 'Resume' : 'Freeze';
       el.freeze.setAttribute('aria-pressed', st.frozen);
-      el.freeze.disabled = !video();
+      setOff(el.freeze, !video());
       el.stage.setAttribute('aria-pressed', st.frozen);
       el.stage.setAttribute('aria-label', !st.playing ? 'Play the clip' : st.frozen ? 'Resume the clip' : 'Freeze the picture');
       el.play.hidden = st.playing || !video();
@@ -1074,6 +1074,15 @@
     }
 
     /* ---- Controls ------------------------------------------------------ */
+    /*
+     * Buttons that are unavailable for the current preset get aria-disabled
+     * instead of disabled: a disabled button loses focus (to <body>, outside
+     * the switcher's key handler) when a number key or arrow switches to a
+     * preset without a clip or a capture. Their click handlers check off().
+     */
+    function setOff(b, on) { if (on) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); }
+    function off(b) { return b.getAttribute('aria-disabled') === 'true'; }
+
     /** play() that notices a blocked autoplay and falls back to the Play overlay. */
     function tryPlay(v) {
       var p = v.play();
@@ -1096,13 +1105,14 @@
 
     function bindControls() {
       el.next.addEventListener('click', function () {
-        selectPreset(TV.step(TV.available(st.m, st.game, st.broken), st.preset, 1));
+        if (!off(el.next)) selectPreset(TV.step(TV.available(st.m, st.game, st.broken), st.preset, 1));
       });
       el.mute.addEventListener('click', function () { st.muted = !st.muted; applyMute(); updateText(); });
-      el.freeze.addEventListener('click', toggleFreeze);
-      el.inspect.addEventListener('click', function () { setInspecting(!st.inspecting); });
+      el.freeze.addEventListener('click', function () { if (!off(el.freeze)) toggleFreeze(); });
+      el.inspect.addEventListener('click', function () { if (!off(el.inspect)) setInspecting(!st.inspecting); });
       Array.prototype.forEach.call(el.zooms, function (b) {
         b.addEventListener('click', function () {
+          if (off(b)) return;
           st.zoom = Number(b.dataset.zoom);
           if (!st.inspecting) setInspecting(true);
           updateText(); placeLens();

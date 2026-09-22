@@ -429,6 +429,38 @@ check('a decodingInfo that throws does not stop the switcher', async (ctx) => {
   return page;
 });
 
+check('focus stays in the switcher when a preset switch disables the focused button', async (ctx) => {
+  // Landing page (version 1): preset 2 has no clip, so Freeze is off there.
+  let page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base);
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  await page.eval(`document.querySelector('.tv-freeze').focus(), true`);
+  await page.key('2');
+  let st = await page.eval(STATE);
+  assert(st.preset === 'jvc_d_series_2000' && st.focusInside, 'after 2: preset ' + st.preset + ', focus on ' + st.focus);
+  assert(await page.eval(`document.querySelector('.tv-freeze').getAttribute('aria-disabled') === 'true'`), 'Freeze is not marked unavailable');
+  await page.key('1');
+  st = await page.eval(STATE);
+  assert(st.preset === 'sony_pvm_14l2', 'after 1: preset ' + st.preset);
+  await page.close();
+  // Fixture: preset 3 has nothing to inspect.
+  page = await ctx.open({ dpr: 2 });
+  await page.goto(ctx.srv.base + 'tools/tv-fixture/');
+  await page.until(STATE + '.activeReady', 'stage clip playing');
+  await page.until(`document.querySelector('.tv-inspect').getAttribute('aria-disabled') !== 'true'`, 'Inspect available');
+  await page.eval(`document.querySelector('.tv-inspect').focus(), true`);
+  await page.key('3');
+  st = await page.eval(STATE);
+  assert(st.preset === 'fixture_dots' && st.focusInside && /tv-inspect/.test(st.focus), 'after 3: preset ' + st.preset + ', focus on ' + st.focus);
+  await page.key(' ');
+  st = await page.eval(STATE);
+  assert(!st.inspecting, 'Space on the unavailable Inspect button started inspecting');
+  await page.key('ArrowLeft');
+  st = await page.eval(STATE);
+  assert(st.preset === 'fixture_slot', 'after ArrowLeft: preset ' + st.preset);
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

@@ -119,7 +119,7 @@
 }
 .tv-btn:hover { border-color: var(--accent); }
 .tv-btn[aria-pressed="true"] { border-color: var(--accent); background: #2a2216; }
-.tv-btn:disabled { opacity: 0.45; cursor: not-allowed; border-color: var(--line); }
+.tv-btn:disabled, .tv-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; border-color: var(--line); }
 .tv-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.9rem; }
 .tv-zoom { display: inline-flex; gap: 0; }
 .tv-zoom .tv-btn { border-radius: 0; margin-left: -1px; padding: 0.3rem 0.65rem; }

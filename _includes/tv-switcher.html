@@ -51,11 +51,11 @@ must stay the same (tools/test_tv_switcher.js checks this).
 </div>
 <div class="tv-controls">
 <button type="button" class="tv-btn tv-freeze" aria-pressed="false">Freeze</button>
-<button type="button" class="tv-btn tv-inspect" aria-pressed="false" disabled>Inspect</button>
+<button type="button" class="tv-btn tv-inspect" aria-pressed="false" aria-disabled="true">Inspect</button>
 <span class="tv-zoom" role="group" aria-label="Lens scale">
-<button type="button" class="tv-btn" data-zoom="1" aria-pressed="true" disabled title="One source pixel per screen pixel">1:1</button>
-<button type="button" class="tv-btn" data-zoom="2" aria-pressed="false" disabled title="Two screen pixels per source pixel">2:1</button>
-<button type="button" class="tv-btn" data-zoom="4" aria-pressed="false" disabled title="Four screen pixels per source pixel">4:1</button>
+<button type="button" class="tv-btn" data-zoom="1" aria-pressed="true" aria-disabled="true" title="One source pixel per screen pixel">1:1</button>
+<button type="button" class="tv-btn" data-zoom="2" aria-pressed="false" aria-disabled="true" title="Two screen pixels per source pixel">2:1</button>
+<button type="button" class="tv-btn" data-zoom="4" aria-pressed="false" aria-disabled="true" title="Four screen pixels per source pixel">4:1</button>
 </span>
 <span class="tv-range" title="SDR source">SDR</span>
 <button type="button" class="tv-btn tv-mute" aria-pressed="false">Unmute</button>
