@@ -504,6 +504,84 @@ test('syncDecision: seek above 1.5 frames, nudge within 3 %, hold below a quarte
   assert.ok(near(TV.wrap(dur * 0.75, dur), -dur / 4) && near(TV.wrap(-0.01, 0), -0.01));
 });
 
+/* Stub clips and timers for TV.syncStep. */
+function stubVideo(t, dur) {
+  const v = { currentTime: t, duration: dur, paused: false, seeking: false, playbackRate: 1, on: {} };
+  v.addEventListener = (type, fn, opt) => { (v.on[type] = v.on[type] || []).push({ fn, once: !!(opt && opt.once) }); };
+  v.fire = (type) => { const l = v.on[type] || []; v.on[type] = l.filter((x) => !x.once); l.forEach((x) => x.fn()); };
+  return v;
+}
+function stubTimers() {
+  let now = 0, list = [];
+  return {
+    later: (fn, ms) => { list.push({ fn, at: now + ms }); },
+    advance(ms) {
+      now += ms;
+      const due = list.filter((x) => x.at <= now).sort((a, b) => a.at - b.at);
+      list = list.filter((x) => x.at > now);
+      due.forEach((x) => x.fn());
+    }
+  };
+}
+
+test('syncStep: seek, nudge, hold, and the seek lock', () => {
+  const f = 1 / FPS, dur = 60 / FPS;
+  const timers = stubTimers();
+  let live = true;
+  const o = (extra) => Object.assign({ fps: FPS, frozen: false, current: () => live, later: timers.later }, extra);
+  const sv = stubVideo(0.5, dur), lv = stubVideo(0.5 + 15 * f, dur);
+  const ins = { lead: 0.08, busy: false, rec: null };
+  let d = TV.syncStep(sv, lv, ins, o());
+  assert.strictEqual(d.action, 'seek');
+  assert.ok(ins.busy && ins.seeks === 1 && near(lv.currentTime, 0.58) && lv.playbackRate === 1);
+  assert.strictEqual(TV.syncStep(sv, lv, ins, o()), null, 'no second seek while the first is in flight');
+  // The sync is restarted (resize, font load) before the seek lands: the lock is still released.
+  live = false;
+  lv.fire('seeked');
+  timers.advance(100);
+  assert.strictEqual(ins.busy, false, 'lock released after a restart');
+  assert.strictEqual(ins.lead, 0.08, 'no lead update from a replaced run');
+  live = true;
+  lv.currentTime = 0.5 + 12 * f;
+  d = TV.syncStep(sv, lv, ins, o());
+  assert.ok(d.action === 'seek' && ins.seeks === 2, 'the restarted sync seeks again');
+  // A seek that lands: the drift 100 ms later adjusts the lead.
+  sv.currentTime = 0.55; lv.currentTime = 0.58;
+  lv.fire('seeked');
+  timers.advance(99);
+  assert.ok(ins.busy, 'held until 100 ms after seeked');
+  timers.advance(1);
+  assert.ok(!ins.busy && near(ins.lead, TV.nextLead(0.08, 0.03)));
+  // A seek that never reports back: released after 2 s.
+  lv.currentTime = sv.currentTime + 10 * f;
+  TV.syncStep(sv, lv, ins, o());
+  assert.ok(ins.busy);
+  timers.advance(1999);
+  assert.ok(ins.busy);
+  timers.advance(1);
+  assert.strictEqual(ins.busy, false);
+  timers.advance(5000);   // the late 'seeked' timer of the lock above finds nothing to do
+  // Small drift: nudge the rate; tiny drift: rate 1.
+  sv.currentTime = 0.3; lv.currentTime = 0.3 + f;
+  d = TV.syncStep(sv, lv, ins, o());
+  assert.ok(d.action === 'rate' && lv.playbackRate < 1 && lv.playbackRate >= 0.97);
+  lv.currentTime = 0.3 + 0.1 * f;
+  TV.syncStep(sv, lv, ins, o());
+  assert.strictEqual(lv.playbackRate, 1);
+  // Paused, frozen, seeking or no duration: nothing compared.
+  lv.currentTime = 0.9;
+  for (const [obj, k, val] of [[sv, 'paused', true], [lv, 'paused', true], [lv, 'seeking', true], [sv, 'duration', NaN]]) {
+    const old = obj[k]; obj[k] = val;
+    assert.strictEqual(TV.syncStep(sv, lv, ins, o()), null, k);
+    obj[k] = old;
+  }
+  assert.strictEqual(TV.syncStep(sv, lv, ins, o({ frozen: true })), null);
+  // With a recent lens frame callback both positions come from the same display time.
+  ins.rec = { mediaTime: 0.3, at: 1000 };
+  d = TV.syncStep(sv, lv, ins, o({ meta: { mediaTime: 0.3 + 0.016, expectedDisplayTime: 1016 } }));
+  assert.ok(Math.abs(d.drift) < 1e-3 && d.action === 'hold', 'drift from the frame callbacks: ' + d.drift);
+});
+
 test('seekTarget, nextLead, frameTime', () => {
   const dur = 90 / FPS;
   assert.ok(near(TV.seekTarget(1.0, 0.08, dur), 1.08));

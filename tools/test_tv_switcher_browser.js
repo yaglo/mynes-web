@@ -347,6 +347,38 @@ check('no JavaScript: the fit note shows exactly when the poster is scaled', asy
   return null;
 });
 
+check('lens sync keeps working when it is restarted during its own seek', async (ctx) => {
+  const page = await lensPage(ctx);
+  const tier = (await page.eval(STATE)).tier;
+  if (tier !== 'lens') return { page, skip: 'this browser has no lens tier (' + tier + ')' };
+  await page.eval(`document.querySelector('.tv-inspect').click(), true`);
+  await page.until(`(() => { const v = document.querySelector('.tv-lens video'); return v && v.readyState >= 3 && !v.seeking && !v.paused; })()`, 'lens clip playing');
+  await sleep(1000);
+  // Control: an offset lens clip is brought back.
+  await page.eval(OFFSET);
+  await sleep(1500);
+  let d = await page.eval(DRIFT);
+  assert(Math.abs(d) < 2, 'control: drift ' + d.toFixed(2) + ' frames');
+  // Offset again and restart the sync (a resize) right after its corrective seek starts.
+  const raced = await page.eval(`new Promise((done) => {
+    const lv = document.querySelector('.tv-lens video'), sv = document.querySelector('.tv-video.is-active');
+    let n = 0;
+    const on = () => { if (++n === 2) { lv.removeEventListener('seeking', on); window.dispatchEvent(new Event('resize')); done(true); } };
+    lv.addEventListener('seeking', on);
+    lv.currentTime = (sv.currentTime + 0.25) % sv.duration;
+    setTimeout(() => done(false), 3000);
+  })`);
+  assert(raced, 'the sync did not seek after the offset');
+  await sleep(1500);
+  for (let i = 0; i < 3; i++) {
+    await page.eval(OFFSET);
+    await sleep(1500);
+    d = await page.eval(DRIFT);
+    assert(Math.abs(d) < 2, 'after the restart, offset ' + (i + 1) + ': drift ' + d.toFixed(2) + ' frames');
+  }
+  return page;
+});
+
 /* ---- run ---- */
 (async () => {
   const bin = findChrome();

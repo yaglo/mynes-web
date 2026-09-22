@@ -381,6 +381,52 @@
     return clamp(lead - driftAfter, 0, 0.5);
   };
 
+  /**
+   * One step of the lens sync. `sv` is the stage clip and `lv` the lens clip
+   * (<video> elements, or objects with the same fields in tests); `ins`
+   * keeps the state between steps: {lead, busy, rec, seeks, drift}. o:
+   * {fps, frozen, meta (the stage frame callback's metadata, if any),
+   * current() (whether this sync run is still the live one), later
+   * (setTimeout)}. When the lens clip's own frame callback is recent (rec),
+   * both positions are taken at the same display time; otherwise from
+   * currentTime.
+   *
+   * A corrective seek holds ins.busy until 100 ms after the lens clip's
+   * 'seeked' (the landing error then adjusts the lead) or 2 s at the
+   * latest. The lock is released even when the sync was restarted in the
+   * meantime; only the lead update is skipped then, because the stage clip
+   * may have changed. Returns the decision, or null when nothing was
+   * compared.
+   */
+  TV.syncStep = function (sv, lv, ins, o) {
+    if (o.frozen || sv.paused || lv.paused || lv.seeking || ins.busy || !(sv.duration > 0)) return null;
+    var stageT, lensT, rec = ins.rec, meta = o.meta;
+    if (meta && rec && Math.abs(meta.expectedDisplayTime - rec.at) < 50) {
+      stageT = meta.mediaTime;
+      lensT = rec.mediaTime + (meta.expectedDisplayTime - rec.at) / 1000 * lv.playbackRate;
+    } else {
+      stageT = sv.currentTime; lensT = lv.currentTime;
+    }
+    var d = TV.syncDecision(stageT, lensT, o.fps, sv.duration);
+    ins.drift = d.drift;
+    if (d.action === 'seek') {
+      var lock = ins.busy = { drift: d.drift };
+      ins.seeks = (ins.seeks || 0) + 1;
+      lv.playbackRate = 1;
+      var release = function () {
+        if (ins.busy !== lock) return;
+        ins.busy = false;
+        if (o.current() && !sv.paused && !lv.paused) ins.lead = TV.nextLead(ins.lead, TV.wrap(lv.currentTime - sv.currentTime, sv.duration));
+      };
+      lv.addEventListener('seeked', function () { o.later(release, 100); }, { once: true });
+      o.later(release, 2000);
+      try { lv.currentTime = TV.seekTarget(sv.currentTime, ins.lead, sv.duration); } catch (e) { /* no metadata yet: the lock times out */ }
+    } else if (Math.abs(lv.playbackRate - d.rate) > 1e-3) {
+      lv.playbackRate = d.rate;
+    }
+    return d;
+  };
+
   /** Time in the middle of frame `n`, where a seek shows exactly that frame. */
   TV.frameTime = function (n, fps) { return (n + 0.5) / (fps || TV.DEFAULT_FPS); };
   TV.frameIndex = function (t, fps) { return Math.max(0, Math.floor(t * (fps || TV.DEFAULT_FPS) + 1e-6)); };
@@ -1262,16 +1308,18 @@
     }
 
     /**
-     * Follow the stage clip with the lens clip. Each stage frame callback
-     * compares the frame being presented with the lens clip's position at
-     * the same moment (from the lens clip's own frame callback when it is
-     * recent, else both currentTime values) and seeks or nudges the rate.
+     * Follow the stage clip with the lens clip: each stage frame callback
+     * runs TV.syncStep, which seeks or nudges the lens clip's rate. Called
+     * again (on resize, a new stage element, a fresh lens clip), it replaces
+     * the running loop.
      */
     function startSync() {
       var sv = video(), lv = lensVideo(), ins = st.insp;
       if (!sv || !lv) return;
       var g = ++st.syncGen;
       var hasRvfc = !!sv.requestVideoFrameCallback;
+      var current = function () { return g === st.syncGen; };
+      var later = function (fn, ms) { return global.setTimeout(fn, ms); };
       if (lv.requestVideoFrameCallback) (function lensTick(now, meta) {
         if (g !== st.syncGen) return;
         if (meta) ins.rec = { mediaTime: meta.mediaTime, at: meta.expectedDisplayTime };
@@ -1280,31 +1328,7 @@
       function tick(now, meta) {
         if (g !== st.syncGen) return;
         schedule();
-        if (st.frozen || sv.paused || lv.paused || lv.seeking || ins.busy || !(sv.duration > 0)) return;
-        var stageT, lensT, rec = ins.rec;
-        if (meta && rec && Math.abs(meta.expectedDisplayTime - rec.at) < 50) {
-          stageT = meta.mediaTime;
-          lensT = rec.mediaTime + (meta.expectedDisplayTime - rec.at) / 1000 * lv.playbackRate;
-        } else {
-          stageT = sv.currentTime; lensT = lv.currentTime;
-        }
-        var d = TV.syncDecision(stageT, lensT, fps(), sv.duration);
-        ins.drift = d.drift;
-        if (d.action === 'seek') {
-          ins.busy = true; ins.seeks = (ins.seeks || 0) + 1;
-          lv.playbackRate = 1;
-          seekTo(lv, TV.seekTarget(sv.currentTime, ins.lead, sv.duration));
-          lv.addEventListener('seeked', function () {
-            // Measure where the seek landed a few frames later and adjust the lead.
-            setTimeout(function () {
-              if (g !== st.syncGen) return;
-              if (!sv.paused && !lv.paused) ins.lead = TV.nextLead(ins.lead, TV.wrap(lv.currentTime - sv.currentTime, sv.duration));
-              ins.busy = false;
-            }, 100);
-          }, { once: true });
-        } else if (Math.abs(lv.playbackRate - d.rate) > 1e-3) {
-          lv.playbackRate = d.rate;
-        }
+        TV.syncStep(sv, lv, ins, { fps: fps(), frozen: st.frozen, meta: meta, current: current, later: later });
       }
       function schedule() {
         if (hasRvfc) sv.requestVideoFrameCallback(tick); else global.requestAnimationFrame(function () { tick(); });
