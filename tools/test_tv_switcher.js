@@ -803,8 +803,12 @@ test('seed poster: 2x media query and the no-script fit note', () => {
   assert.strictEqual(note[1].replace(/\s+/g, ' ').trim(),
     [1, ...steps].map((d) => `(resolution: ${d}dppx) and (min-width: ${960 / d + 2 * gutter}px)`).join(', '));
   assert.ok(/<noscript><p class="tv-fit tv-fit-static">[^<]+<\/p><\/noscript>/.test(html), 'include: static fit note in <noscript>');
-  // The fixture page seeds both posters of its first clip.
+  // The fixture page seeds its first clip: the texts match the manifest, and both posters.
   const page = read('tools/tv-fixture/index.html');
+  const param = (k) => new RegExp(' ' + k + '="([^"]*)"').exec(page)[1];
+  const game = TV.gameById(fixture, param('game')), preset = TV.presetById(fixture, param('preset'));
+  assert.deepStrictEqual([param('game_title'), param('scene'), param('preset_name'), param('blurb')],
+    [game.title, game.scene, preset.name, preset.blurb], 'fixture page seed texts');
   const g = TV.clipFor(fixture, 'test-pattern', 'fixture_grille');
   assert.strictEqual(TV.choosePoster(g.posters, 960).src, /poster="([^"]+)"/.exec(page)[1]);
   assert.strictEqual(TV.choosePoster(g.posters, 1920).src, /poster_2x="([^"]+)"/.exec(page)[1]);
