@@ -478,7 +478,7 @@ A worn consumer television with an in-line slot mask on channel 3 RF: cool white
 
 {% include crop.html file="assets/images/preset-audit-4k/stass_favourite-beam-native.png" width=480 height=160 x=1680 y=1000 frame_width=3840 frame_height=2160 game="Isolated-scanline chart" scene="frame 30" preset_name="Stas's Favourite" signal="RF" %}
 
-Audit assessment: A worn slot-mask RF picture, muted and cool, with imperfect tracking, broad highlights and visible recovery. Kept with its personal name and tuning. Slow AGC, noise and load behavior need longer clips to judge; this short test of stills does not establish their behavior over time.
+Audit assessment: A worn slot-mask RF picture, muted and cool, with imperfect tracking, broad highlights and visible recovery. Kept with its personal name and tuning. Slow AGC, noise and load behavior need longer clips to judge.
 
 Preset file: [`presets/stass_favourite.json`](https://github.com/yaglo/mynes/blob/master/presets/stass_favourite.json).
 
@@ -665,7 +665,7 @@ The rooms are authored and generic. The room shader draws a procedural gradient 
 
 The clean Y/C and RGB presets stay clean, composite and RF produce edge color, and the presets with comb filters keep more neutral detail. These are separate signal paths, each more than a change of palette. The exact decoder and sharpening circuits of commercial sets are incomplete, and the [receiver sharpening note]({{ '/notes/sharpening/' | relative_url }}) lists those limits.
 
-Phosphor decay is sampled once per frame, and Sony GDM-FW900 + scaler does no 85 Hz conversion. A PAL game selects a generic PAL receiver even on the presets that follow North American consumer sets. This is for usability and makes no claim that those sets accepted PAL. The separate [presentation validation](https://github.com/yaglo/mynes/blob/master/docs/architecture/gpu-realism-validation.md) records the visible host timing and the misses that still occur.
+Phosphor decay is sampled once per frame, and Sony GDM-FW900 + scaler does no 85 Hz conversion. A PAL game selects a generic PAL receiver even on the presets that follow North American consumer sets. This choice is for usability. The separate [presentation validation](https://github.com/yaglo/mynes/blob/master/docs/architecture/gpu-realism-validation.md) records the visible host timing and the misses that still occur.
 
 ## Follow-up work
 

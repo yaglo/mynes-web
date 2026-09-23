@@ -67,7 +67,7 @@ Around IC231 (CXA1739S):
 - Pin 5, SHP OUT, has R256 (4.7 kohm) and C201 (220 pF) to ground. C238 (39 pF) couples that output back into the main Y node before C240.
 - Pin 6, SHP SET, receives the external aperture control voltage.
 
-The traced network is stronger evidence than the fact that the IC has a sharpening feature. It does not give the active input and output impedances, the polarity, the internal transfer, the gain-vs-control law, the limiting or the tolerances of the complete circuit. The renderer therefore keeps an approximate shelf, and the 6 dB limit makes no claim to reproduce this circuit.
+The traced network is stronger evidence than the fact that the IC has a sharpening feature. It does not give the active input and output impedances, the polarity, the internal transfer, the gain-vs-control law, the limiting or the tolerances of the complete circuit. The renderer therefore keeps an approximate shelf, and the 6 dB limit is an approximation of this circuit.
 
 The [partial SPICE deck](https://github.com/yaglo/mynes/blob/master/tools/circuits/pvm14l2_aperture_input.cir) and its [sweep](https://github.com/yaglo/mynes/blob/master/tools/circuits/sweep_pvm_aperture.py) isolate the path between TP106 and SHP IN with 5 hypothetical resistive loads. The ideal L/C resonance is 9.189 MHz. The sampled maxima move from 11.80 MHz up to the sweep's upper limit of 30 MHz as the load changes from 1 to 100 kohm. Neither figure is the aperture peak of the monitor, so 9.189 MHz cannot serve as a calibrated sharpening frequency. The sweep does not import its curves into any preset.
 
