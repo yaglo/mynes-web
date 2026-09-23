@@ -126,8 +126,9 @@ clips, crops and stills it lists. Whatever installs media here must also:
 For the detail crops, the pipeline's `--with-crops` copies
 `crop-sdr.png`, `crop-sdr@1x.png`, `crop-hdr.avif` and `crop-hdr@1x.avif`
 next to the still; the gallery shows them once the clip's entry has the
-`crop` key above. A crop whose width and height are multiples of 6 (not
-only 2) is exact at pixel ratio 3 as well as 1 and 2.
+`crop` key above. A crop whose width and height are multiples of 6 is
+exact at pixel ratio 3 as well as 1 and 2; one whose sizes are only even
+is exact at 1 and 2.
 
 ## manifest.json, version 1 (seed data)
 
