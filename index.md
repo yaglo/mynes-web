@@ -30,13 +30,13 @@ description: MyNES is a NES emulator that generates the console's composite vide
 The four main tuning targets, on the Mega Man 2 title at 3840×2880. Commercial names identify nominal references: individual tube condition and many circuit responses remain estimates.
 
 <ul class="tiles">
-<li><a class="tile" href="{{ '/gallery/presets/' | relative_url }}#sony_pvm_14l2"><img src="{{ '/assets/images/site/tile-sony_pvm_14l2.webp' | relative_url }}" alt="Mega Man 2 title on the Sony PVM-14L2 preset" width="300" height="225"><span>Sony PVM-14L2 · focused beam, fine aperture grille, D65, composite</span></a></li>
-<li><a class="tile" href="{{ '/gallery/presets/' | relative_url }}#jvc_d_series_2000"><img src="{{ '/assets/images/site/tile-jvc_d_series_2000.webp' | relative_url }}" alt="Mega Man 2 title on the JVC D-Series preset" width="300" height="225"><span>JVC D-Series · cooler whites, slot mask, two-line comb</span></a></li>
-<li><a class="tile" href="{{ '/gallery/presets/' | relative_url }}#toshiba_14af43"><img src="{{ '/assets/images/site/tile-toshiba_14af43.webp' | relative_url }}" alt="Mega Man 2 title on the Toshiba 14AF preset" width="300" height="225"><span>Toshiba 14AF · softer beam, broader highlights, three-line comb</span></a></li>
-<li><a class="tile" href="{{ '/gallery/presets/' | relative_url }}#stass_favourite"><img src="{{ '/assets/images/site/tile-stass_favourite.webp' | relative_url }}" alt="Mega Man 2 title on the Stas's Favourite RF preset" width="300" height="225"><span>Stas's Favourite · RF reception, imperfect convergence, recovery</span></a></li>
+<li><a class="tile" href="{{ '/archive/presets/' | relative_url }}#sony_pvm_14l2"><img src="{{ '/assets/images/site/tile-sony_pvm_14l2.webp' | relative_url }}" alt="Mega Man 2 title on the Sony PVM-14L2 preset" width="300" height="225"><span>Sony PVM-14L2 · focused beam, fine aperture grille, D65, composite</span></a></li>
+<li><a class="tile" href="{{ '/archive/presets/' | relative_url }}#jvc_d_series_2000"><img src="{{ '/assets/images/site/tile-jvc_d_series_2000.webp' | relative_url }}" alt="Mega Man 2 title on the JVC D-Series preset" width="300" height="225"><span>JVC D-Series · cooler whites, slot mask, two-line comb</span></a></li>
+<li><a class="tile" href="{{ '/archive/presets/' | relative_url }}#toshiba_14af43"><img src="{{ '/assets/images/site/tile-toshiba_14af43.webp' | relative_url }}" alt="Mega Man 2 title on the Toshiba 14AF preset" width="300" height="225"><span>Toshiba 14AF · softer beam, broader highlights, three-line comb</span></a></li>
+<li><a class="tile" href="{{ '/archive/presets/' | relative_url }}#stass_favourite"><img src="{{ '/assets/images/site/tile-stass_favourite.webp' | relative_url }}" alt="Mega Man 2 title on the Stas's Favourite RF preset" width="300" height="225"><span>Stas's Favourite · RF reception, imperfect convergence, recovery</span></a></li>
 </ul>
 
-[All 23 presets, reviewed at 4K]({{ '/gallery/presets/' | relative_url }}) · [Beam close-ups]({{ '/gallery/closeups/' | relative_url }}) · [Feature tour]({{ '/gallery/feature-tour/' | relative_url }})
+[All 23 presets, reviewed at 4K]({{ '/archive/presets/' | relative_url }}) · [Beam close-ups]({{ '/gallery/closeups/' | relative_url }}) · [Feature tour]({{ '/archive/feature-tour/' | relative_url }})
 
 ## How it works
 

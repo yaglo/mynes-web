@@ -1,21 +1,26 @@
 ---
 layout: "page"
 title: "Contra: historical 21-preset gallery"
-permalink: "/gallery/contra/"
-section: "gallery"
+permalink: "/archive/contra/"
+section: "archive"
 description: "Archived 21-preset Contra comparison at 3840×2880, superseded by the 23-preset 4K audit."
 source: "docs/contra-preset-gallery.md"
+archived: 2026-09-23
+replaced_by: "/gallery/televisions/"
+sitemap: false
+redirect_from:
+  - "/gallery/contra/"
 ---
 
-This is an archived 21-preset snapshot. Bedroom, Basement, Compact and Arcade were subsequently retuned, and FW900 plus the optics lab brought the library to 23. For the current 4K assessment, see [the preset audit]({{ '/gallery/presets/' | relative_url }}).
+This is an archived 21-preset snapshot. Bedroom, Basement, Compact and Arcade were subsequently retuned, and FW900 plus the optics lab brought the library to 23. For the current 4K assessment, see [the preset audit]({{ '/archive/presets/' | relative_url }}).
 
-For the gameplay presentation, see the [game showcase]({{ '/gallery/showcase/' | relative_url }}) and [full-resolution gameplay / beam close-ups]({{ '/gallery/closeups/' | relative_url }}). This page retains controlled diagnostic comparisons at their stated capture resolutions.
+For the gameplay presentation, see the [game showcase]({{ '/archive/showcase/' | relative_url }}) and [full-resolution gameplay / beam close-ups]({{ '/gallery/closeups/' | relative_url }}). This page retains controlled diagnostic comparisons at their stated capture resolutions.
 
 Actual output from the GPU renderer, captured offscreen at **3840×2880**. These captures use the then-current complex-IF, beam and optical renderer, with fixed 1.6× offscreen headroom. Every preset receives the same frozen 256×240 Contra boss PPU-code frame, with its own default connection and controls. Host mask alignment is Panel-pixels at 1:1 offscreen scale. This target is larger than the MacBook panel; it is a controlled 4:3 comparison, not a claim about fullscreen panel mapping.
 
 Every still shows **frame 60 without phase averaging**, at a common 0.6 linear exposure before sRGB conversion. Frame 61 is captured separately for phase-difference measurements. Full-resolution images are lossless WebP. Overview reductions are also made in linear light. Native crops retain the actual single-frame beam shape. These PNG/WebP previews do not reproduce live HDR headroom.
 
-For unaveraged NTSC phases, see the [50 fps GIFs and 60.1 fps motion clips]({{ '/gallery/motion/' | relative_url }}).
+For unaveraged NTSC phases, see the [50 fps GIFs and 60.1 fps motion clips]({{ '/archive/motion-review/' | relative_url }}).
 
 ## Assessment
 
@@ -159,4 +164,4 @@ python3 tools/review/refresh_showcase.py --sections gallery \
   --contra /path/to/contra-boss.bin --logs /tmp/mynes-gallery
 ```
 
-The review script requires NumPy and Pillow. Full images are actual 3840×2880 renders; no lower-resolution image is enlarged. [Frame metrics](https://github.com/yaglo/mynes/blob/master/docs/contra-gallery-metrics.json) record the phase difference, peak and average light for each preset. These metrics describe the capture; they are not a hardware-fidelity score. See the [preset audit]({{ '/gallery/presets/' | relative_url }}), [hardware references]({{ '/notes/hardware/' | relative_url }}) and [model limits](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md).
+The review script requires NumPy and Pillow. Full images are actual 3840×2880 renders; no lower-resolution image is enlarged. [Frame metrics](https://github.com/yaglo/mynes/blob/master/docs/contra-gallery-metrics.json) record the phase difference, peak and average light for each preset. These metrics describe the capture; they are not a hardware-fidelity score. See the [preset audit]({{ '/archive/presets/' | relative_url }}), [hardware references]({{ '/notes/hardware/' | relative_url }}) and [model limits](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md).

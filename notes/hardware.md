@@ -9,7 +9,7 @@ redirect_from:
   - "/research/hardware/"
 ---
 
-[Gameplay showcase]({{ '/gallery/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/closeups/' | relative_url }})
+[Gameplay showcase]({{ '/archive/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/closeups/' | relative_url }})
 
 Reviewed 21 September 2026. The curated targets are Sony PVM-14L2, JVC AV-27D201, Toshiba 14AF43, and the generic worn set **Stas's Favourite**. These are nominal behavioural profiles. A manufacturer's bandwidth specification, an owner's photograph and a measurement of a particular tube are different kinds of evidence.
 
@@ -111,11 +111,11 @@ The supplied Contra Waterfall boss photograph and palette-only screenshot remain
 
 We also inspected owner photographs of [PVM-14L2](https://crtdatabase.com/crts/sony/sony-pvm-14l2), [PVM-20M4U](https://crtdatabase.com/crts/sony/sony-pvm-20m4u), [JVC AV-27D201](https://crtdatabase.com/crts/jvc/jvc-av-27d201) and [Toshiba 14AF43](https://crtdatabase.com/crts/toshiba/toshiba-14af43). A [BVM owner macro with capture settings](https://forums.libretro.com/t/calling-all-crt-owners-photos-please/36593?page=4) helped inspect grille grouping and spot shape; its tube dimensions were not transferred to the 14L2. Search results that depicted other shaders were excluded as hardware evidence.
 
-The [visual review]({{ '/gallery/visual-review/' | relative_url }}) contains our own paired renders and their limitations. Third-party photos are linked rather than redistributed in the repository.
+The [visual review]({{ '/archive/visual-review/' | relative_url }}) contains our own paired renders and their limitations. Third-party photos are linked rather than redistributed in the repository.
 
 ## Latest comparison decisions
 
-The four-profile colour defaults, RF assumptions and response ranges are listed in the [preset audit]({{ '/gallery/presets/' | relative_url }}). Sony's white balance is set to its documented D65 option. Consumer whites are cooler, with separate colour-difference gain and small tracking errors. These are nominal choices, not an attempt to reproduce camera white balance from the Contra photograph.
+The four-profile colour defaults, RF assumptions and response ranges are listed in the [preset audit]({{ '/archive/presets/' | relative_url }}). Sony's white balance is set to its documented D65 option. Consumer whites are cooler, with separate colour-difference gain and small tracking errors. These are nominal choices, not an attempt to reproduce camera white balance from the Contra photograph.
 
 The slot-mask model keeps vertical phosphor stripes and staggers only the bridges between adjacent triads, consistent with the [inline slit-mask construction](https://patents.google.com/patent/US3973965A/en). An ablation on the same Contra codes showed that Stas's previous coarse delta-dot pattern generated the dominant diagonal weave. Its replacement retains visible RGB separation with a less intrusive inline pattern. Composite dot crawl can still produce phase-dependent diagonals; it is distinct from random RF noise.
 

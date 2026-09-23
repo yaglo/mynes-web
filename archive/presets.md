@@ -1,15 +1,20 @@
 ---
 layout: "page"
 title: "CRT presets: 23 looks reviewed at 4K"
-permalink: "/gallery/presets/"
-section: "gallery"
+permalink: "/archive/presets/"
+section: "archive"
 description: "The 23 CRT presets of MyNES, each with its description, native 4K crops, the audit assessment and its physical settings."
 source: "docs/gpu-preset-audit.md"
 source_note: "The per-preset table and physical-settings table are expanded into one section per preset; the remaining sections follow the audit"
+archived: 2026-09-23
+replaced_by: "/gallery/televisions/"
+sitemap: false
+redirect_from:
+  - "/gallery/presets/"
 ---
 
 Reviewed and retuned **22 September 2026**, using renderer/core commit `a0f5436`.
-The [visual feature tour]({{ '/gallery/feature-tour/' | relative_url }}) presents the results as comparisons. This page adds each preset's description from its preset file and its native crops from the audit.
+The [visual feature tour]({{ '/archive/feature-tour/' | relative_url }}) presents the results as comparisons. This page adds each preset's description from its preset file and its native crops from the audit.
 Generic presets are judged on visual appeal, distinct character and coherent
 behavior. They do not need to imitate a named television. Named hardware
 profiles have the additional obligation to distinguish published evidence from
@@ -48,7 +53,7 @@ python3 tools/review/audit_presets.py --game-codes /path/to/256x240-palette-fram
 This establishes spatial appearance and short-run frame variation. It does not
 measure physical panel luminance, prove flicker-free playback, or validate long
 VHS transport motion/phosphor decay. The earlier Contra gallery is an explicitly
-[historical snapshot]({{ '/gallery/contra/' | relative_url }}), not evidence of current tuning.
+[historical snapshot]({{ '/archive/contra/' | relative_url }}), not evidence of current tuning.
 
 
 ## The 23 presets

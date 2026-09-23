@@ -26,10 +26,10 @@ Sony PVM-14L2 preset, composite, emulated frame 2500. The crop is 1280×1120 at 
 ## Studio aperture grille: face and platform
 
 <figure class="figure">
-<a href="{{ '/gallery/contra/' | relative_url }}#group-5"><img src="{{ '/assets/images/contra-gallery/studio-pvm-beam-detail.png' | relative_url }}" alt="Studio aperture grille, native face and platform details" width="1296" height="432" loading="lazy"></a>
+<a href="{{ '/archive/contra/' | relative_url }}#group-5"><img src="{{ '/assets/images/contra-gallery/studio-pvm-beam-detail.png' | relative_url }}" alt="Studio aperture grille, native face and platform details" width="1296" height="432" loading="lazy"></a>
 </figure>
 
-These details come unchanged from the [Contra preset gallery]({{ '/gallery/contra/' | relative_url }}): 3840×2880, one unaveraged frame. Combining phases with different row positions can falsely broaden the beam; the published detail now preserves a single phase. The two crops are from different vertical positions and are separated and labelled. They show scanline structure, but this comparison alone does not isolate brightness-dependent spot growth. Studio aperture grille is a generic Y/C monitor preset, distinct from the nominal Sony PVM-14L2.
+These details come unchanged from the [Contra preset gallery]({{ '/archive/contra/' | relative_url }}): 3840×2880, one unaveraged frame. Combining phases with different row positions can falsely broaden the beam; the published detail now preserves a single phase. The two crops are from different vertical positions and are separated and labelled. They show scanline structure, but this comparison alone does not isolate brightness-dependent spot growth. Studio aperture grille is a generic Y/C monitor preset, distinct from the nominal Sony PVM-14L2.
 
 ## Darkwing Duck during gameplay
 

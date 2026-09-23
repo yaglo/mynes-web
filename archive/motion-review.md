@@ -1,10 +1,15 @@
 ---
 layout: "page"
 title: "NTSC phase and motion review"
-permalink: "/gallery/motion/"
-section: "gallery"
+permalink: "/archive/motion-review/"
+section: "archive"
 description: "Unaveraged NTSC phase animations, 60.1 fps clips, lossless phase details and what the sequences do and do not establish."
 source: "docs/gpu-motion-review.md"
+archived: 2026-09-23
+replaced_by: "/gallery/motion/"
+sitemap: false
+redirect_from:
+  - "/gallery/motion/"
 ---
 
 The alternating picture is part of the presentation. Two-frame averages can help compare colour but hide the frame-to-frame chroma structure and can broaden displaced beams. The README provides **unaveraged animations** alongside native single-frame close-ups.
@@ -74,4 +79,4 @@ All clips use the actual GPU path, Panel-pixels mask alignment, a 960×720 offsc
   --screenshot-after 60 --screenshot-frames 120 --screenshot-path /tmp/boss.ppm
 ```
 
-The linear PFM companions are the source for the fixed-exposure previews. [All-preset still comparison]({{ '/gallery/contra/' | relative_url }}) and [pipeline limitations](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md) provide the spatial/hardware context.
+The linear PFM companions are the source for the fixed-exposure previews. [All-preset still comparison]({{ '/archive/contra/' | relative_url }}) and [pipeline limitations](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md) provide the spatial/hardware context.

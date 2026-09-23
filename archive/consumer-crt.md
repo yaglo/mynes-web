@@ -1,10 +1,15 @@
 ---
 layout: "page"
 title: "Consumer CRT review, 22 September 2026"
-permalink: "/gallery/consumer-crt/"
-section: "gallery"
+permalink: "/archive/consumer-crt/"
+section: "archive"
 description: "Retuning of four generic consumer looks: raster profiles, mask resolution, brightness check and matched image checks."
 source: "docs/consumer-crt-review.md"
+archived: 2026-09-23
+replaced_by: "/gallery/televisions/"
+sitemap: false
+redirect_from:
+  - "/gallery/consumer-crt/"
 ---
 
 The review identified over-broad raster profiles and overly cleanly resolved

@@ -1,11 +1,16 @@
 ---
 layout: "page"
 title: "Showcase"
-permalink: "/gallery/showcase/"
-section: "gallery"
+permalink: "/archive/showcase/"
+section: "archive"
 description: "NES games rendered through the MyNES GPU signal and CRT pipeline: Castlevania on the PVM at 3840×2880, five 60.1 fps clips, native phase detail and VHS playback."
 source: "docs/nes-visual-showcase.md"
 source_note: "The video table is shown as embedded players with poster frames"
+archived: 2026-09-23
+replaced_by: "/gallery/games/"
+sitemap: false
+redirect_from:
+  - "/gallery/showcase/"
 ---
 
 NES games rendered through MyNES's GPU signal and CRT pipeline.
@@ -15,7 +20,7 @@ NES games rendered through MyNES's GPU signal and CRT pipeline.
 <figcaption class="fig-note">Preview reduced to 1600×1200. Open the image for the original 3840×2880 PNG (11.9 MB).</figcaption>
 </figure>
 
-[Close-up of the same frame]({{ '/assets/images/showcase/4k/castlevania-pvm-detail.png' | relative_url }}) · [Current 23-preset audit]({{ '/gallery/presets/' | relative_url }})
+[Close-up of the same frame]({{ '/assets/images/showcase/4k/castlevania-pvm-detail.png' | relative_url }}) · [Current 23-preset audit]({{ '/archive/presets/' | relative_url }})
 
 
 ## Watch
@@ -60,7 +65,7 @@ NES games rendered through MyNES's GPU signal and CRT pipeline.
 </figure>
 </div>
 
-All clips run at 60.0988 fps with alternating NTSC phases kept separate; nothing autoplays on this page. The [motion review]({{ '/gallery/motion/' | relative_url }}) explains the capture method.
+All clips run at 60.0988 fps with alternating NTSC phases kept separate; nothing autoplays on this page. The [motion review]({{ '/archive/motion-review/' | relative_url }}) explains the capture method.
 
 ## Look closer
 
@@ -78,7 +83,7 @@ This lossless animated detail retains the changing NTSC phases. The videos run a
 
 
 The clips below predate the September 22 shadow-grain and chroma-delay tuning.
-See the [current feature tour]({{ '/gallery/feature-tour/' | relative_url }}) for the updated noise comparison.
+See the [current feature tour]({{ '/archive/feature-tour/' | relative_url }}) for the updated noise comparison.
 
 <figure class="figure">
 <a href="{{ '/assets/images/showcase/4k/contra-vhs-sp.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/contra-vhs-sp.webp' | relative_url }}" alt="Contra boss through VHS SP recording and a consumer CRT, 3840×2880" width="1600" height="1200" loading="lazy"></a>
@@ -95,4 +100,4 @@ color before the picture reaches the consumer CRT. Adjust it under
 This is a generic recovered VHS response, not a calibrated VCR model.
 The still shows its bandwidth and color effects. [Watch four seconds of unaveraged VHS playback]({{ '/assets/images/motion/boss-vhs_sp_consumer.mp4' | relative_url }}) for the residual timing and phase behavior. [Preset file](https://github.com/yaglo/mynes/blob/master/presets/vhs_sp_consumer.json).
 
-[Capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) · [CRT presets]({{ '/gallery/presets/' | relative_url }}) · [Beam measurements]({{ '/gallery/closeups/' | relative_url }}#does-the-beam-actually-widen)
+[Capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) · [CRT presets]({{ '/archive/presets/' | relative_url }}) · [Beam measurements]({{ '/gallery/closeups/' | relative_url }}#does-the-beam-actually-widen)

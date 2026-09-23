@@ -131,7 +131,7 @@ The subcarrier phase does not just invert between scanlines -- it also shifts be
 
 Phosphor decay and visual integration can soften the apparent frame-to-frame structure, but real CRTs do not universally cancel dot crawl. The result depends on source timing, decoder separation, phosphor response, scene motion and viewing conditions. Temporal comb filtering is a separate receiver operation; it should not be attributed to phosphor persistence.
 
-The current renderer preserves phase alternation and models per-channel afterglow in linear light. Its frame-sampled decay is an approximation, not a measured P22 impulse response. Two-frame averages are used for some diagnostic stills, while the [showcase videos]({{ '/gallery/showcase/' | relative_url }}) retain consecutive individual phases. See the [current model reference](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md) for the implemented stages and limits.
+The current renderer preserves phase alternation and models per-channel afterglow in linear light. Its frame-sampled decay is an approximation, not a measured P22 impulse response. Two-frame averages are used for some diagnostic stills, while the [showcase videos]({{ '/archive/showcase/' | relative_url }}) retain consecutive individual phases. See the [current model reference](https://github.com/yaglo/mynes/blob/master/docs/gpu-pipeline-reference.md) for the implemented stages and limits.
 
 ## The same math as radio
 

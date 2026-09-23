@@ -1,10 +1,15 @@
 ---
 layout: "page"
 title: "Inside the glow"
-permalink: "/gallery/feature-tour/"
-section: "gallery"
+permalink: "/archive/feature-tour/"
+section: "archive"
 description: "Five visual comparisons from the MyNES renderer: beam current, phosphor structure, deflection and edge focus, room light, RF and tape noise."
 source: "docs/crt-feature-tour.md"
+archived: 2026-09-23
+replaced_by: "/gallery/close-ups/"
+sitemap: false
+redirect_from:
+  - "/gallery/feature-tour/"
 ---
 
 Five visual comparisons from the actual MyNES renderer. These are the same
@@ -101,7 +106,7 @@ errors precede the television decoder. VHS now uses a slightly lifted receiver
 operating point so shadow grain survives the gun response; reduced gain keeps
 white close to the previous setting. This is an authored playback look, not a
 claim that every VHS deck raises black to a fixed digital value. The audit
-records the [before/after patch measurements]({{ '/gallery/presets/' | relative_url }}#assessment-of-the-shared-engine).
+records the [before/after patch measurements]({{ '/archive/presets/' | relative_url }}#assessment-of-the-shared-engine).
 
 [Static first frame]({{ '/assets/images/feature-tour/noise-still.png' | relative_url }}) ·
 [Capture settings, fixture hashes and renderer fingerprints]({{ '/assets/images/feature-tour/sources.json' | relative_url }})
@@ -128,6 +133,6 @@ The synthetic fixtures need no ROM. By default full audit captures stay in
 physical mask pitch and no phase averaging. The feature tool checks input,
 preset, executable and shader fingerprints before reusing a capture.
 
-The [23-preset audit]({{ '/gallery/presets/' | relative_url }}) covers backgrounds, beam, masks,
+The [23-preset audit]({{ '/archive/presets/' | relative_url }}) covers backgrounds, beam, masks,
 noise, optics, names and remaining limits. Spatial examples cannot establish
 physical display luminance or prove flicker-free live presentation.
