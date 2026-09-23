@@ -12,13 +12,13 @@ layout: default
   <a href="{{ '/gallery/visual-review/' | relative_url }}"{% if page.url == '/gallery/visual-review/' %} class="active"{% endif %}>Visual review</a>
   <a href="{{ '/gallery/consumer-crt/' | relative_url }}"{% if page.url == '/gallery/consumer-crt/' %} class="active"{% endif %}>Consumer CRT review</a>
 </nav>
-{% elsif page.section == 'research' %}
-<nav class="subnav" aria-label="Research pages">
-  <a href="{{ '/research/hardware/' | relative_url }}"{% if page.url == '/research/hardware/' %} class="active"{% endif %}>Hardware research</a>
-  <a href="{{ '/research/pvm-14l2/' | relative_url }}"{% if page.url == '/research/pvm-14l2/' %} class="active"{% endif %}>PVM-14L2</a>
-  <a href="{{ '/research/fw900/' | relative_url }}"{% if page.url == '/research/fw900/' %} class="active"{% endif %}>GDM-FW900</a>
-  <a href="{{ '/research/measurements/' | relative_url }}"{% if page.url == '/research/measurements/' %} class="active"{% endif %}>Measurements</a>
-  <a href="{{ '/research/sharpening/' | relative_url }}"{% if page.url == '/research/sharpening/' %} class="active"{% endif %}>Sharpening audit</a>
+{% elsif page.section == 'notes' %}
+<nav class="subnav" aria-label="Technical notes">
+  <a href="{{ '/notes/hardware/' | relative_url }}"{% if page.url == '/notes/hardware/' %} class="active"{% endif %}>Hardware research</a>
+  <a href="{{ '/notes/pvm-14l2/' | relative_url }}"{% if page.url == '/notes/pvm-14l2/' %} class="active"{% endif %}>PVM-14L2</a>
+  <a href="{{ '/notes/fw900/' | relative_url }}"{% if page.url == '/notes/fw900/' %} class="active"{% endif %}>GDM-FW900</a>
+  <a href="{{ '/notes/measurements/' | relative_url }}"{% if page.url == '/notes/measurements/' %} class="active"{% endif %}>Measurements</a>
+  <a href="{{ '/notes/sharpening/' | relative_url }}"{% if page.url == '/notes/sharpening/' %} class="active"{% endif %}>Sharpening audit</a>
 </nav>
 {% endif %}
 <article class="page">

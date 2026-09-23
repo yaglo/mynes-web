@@ -1,17 +1,19 @@
 ---
 layout: "page"
 title: "Hardware research and model decisions"
-permalink: "/research/hardware/"
-section: "research"
+permalink: "/notes/hardware/"
+section: "notes"
 description: "Published evidence behind the named CRT profiles, stage-by-stage model boundaries, and the decisions they changed."
 source: "docs/gpu-hardware-research.md"
+redirect_from:
+  - "/research/hardware/"
 ---
 
 [Gameplay showcase]({{ '/gallery/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/closeups/' | relative_url }})
 
 Reviewed 21 September 2026. The curated targets are Sony PVM-14L2, JVC AV-27D201, Toshiba 14AF43, and the generic worn set **Stas's Favourite**. These are nominal behavioural profiles. A manufacturer's bandwidth specification, an owner's photograph and a measurement of a particular tube are different kinds of evidence.
 
-The [receiver/sharpening audit]({{ '/research/sharpening/' | relative_url }}) records the remaining
+The [receiver/sharpening audit]({{ '/notes/sharpening/' | relative_url }}) records the remaining
 model-specific circuit work, covers all 23 looks and tracks the console
 power-related squiggly-lines investigation. It also distinguishes fixed
 peaking, user aperture controls and true scan-velocity modulation.
@@ -235,7 +237,7 @@ brightness retuning. Pixel pitch and preset gain were unchanged.
 
 ## PVM-14L2 circuit follow-up
 
-The [revision-specific 14L2 audit]({{ '/research/pvm-14l2/' | relative_url }}) records the actual aperture
+The [revision-specific 14L2 audit]({{ '/notes/pvm-14l2/' | relative_url }}) records the actual aperture
 input/output networks, disabled comb-chip vertical enhancer, separate PIC/BRT ABL controls
 and the distinction between 14L2 focus and the 20L2-only dynamic-focus output.
 The nominal 14L2 profile now uses a 1 ms horizontal AFC, bounded 0–6 dB aperture
@@ -245,7 +247,7 @@ demonstrates sensitivity to an unknown IC port; it is not calibration data.
 
 ## Published optical measurements
 
-The [measurement record]({{ '/research/measurements/' | relative_url }}) adds a sourced Hitachi 751 glare
+The [measurement record]({{ '/notes/measurements/' | relative_url }}) adds a sourced Hitachi 751 glare
 dataset, reproducible two-parameter fit and actual GPU dark-disk checks. The
 selectable Lab: measured glass scatter uses that effective scatter with an
 explicit physical-size assumption. It is a generic receiver/CRT experiment,

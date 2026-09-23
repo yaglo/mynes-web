@@ -1,10 +1,12 @@
 ---
 layout: "page"
 title: "Published CRT measurements"
-permalink: "/research/measurements/"
-section: "research"
+permalink: "/notes/measurements/"
+section: "notes"
 description: "Hitachi 751 veiling-glare fit, the GPU check against it, and the FW900 spatial and tonal target."
 source: "docs/crt-measurements.md"
+redirect_from:
+  - "/research/measurements/"
 ---
 
 ## First implemented target: effective veiling glare
@@ -117,7 +119,7 @@ Source checks before fitting:
 - A grayscale measurement with changing surrounds can include regulation and
   stray light; it should not automatically become the isolated gun EOTF.
 
-A separate FW900 raster path is now implemented. See [the model and its limits]({{ '/research/fw900/' | relative_url }})
+A separate FW900 raster path is now implemented. See [the model and its limits]({{ '/notes/fw900/' | relative_url }})
 for the scaler, transfer, resolution fits, physical grille, GPU comparisons and
 remaining temporal/optical limitations. It does not turn the original TV model
 into an FW900 by merely renaming a preset.

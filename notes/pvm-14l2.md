@@ -1,10 +1,12 @@
 ---
 layout: "page"
 title: "Sony PVM-14L2: circuit evidence and implementation"
-permalink: "/research/pvm-14l2/"
-section: "research"
+permalink: "/notes/pvm-14l2/"
+section: "notes"
 description: "What the PVM-14L2 service manual and specifications support in the nominal profile, and what remains an estimate."
 source: "docs/pvm-14l2-model.md"
+redirect_from:
+  - "/research/pvm-14l2/"
 ---
 
 Audited 21 September 2026, without photographs or electrical measurements of

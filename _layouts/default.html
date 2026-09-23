@@ -17,7 +17,7 @@
       <a href="{{ '/gallery/' | relative_url }}"{% if page.section == 'gallery' and page.url != '/gallery/presets/' %} class="active"{% endif %}>Gallery</a>
       <a href="{{ '/gallery/presets/' | relative_url }}"{% if page.url == '/gallery/presets/' %} class="active"{% endif %}>Presets</a>
       <a href="{{ '/blog/' | relative_url }}"{% if page.section == 'blog' or page.layout == 'post' %} class="active"{% endif %}>Blog</a>
-      <a href="{{ '/research/' | relative_url }}"{% if page.section == 'research' %} class="active"{% endif %}>Research</a>
+      <a href="{{ '/notes/' | relative_url }}"{% if page.section == 'notes' %} class="active"{% endif %}>Technical notes</a>
       <a href="{{ '/download/' | relative_url }}"{% if page.url == '/download/' %} class="active"{% endif %}>Download</a>
       <a href="{{ site.project.code_repo }}">GitHub</a>
     </nav>
@@ -33,7 +33,7 @@
       <a href="{{ site.project.releases }}">Releases</a>
       <a href="{{ '/blog/' | relative_url }}">Blog</a>
       <a href="{{ '/gallery/' | relative_url }}">Gallery</a>
-      <a href="{{ '/research/' | relative_url }}">Research</a>
+      <a href="{{ '/notes/' | relative_url }}">Technical notes</a>
       <a href="{{ site.project.license }}">License</a>
     </nav>
     <p>MyNES by {{ site.author.name }}. The emulator is released under the Apache License 2.0. This site holds the project's images and videos so the code repository stays small; <a href="{{ site.project.site_repo }}">site source</a>.</p>

@@ -54,4 +54,4 @@ The blog series explains the main ideas in order:
 {% for post in series %}<li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
 {% endfor %}</ol>
 
-[Hardware research and model limits]({{ '/research/' | relative_url }}) · [About the project]({{ '/about/' | relative_url }})
+[Hardware research and model limits]({{ '/notes/' | relative_url }}) · [About the project]({{ '/about/' | relative_url }})

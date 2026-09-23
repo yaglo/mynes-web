@@ -17,7 +17,7 @@ MyNES is a ground-up C11 rewrite of a NES emulator first written in 2012. The or
 
 ## What the pictures on this site are
 
-Every image and clip here is actual output of the emulator, captured offscreen at the stated resolution. Captions state what was and was not measured. The named presets are nominal profiles constrained by published specifications and service documentation, not calibrated copies of individual sets; the [research pages]({{ '/research/' | relative_url }}) keep the evidence and the estimates apart.
+Every image and clip here is actual output of the emulator, captured offscreen at the stated resolution. Captions state what was and was not measured. The named presets are nominal profiles constrained by published specifications and service documentation, not calibrated copies of individual sets; the [research pages]({{ '/notes/' | relative_url }}) keep the evidence and the estimates apart.
 
 ## License
 

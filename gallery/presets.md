@@ -936,7 +936,7 @@ separable from tube identity so users can keep a favourite tube in another room.
 composite/RF produce edge colour, and the comb profiles preserve more neutral
 detail. They are distinct signal paths, not just different palettes. Exact
 commercial decoder/sharpening circuits remain incomplete; the
-[sharpening worklist]({{ '/research/sharpening/' | relative_url }}) states those limits. Phosphor decay
+[sharpening worklist]({{ '/notes/sharpening/' | relative_url }}) states those limits. Phosphor decay
 is frame sampled, and FW900 does not perform an 85 Hz temporal conversion.
 A PAL game selects a generic PAL receiver fallback even for nominal North
 American consumer profiles; that is usability, not a claim those sets accepted

@@ -84,6 +84,6 @@ is covered during tuning. The picture keeps running.
 
 ## Limits and next comparisons
 
-Full renders are inspected alongside real photographs of the named displays, with [evidence and assumptions recorded separately]({{ '/research/hardware/' | relative_url }}). Beam and decoder parameters are still nominal. Exact phosphor spectra, non-Gaussian spot tails, individual convergence maps and chip-specific ABL are not calibrated. The ordinary LCD hold interval also differs from a moving CRT beam. Paired stills verify spatial/phase behaviour, not motion equivalence.
+Full renders are inspected alongside real photographs of the named displays, with [evidence and assumptions recorded separately]({{ '/notes/hardware/' | relative_url }}). Beam and decoder parameters are still nominal. Exact phosphor spectra, non-Gaussian spot tails, individual convergence maps and chip-specific ABL are not calibrated. The ordinary LCD hold interval also differs from a moving CRT beam. Paired stills verify spatial/phase behaviour, not motion equivalence.
 
 This pass checked final-image RF temporal behaviour, component colour, two drawable sizes and fresh Mario/OSD captures. Geometry reuse and direct offscreen readback preserved the reviewed pixels; screenshot encoding now runs outside the interactive render thread. [Benchmarks](https://github.com/yaglo/mynes/blob/master/docs/gpu-benchmark-results.md) distinguish complete-chain fence measurements from full real-game playback; neither timestamp is a photon-latency measurement.

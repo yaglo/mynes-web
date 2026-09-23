@@ -1,10 +1,12 @@
 ---
 layout: "page"
 title: "Receiver sharpening and interference audit"
-permalink: "/research/sharpening/"
-section: "research"
+permalink: "/notes/sharpening/"
+section: "notes"
 description: "Implemented receiver stages, hardware evidence per model, all 23 looks and the open worklist."
 source: "docs/gpu-sharpening-audit.md"
+redirect_from:
+  - "/research/sharpening/"
 ---
 
 Reviewed 21 September 2026. **The library does not yet reproduce every named
@@ -38,7 +40,7 @@ shortcut and also bypasses receiver sharpening. That is a fidelity gap for the
 
 ## Hardware evidence
 
-* **Sony PVM-14L2:** the [detailed circuit audit]({{ '/research/pvm-14l2/' | relative_url }}) traces
+* **Sony PVM-14L2:** the [detailed circuit audit]({{ '/notes/pvm-14l2/' | relative_url }}) traces
   the external CXA1739S aperture network and the MC141627 enable wiring.
   The comb-chip vertical enhancer is tied off in both NTSC and PAL on the
   traced revision. Our shared separator still lacks the IC's comb algorithm.
