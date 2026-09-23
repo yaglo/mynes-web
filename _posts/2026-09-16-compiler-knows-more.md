@@ -144,7 +144,7 @@ In this sequence, the DMC needs a sample while the CPU is about to execute cycle
 7. `cpu_next_is_write()` checks uPC 0 and returns false, because a fetch is a read.
 8. The DMA proceeds. `cpu_get_next_read_addr()` returns `cpu->PC`, the halt and dummy cycles re-read from PC, and the final cycle reads the DMC sample.
 
-The AccuracyCoin DMA tests verify this behavior: the DMA waits through the 2 consecutive write cycles of an RMW instruction. The timing is correct because the compiler classified both cycles as writes during code generation. Nobody analyzed the INC instruction by hand, and the code has no special case for it.
+The AccuracyCoin DMA tests verify this behavior: the DMA waits through the 2 consecutive write cycles of an RMW instruction. The timing is correct because the compiler classified both cycles as writes during code generation. I did not analyze the INC instruction by hand, and the code has no special case for it.
 
 ## Deriving other views from one specification
 
