@@ -35,7 +35,7 @@ The PPU's color and emphasis codes select the NES DAC waveform. The waveform pas
 
 The [technical notes]({{ '/notes/' | relative_url }}) give the evidence behind each stage.
 
-## Sony PVM-14L2 and Stas's Favourite on the Mega Man 2 rooftop
+## Sony PVM-14L2 and Stas's Favourite on Mega Man 2
 
 <!-- TODO(copy): the caption's last sentence: what to look at, with a number where there is one. -->
 {% include compare.html a="mega-man-2-title-sony-pvm-14l2-rooftop" b="mega-man-2-title-stass-favourite-rooftop" %}
