@@ -2,7 +2,7 @@
 layout: "post"
 title: "Part 1: The 6502 timing DSL"
 date: "2026-09-15"
-updated: "2026-09-23"
+updated: "2026-09-22"
 series: 1
 slug: "timing-is-data"
 permalink: "/blog/timing-is-data/"
@@ -232,7 +232,7 @@ uPC assignment is sequential. The compiler walks the states in definition order 
 
 ## Results
 
-The 1,401 lines of DSL generate 5,300 lines of C containing 834 microcode steps. The generated `cpu_gen.c` compiles to a jump table that modern C compilers optimize well.
+The 1,401 lines of DSL generate 5,300 lines of C containing 834 microcode steps. The generated `cpu_gen.c` is one switch statement over the 834 steps, which compiles to a jump table.
 
 MyNES passes {{ site.data.facts.tests.passed }} of {{ site.data.facts.tests.total }} tests in the current bundled AccuracyCoin ROM, with no failures and no unrun tests at the default CPU/PPU alignment. The 119 of 138 result that this post gave before described an older implementation and fixture. The [AccuracyCoin fixture revision](https://github.com/yaglo/mynes/blob/master/tests/accuracy_coin/UPSTREAM.md) and the [MyNES testing guide](https://github.com/yaglo/mynes/blob/master/docs/architecture/testing.md) give the details.
 
