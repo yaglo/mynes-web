@@ -13,32 +13,23 @@ The Castlevania and Darkwing gameplay captures are 3840×2880: the complete 4:3 
 
 ## Castlevania: full screen and close-up
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/castlevania-pvm-gameplay.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/castlevania-pvm-gameplay.webp' | relative_url }}" alt="Castlevania castle hall, 3840×2880" width="1600" height="1200" loading="lazy"></a>
-<figcaption class="fig-note">Preview reduced to 1600×1200. Open the image for the original 3840×2880 PNG (11.9 MB).</figcaption>
-</figure>
+{% include pan.html id="castlevania-castle-hall-pvm" %}
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/castlevania-pvm-detail.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/castlevania-pvm-detail.webp' | relative_url }}" alt="Native close-up of the same Castlevania frame" width="1280" height="1120" loading="lazy"></a>
-<figcaption class="fig-note">Lossy WebP preview at the original 1280×1120 size. Open the image for the lossless PNG (1.9 MB).</figcaption>
-</figure>
+{% include crop.html id="castlevania-castle-hall-pvm-detail" %}
 
 Sony PVM-14L2 preset, composite, emulated frame 2500. The crop is 1280×1120 at x=1360, y=1584, copied without resizing. The full beam and image are rendered at 3840×2880. Exposure is 0.6; this is one NTSC phase. Simon, window tracery and damaged masonry retain their game context while showing the spot and grille.
 
 ## Studio aperture grille: face and platform
 
-<figure class="figure">
-<a href="{{ '/archive/contra/' | relative_url }}#group-5"><img src="{{ '/assets/images/contra-gallery/studio-pvm-beam-detail.png' | relative_url }}" alt="Studio aperture grille, native face and platform details" width="1296" height="432" loading="lazy"></a>
-</figure>
+{% include crop.html id="contra-boss-studio-aperture-grille-details" %}
 
 These details come unchanged from the [Contra preset gallery]({{ '/archive/contra/' | relative_url }}): 3840×2880, one unaveraged frame. Combining phases with different row positions can falsely broaden the beam; the published detail now preserves a single phase. The two crops are from different vertical positions and are separated and labelled. They show scanline structure, but this comparison alone does not isolate brightness-dependent spot growth. Studio aperture grille is a generic Y/C monitor preset, distinct from the nominal Sony PVM-14L2.
 
 ## Darkwing Duck during gameplay
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/darkwing-pvm-gameplay.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/darkwing-pvm-gameplay.webp' | relative_url }}" alt="Darkwing Duck bridge gameplay, 3840×2880" width="1600" height="1200" loading="lazy"></a>
-<figcaption class="fig-note">Preview reduced to 1600×1200. Open the image for the original 3840×2880 PNG (8.0 MB).</figcaption>
-</figure>
+{% include pan.html id="darkwing-duck-bridge-pvm" %}
+
+{% include crop.html id="darkwing-duck-bridge-pvm-detail" %}
 
 Open the full PNG at 100% for the actual output pixel scale. The in-page preview is reduced to fit the page. This is played game content, with the character, bridge rails, supports and city lights in the same frame. No test pattern or enlarged lower-resolution source is used.
 
@@ -57,17 +48,13 @@ The title combines dim green strokes, blue shading, bright lettering and fine ed
 | Toshiba 14AF | [Beam and slots]({{ '/assets/images/showcase/4k/toshiba_14af43-beam.png' | relative_url }}) | [4K]({{ '/assets/images/showcase/4k/toshiba_14af43.png' | relative_url }}) | [Native crop]({{ '/assets/images/showcase/4k/toshiba_14af43-rooftop.png' | relative_url }}) |
 | Stas's Favourite | [Beam and slots]({{ '/assets/images/showcase/4k/stass_favourite-beam.png' | relative_url }}) | [4K]({{ '/assets/images/showcase/4k/stass_favourite.png' | relative_url }}) | [Native crop]({{ '/assets/images/showcase/4k/stass_favourite-rooftop.png' | relative_url }}) |
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/sony_pvm_14l2-beam.png' | relative_url }}"><img src="{{ '/assets/images/showcase/4k/sony_pvm_14l2-beam.png' | relative_url }}" alt="PVM title detail, native pixels" width="1024" height="683" loading="lazy"></a>
-</figure>
+{% include crop.html id="mega-man-2-title-sony-pvm-14l2-lettering" %}
 
 The narrow dim strokes retain visible gaps. The white lettering spreads vertically and nearly fills those gaps. The Toshiba has softer outlines and a more prominent, coarser slot structure. These differences come from the preset's beam, mask and signal processing, not separate image-editing filters.
 
 ## Does the beam actually widen?
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/pvm-beam-levels.png' | relative_url }}"><img src="{{ '/assets/images/showcase/4k/pvm-beam-levels.png' | relative_url }}" alt="PVM brightness-dependent beam height" width="720" height="400" loading="lazy"></a>
-</figure>
+{% include crop.html id="beam-height-fixture-pvm" %}
 
 The top row shows equal-height patches; the lower row shows isolated one-source-line strokes. Source PPU codes are $00, $10 and $20 against $0F black. The samples above are native pixels from one frame. Measurements below measure each consecutive **linear-light** final capture separately, averaging 96 horizontal pixels at the centre of each stroke to suppress mask modulation. FWHM means the vertical width at half the peak luminance above the local background; it is measured before the 0.6 exposure and sRGB encoding used for the PNGs.
 
