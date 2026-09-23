@@ -10,6 +10,8 @@ description: "Stages 6 and 7 of the MyNES GPU pipeline: the comb filter modes, I
 source: "docs/blog/05-separating-colors.md"
 ---
 
+Updated 2026-09-23: the shader code in this post is from the prototype. The current shader has a horizontal notch, a 2-line (1H) comb, an adaptive 3-line comb, a 3-line (2H) comb and a bypass, and its 3-line comb uses the center line and its 2 neighbors.
+
 [Part 4]({{ '/blog/fourteen-stages/' | relative_url }}) listed the 14 stages of the GPU pipeline, and this part covers stages 6 and 7. They separate luma from chroma, demodulate the chroma and limit its bandwidth. These 2 stages produce most of the artifacts people associate with "the NES look".
 
 In NTSC composite video, luminance and chrominance occupy overlapping frequency bands. The color information is amplitude modulation on a 3.579545 MHz subcarrier, and it sits on top of the high-frequency luma detail. The television has to pull the 2 apart. Because the bands overlap, the separation is always incomplete, and each imperfection shows on screen.
@@ -29,7 +31,7 @@ Adding the 2 lines cancels the chroma: `(Y + C) + (Y - C) = 2Y`. Subtracting the
 
 ## Comb filter modes in the shader
 
-The shader implements 4 modes, each modeling a different class of TV hardware:
+The prototype shader had 4 modes, a bypass for S-Video and 3 comb filters, each modeling a different class of TV hardware:
 
 ```glsl
 switch (mode) {
@@ -65,10 +67,10 @@ switch (mode) {
 }
 ```
 
-Each mode has its own failure pattern. The list starts with the case the shader leaves out.
+Each comb has its own failure pattern. The list starts with the notch filter, which the prototype left out.
 
 No comb filter
-: The shader has no mode for this case, where the TV separates Y and C with a notch filter alone. Cross-color appears on every transition where luma detail reaches the subcarrier frequency, and thin horizontal lines shimmer with rainbow colors. The cheapest TVs work this way, and they show the most cross-color of the 4 cases.
+: The prototype had no mode for this case, where the TV separates Y and C with a notch filter alone; the current shader has one. Cross-color appears on every transition where luma detail reaches the subcarrier frequency, and thin horizontal lines shimmer with rainbow colors. The cheapest TVs work this way, and they show the most cross-color of the 4 cases.
 
 1-line comb
 : Keeps horizontal detail. The assumption that adjacent scanlines have the same luma fails at vertical edges: a sharp horizontal boundary, such as the border of a status bar, gives lines N and N-1 different luma. The filter treats that luma difference as chroma, and every horizontal edge gets rainbow fringes. This is the artifact most people remember from the NES on composite video.
@@ -77,7 +79,7 @@ No comb filter
 : Uses the current scanline and the one 2 lines back, which has the same subcarrier phase, and skips the line between them, which has the opposite phase. The luma estimate improves, and vertical detail that changes over 2 lines still disturbs it.
 
 3-line comb
-: Averages 4 consecutive scanlines. The chroma subcarrier completes a full cycle over 2 scanlines, so the 4-line average cancels chroma over 2 complete cycles. The cost is vertical sharpness, because 4 lines of luma are averaged together. A Sony PVM with a 3D comb filter compares across frames and separates Y and C better still, and the 3-line mode already leaves little cross-color.
+: The prototype averaged 4 consecutive scanlines, which cancels the chroma over 2 complete subcarrier cycles and averages 4 lines of luma. The current mode uses the center line and its 2 neighbors. It averages only the chroma band and subtracts the result from the composite signal, which keeps low-frequency vertical luma detail. A Sony PVM with a 3D comb filter compares across frames and separates Y and C better still, and the 3-line mode already leaves little cross-color.
 
 The `blend` uniform sets the comb strength from 0 to 1. At `blend = 0` no chroma is extracted, and at `blend = 1.0` the comb works at full strength. Values in between let the pipeline model TVs with weak comb circuits.
 
@@ -132,12 +134,6 @@ if (conn <= VIDEO_CONN_COMPOSITE) {
 The subcarrier phase inverts between scanlines and also shifts between frames. Over a cycle of 2 frames (or 3, depending on the phase relationship), the cross-color pattern at a given pixel rotates through different phases. On a static image this shows as a crawling rainbow pattern along sharp luma transitions.
 
 Phosphor decay and visual integration can soften the frame-to-frame structure, but CRTs do not all cancel dot crawl. The result depends on source timing, decoder separation, phosphor response, scene motion and viewing conditions. Temporal comb filtering is a separate operation in the receiver, and its effect should not be attributed to phosphor persistence.
-
-## NTSC decoding and radio signal processing
-
-Quadrature amplitude modulation, comb filtering and FIR bandwidth limiting are the same techniques used in AM and FM radio, telecommunications and radar signal processing. NTSC carries its picture by amplitude modulation, as AM radio carries sound. The 3.579545 MHz subcarrier is a carrier frequency, and the I and Q channels are quadrature components. The comb filter is a spatial FIR that uses known phase relationships.
-
-The NES PPU outputs a baseband composite video waveform, and the RF modulator then places that signal on a radio-frequency carrier. Everything that happens between that waveform and the colors on screen is signal processing, and every imperfection in that processing appears on screen as an artifact.
 
 ## Limitations
 
