@@ -1,0 +1,14 @@
+{%- comment -%}
+Sets url_out to the site URL of include.path: a path relative to the site
+root (as in the hero manifest and _data/renders.yml, with or without a
+leading slash) gets the baseurl; a full URL is kept. Usage:
+{% include url.html path=clip.poster %}{% assign poster = url_out %}
+{%- endcomment -%}
+{%- assign url_out = include.path | default: "" | strip -%}
+{%- if url_out != "" -%}
+{%- unless url_out contains "://" -%}
+{%- assign url_first = url_out | slice: 0 -%}
+{%- if url_first != "/" -%}{%- assign url_out = url_out | prepend: "/" -%}{%- endif -%}
+{%- assign url_out = url_out | relative_url -%}
+{%- endunless -%}
+{%- endif -%}

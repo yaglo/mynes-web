@@ -1,0 +1,101 @@
+{%- comment -%}
+A clip at one source pixel per device pixel.
+
+sources is a list of {src, type, hdr, width, height} (a stage list of the
+hero manifest, version 2). HDR sources come first, offered only to
+(dynamic-range: high) displays, then SDR; within each, a source twice the
+smallest width is offered to displays of 2 dppx and more. The video's width
+and height are half the largest source's pixel size (the smallest size when
+there are two), so a 1920x1440 source on a 2x display and a 960x720 source on
+a 1x display are both 1:1 without JavaScript; assets/js/render.js sizes the
+video for other pixel ratios and keeps a poster only at its own pixel size.
+A single file of known size can be given as src, width, height (and type).
+
+Usage:
+  {% include clip.html sources=clip.stage posters=clip.poster game=game.title
+     scene=game.scene preset_name=preset.name %}
+  {% include clip.html src="assets/images/showcase/kirby-jvc_d_series_2000.mp4"
+     width=960 height=720 poster="assets/hero/kirby-title/jvc_d_series_2000.poster.webp"
+     game="Kirby's Adventure" scene="Animated title and opening" preset_name="JVC D-Series" %}
+
+posters is a list of {src, width, height}, or one path with poster_width
+(default: the smallest source width). seconds adds the duration to the
+caption, audio=true says "Has audio", note adds one sentence, and
+flicker=true puts the flicker warning before the clip and marks it
+data-flicker. anchor sets the figure's id.
+{%- endcomment -%}
+{%- assign v_fps = include.fps | default: site.data.hero.fps | default: 60.0988 -%}
+{%- assign v_min_w = 0 -%}{%- assign v_min_h = 0 -%}{%- assign v_max_w = 0 -%}{%- assign v_max_h = 0 -%}
+{%- assign v_big_src = nil -%}
+{%- if include.sources -%}
+{%- for s in include.sources -%}
+{%- if s.width -%}
+{%- if v_min_w == 0 or s.width < v_min_w -%}{%- assign v_min_w = s.width -%}{%- assign v_min_h = s.height -%}{%- endif -%}
+{%- if s.width > v_max_w -%}{%- assign v_max_w = s.width -%}{%- assign v_max_h = s.height -%}{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for s in include.sources -%}{%- if s.width == v_max_w and s.hdr != true -%}{%- assign v_big_src = s.src -%}{%- endif -%}{%- endfor -%}
+{%- unless v_big_src -%}{%- assign v_big_src = include.sources[0].src -%}{%- endunless -%}
+{%- else -%}
+{%- assign v_min_w = include.width -%}{%- assign v_min_h = include.height -%}
+{%- assign v_max_w = include.width -%}{%- assign v_max_h = include.height -%}
+{%- assign v_big_src = include.src -%}
+{%- endif -%}
+{%- assign v_two_w = v_min_w | times: 2 -%}
+{%- if v_max_w == v_two_w and v_min_w != v_max_w -%}
+{%- assign v_w = v_min_w -%}{%- assign v_h = v_min_h -%}
+{%- else -%}
+{%- assign v_w = v_max_w | divided_by: 2 -%}{%- assign v_h = v_max_h | divided_by: 2 -%}
+{%- endif -%}
+{%- comment -%} Posters: data-posters for the script, the largest source's size as the default. {%- endcomment -%}
+{%- assign v_poster = "" -%}{%- assign v_posters = "" -%}
+{%- if include.posters.first -%}
+{%- for p in include.posters -%}
+{%- include url.html path=p.src -%}
+{%- if v_posters != "" -%}{%- assign v_posters = v_posters | append: ", " -%}{%- endif -%}
+{%- assign v_posters = v_posters | append: url_out | append: " " | append: p.width | append: "w" -%}
+{%- if p.width == v_max_w -%}{%- assign v_poster = url_out -%}{%- endif -%}
+{%- endfor -%}
+{%- else -%}
+{%- assign v_poster_path = include.posters | default: include.poster -%}
+{%- if v_poster_path -%}
+{%- include url.html path=v_poster_path -%}{%- assign v_poster = url_out -%}
+{%- assign v_pw = include.poster_width | default: v_min_w -%}
+{%- assign v_posters = url_out | append: " " | append: v_pw | append: "w" -%}
+{%- endif -%}
+{%- endif -%}
+{%- include url.html path=v_big_src -%}{%- assign v_big_url = url_out -%}
+{%- capture v_label -%}{{ include.game }}{% if include.scene %}, {{ include.scene }}{% endif %}{% if include.preset_name %}, on the {{ include.preset_name }} preset{% endif %}{%- endcapture -%}
+{%- if include.flicker %}
+<p class="flicker-warning">Flicker warning: this clip alternates 2 frames at 30 Hz.</p>
+{%- endif %}
+<figure class="render clip"{% if include.anchor %} id="{{ include.anchor }}"{% endif %}>
+<div class="render-scroll">
+<video class="render" controls preload="none" playsinline width="{{ v_w }}" height="{{ v_h }}"{% if v_poster != "" %} poster="{{ v_poster }}"{% endif %}{% if v_posters != "" %} data-posters="{{ v_posters }}"{% endif %}{% if include.flicker %} data-flicker{% endif %} aria-label="{{ v_label | escape }}">
+{%- if include.sources -%}
+{%- for v_pass in (1..4) -%}
+{%- for s in include.sources -%}
+{%- assign v_is_hdr = false -%}{%- if s.hdr == true -%}{%- assign v_is_hdr = true -%}{%- endif -%}
+{%- assign v_is_big = false -%}{%- if s.width == v_two_w and v_min_w != v_max_w -%}{%- assign v_is_big = true -%}{%- endif -%}
+{%- assign v_take = false -%}
+{%- if v_pass == 1 and v_is_hdr and v_is_big -%}{%- assign v_take = true -%}{%- endif -%}
+{%- if v_pass == 2 and v_is_hdr and v_is_big == false -%}{%- assign v_take = true -%}{%- endif -%}
+{%- if v_pass == 3 and v_is_hdr == false and v_is_big -%}{%- assign v_take = true -%}{%- endif -%}
+{%- if v_pass == 4 and v_is_hdr == false and v_is_big == false -%}{%- assign v_take = true -%}{%- endif -%}
+{%- if v_take -%}
+{%- assign v_media = "" -%}
+{%- if v_is_hdr -%}{%- assign v_media = "(dynamic-range: high)" -%}{%- endif -%}
+{%- if v_is_big -%}{%- if v_media != "" -%}{%- assign v_media = v_media | append: " and " -%}{%- endif -%}{%- assign v_media = v_media | append: "(min-resolution: 2dppx)" -%}{%- endif -%}
+{%- include url.html path=s.src %}
+<source src="{{ url_out }}" type="{{ s.type | default: 'video/mp4' | escape }}"{% if v_media != "" %} media="{{ v_media }}"{% endif %} data-w="{{ s.width }}" data-h="{{ s.height }}" data-hdr="{{ v_is_hdr }}">
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- else -%}
+{%- include url.html path=include.src %}
+<source src="{{ url_out }}" type="{{ include.type | default: 'video/mp4' | escape }}" data-w="{{ include.width }}" data-h="{{ include.height }}" data-hdr="false">
+{%- endif %}
+</video>
+</div>
+<figcaption>{% if include.game %}{{ include.game }}{% if include.scene %}, {{ include.scene }}{% endif %}. {% endif %}{% if include.preset_name %}{{ include.preset_name }} preset. {% endif %}<span class="render-file">{% if include.sources %}{% assign v_first = include.sources | where_exp: "s", "s.hdr != true" | where: "width", v_max_w | first %}{% unless v_first %}{% assign v_first = include.sources[0] %}{% endunless %}{% assign v_codec = v_first.type | split: 'codecs="' | last | slice: 0, 4 %}{% case v_codec %}{% when "hvc1" or "hev1" %}HEVC{% when "av01" %}AV1{% when "vp09" %}VP9{% else %}H.264{% endcase %}, {{ v_first.width }}×{{ v_first.height }}, {% if v_first.hdr == true %}HDR10{% else %}SDR{% endif %}{% else %}{% if include.type contains "hvc1" %}HEVC{% elsif include.type contains "av01" %}AV1{% else %}H.264{% endif %}, {{ include.width }}×{{ include.height }}, SDR{% endif %}</span>, {{ v_fps }} fps{% if include.seconds %}, {{ include.seconds }} s{% endif %}.{% if include.audio %} Has audio.{% endif %} <a href="{{ v_big_url }}">{{ v_max_w }}×{{ v_max_h }} MP4 file</a>.{% if include.note %} {{ include.note }}{% endif %}</figcaption>
+</figure>

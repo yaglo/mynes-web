@@ -1,0 +1,64 @@
+{%- comment -%}
+Comparison slider: two 1:1 crops of the same frame region on two presets
+(or two settings), one over the other, with a divider (assets/js/compare.js).
+Both renders come from _data/renders.yml, must have the same pixel size and
+crop position, and follow the crop rules of _includes/crop.html (2x file
+shown at half size, @1x file for 1x displays, optional HDR AVIF). The upper
+render sits in a wrapper with overflow: hidden whose width is the divider
+position, a whole number of device pixels; there is no canvas and no
+clip-path. Without JavaScript the two renders appear one after the other,
+each with its label.
+
+Usage:
+  {% include compare.html a="mega-man-2-title-sony-pvm-14l2-rooftop"
+     b="mega-man-2-title-stass-favourite-rooftop" note="One sentence on what to look at." %}
+a is on the left, b on the right. left and right replace the labels
+(default: each render's preset name and signal).
+{%- endcomment -%}
+{%- assign cmp_a = site.data.renders[include.a] -%}
+{%- assign cmp_b = site.data.renders[include.b] -%}
+{%- assign cmp_pa = site.data.hero.presets | where: "id", cmp_a.preset | first -%}
+{%- assign cmp_pb = site.data.hero.presets | where: "id", cmp_b.preset | first -%}
+{%- assign cmp_name_a = cmp_a.preset_name | default: cmp_pa.name | default: site.data.presets[cmp_a.preset].name | default: cmp_a.preset -%}
+{%- assign cmp_name_b = cmp_b.preset_name | default: cmp_pb.name | default: site.data.presets[cmp_b.preset].name | default: cmp_b.preset -%}
+{%- capture cmp_left_default -%}{{ cmp_name_a }} preset{% if cmp_a.signal %}, {{ cmp_a.signal }}{% endif %}{%- endcapture -%}
+{%- capture cmp_right_default -%}{{ cmp_name_b }} preset{% if cmp_b.signal %}, {{ cmp_b.signal }}{% endif %}{%- endcapture -%}
+{%- assign cmp_left = include.left | default: cmp_left_default -%}
+{%- assign cmp_right = include.right | default: cmp_right_default -%}
+{%- assign cmp_w = cmp_a.crop[2] -%}
+{%- assign cmp_h = cmp_a.crop[3] -%}
+{%- assign cmp_half_w = cmp_w | divided_by: 2 -%}
+{%- assign cmp_half_h = cmp_h | divided_by: 2 -%}
+<figure class="compare-figure">
+<div class="render-scroll">
+<div class="compare" data-left="{{ cmp_name_a | escape }}" data-right="{{ cmp_name_b | escape }}">
+{%- for cmp_side in (1..2) -%}
+{%- if cmp_side == 1 -%}{%- assign cmp_r = cmp_a -%}{%- assign cmp_label = "Left: " | append: cmp_left -%}{%- assign cmp_class = "compare-over" -%}
+{%- else -%}{%- assign cmp_r = cmp_b -%}{%- assign cmp_label = "Right: " | append: cmp_right -%}{%- assign cmp_class = "compare-under" -%}{%- endif -%}
+{%- include url.html path=cmp_r.file -%}{%- assign cmp_file = url_out -%}
+{%- assign cmp_file_1x = cmp_r.file_1x | default: "" -%}
+{%- if cmp_file_1x == "" -%}{%- assign cmp_file_1x = cmp_r.file | split: ".png" | first | append: "@1x.png" -%}{%- endif -%}
+{%- include url.html path=cmp_file_1x -%}{%- assign cmp_file_1x = url_out -%}
+{%- include url.html path=cmp_r.hdr -%}{%- assign cmp_hdr = url_out -%}
+{%- include url.html path=cmp_r.hdr_1x -%}{%- assign cmp_hdr_1x = url_out -%}
+{%- assign cmp_full = cmp_r.full | default: cmp_r.file -%}
+{%- include url.html path=cmp_full -%}{%- assign cmp_full = url_out %}
+<div class="compare-layer {{ cmp_class }}">
+<p class="compare-label">{{ cmp_label }}.</p>
+<a href="{{ cmp_full }}"><picture>
+{%- if cmp_hdr != "" %}<source media="(dynamic-range: high)" type="image/avif" srcset="{% if cmp_hdr_1x != "" %}{{ cmp_hdr_1x }} 1x, {% endif %}{{ cmp_hdr }} 2x">{% endif -%}
+<img class="render" src="{{ cmp_file_1x }}" srcset="{{ cmp_file_1x }} 1x, {{ cmp_file }} 2x" width="{{ cmp_half_w }}" height="{{ cmp_half_h }}" data-w="{{ cmp_w }}" data-h="{{ cmp_h }}" alt="{{ cmp_r.alt | escape }}" loading="lazy" decoding="async" draggable="false"></picture></a>
+</div>
+{%- endfor %}
+<span class="compare-divider" aria-hidden="true"></span>
+</div>
+</div>
+<div class="compare-controls" hidden>
+<input type="range" class="compare-range" min="0" max="{{ cmp_w }}" step="1" value="{{ cmp_half_w }}" aria-label="Divider between {{ cmp_name_a | escape }} on the left and {{ cmp_name_b | escape }} on the right">
+<button type="button" class="compare-hold" aria-pressed="false" title="Shows {{ cmp_name_a | escape }} over the whole crop while held">Hold to compare</button>
+</div>
+<figcaption>Left: {{ cmp_left }}. Right: {{ cmp_right }}. {% if cmp_a.game %}{{ cmp_a.game }}{% if cmp_a.scene %}, {{ cmp_a.scene }}{% endif %}. {% endif %}{{ cmp_w }}×{{ cmp_h }} crop at ({{ cmp_a.crop[0] }}, {{ cmp_a.crop[1] }}) of a {{ cmp_a.frame[0] }}×{{ cmp_a.frame[1] }} frame, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.{% if include.note %} {{ include.note }}{% endif %}</figcaption>
+</figure>
+{%- unless mynes_compare_js %}{% assign mynes_compare_js = true %}
+<script src="{{ '/assets/js/compare.js' | relative_url }}" defer></script>
+{%- endunless %}

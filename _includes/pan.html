@@ -1,0 +1,70 @@
+{%- comment -%}
+Pan viewer: a full frame, or a full-size clip, at one source pixel per device
+pixel in a scroll box (assets/js/viewer.js). 3840x2880 is 1920x1440 CSS px
+on a 2x display, so the box shows part of the frame; drag it, use the arrow,
+Page, Home and End keys, or click the overview map. 1:1, 2:1 and 4:1 zoom
+replicate pixels (1, 2 or 4 keys). Without JavaScript the box is a native
+scroll box and CSS gives the media its 1:1 size at pixel ratios 1, 1.25, 1.5,
+2 and 3.
+
+Usage, a still (the full PNG, and the HDR AVIF when there is one):
+  {% include pan.html src="assets/.../still-sdr.png" hdr="assets/.../still-hdr.avif"
+     width=3840 height=2880 x=1920 y=1440 alt="..." caption="..." %}
+from _data/renders.yml (file, hdr, frame and alt of the entry):
+  {% include pan.html id="castlevania-pvm-gameplay" x=2000 y=2376 %}
+a clip (sources as rendered <source> elements, the video's pixel size):
+  {% include pan.html video=sources_html width=3840 height=2880 poster="..." alt="..." caption="..." %}
+
+x and y are the source pixel at the centre of the view when the page opens
+(default: the centre of the frame). caption is the figcaption text; the
+figure also links the file (href, default src). alternates is HTML placed
+after the caption: links to the same frame on other presets, each
+<a href="PNG" data-pan-src="PNG" data-pan-hdr="AVIF" data-pan-caption="..."
+data-pan-alt="...">Preset name</a>, which the viewer loads in place (and
+which open the PNG without JavaScript).
+{%- endcomment -%}
+{%- assign p = nil -%}
+{%- if include.id -%}{%- assign p = site.data.renders[include.id] -%}{%- endif -%}
+{%- assign p_src = include.src | default: p.file -%}
+{%- assign p_hdr = include.hdr | default: p.hdr -%}
+{%- assign p_w = include.width | default: p.frame[0] | default: 3840 -%}
+{%- assign p_h = include.height | default: p.frame[1] | default: 2880 -%}
+{%- assign p_x = include.x | default: p.x -%}
+{%- assign p_y = include.y | default: p.y -%}
+{%- assign p_alt = include.alt | default: p.alt -%}
+{%- assign p_caption = include.caption | default: p.caption -%}
+{%- assign p_half_w = p_w | divided_by: 2 -%}
+{%- assign p_half_h = p_h | divided_by: 2 -%}
+{%- include url.html path=p_src -%}{%- assign p_src_url = url_out -%}
+{%- include url.html path=p_hdr -%}{%- assign p_hdr_url = url_out -%}
+{%- assign p_href = include.href | default: p.full | default: p_src -%}
+{%- include url.html path=p_href -%}{%- assign p_href_url = url_out -%}
+{%- include url.html path=include.poster -%}{%- assign p_poster_url = url_out -%}
+{%- assign p_ext = p_href | split: "?" | first | split: "." | last | upcase -%}
+{%- assign p_label = p_alt | strip -%}
+{%- assign p_last = p_label | slice: -1 -%}
+{%- if p_last == "." -%}{%- assign p_cut = p_label.size | minus: 1 -%}{%- assign p_label = p_label | slice: 0, p_cut -%}{%- endif -%}
+<figure class="pan-figure" style="--pan-w: {{ p_w }}; --pan-h: {{ p_h }}">
+<div class="pan" tabindex="0" role="group" aria-label="{{ p_label | escape }}. Drag or use the arrow keys to move; 1, 2 and 4 set the zoom." data-x="{{ p_x | default: p_half_w }}" data-y="{{ p_y | default: p_half_h }}">
+{%- if include.video %}
+<video class="render pan-media" width="{{ p_half_w }}" height="{{ p_half_h }}" data-w="{{ p_w }}" data-h="{{ p_h }}" muted loop playsinline preload="none"{% if p_poster_url != "" %} poster="{{ p_poster_url }}"{% endif %} aria-label="{{ p_alt | escape }}">{{ include.video }}</video>
+{%- else %}
+<picture>{% if p_hdr_url != "" %}<source media="(dynamic-range: high)" type="image/avif" srcset="{{ p_hdr_url }}">{% endif %}<img class="render pan-media" src="{{ p_src_url }}" width="{{ p_half_w }}" height="{{ p_half_h }}" data-w="{{ p_w }}" data-h="{{ p_h }}" alt="{{ p_alt | escape }}" loading="lazy" decoding="async" draggable="false"></picture>
+{%- endif %}
+</div>
+<div class="pan-bar" hidden>
+<span class="pan-zoom" role="group" aria-label="Zoom">
+<button type="button" class="pan-btn" data-pan-zoom="1" aria-pressed="true" title="One source pixel per device pixel">1:1</button>
+<button type="button" class="pan-btn" data-pan-zoom="2" aria-pressed="false" title="Two device pixels per source pixel">2:1</button>
+<button type="button" class="pan-btn" data-pan-zoom="4" aria-pressed="false" title="Four device pixels per source pixel">4:1</button>
+</span>
+{%- if include.video %}
+<button type="button" class="pan-btn pan-play" aria-pressed="false" hidden>Play</button>
+{%- endif %}
+<span class="pan-map" aria-hidden="true" title="Visible part of the frame"><span class="pan-map-view"></span></span>
+</div>
+<figcaption><span class="pan-caption">{{ p_caption }}</span> <a class="pan-file" href="{{ p_href_url }}">{{ p_w }}×{{ p_h }} {{ p_ext }} file</a>.{% if include.alternates %} {{ include.alternates }}{% endif %}</figcaption>
+</figure>
+{%- unless mynes_viewer_js %}{% assign mynes_viewer_js = true %}
+<script src="{{ '/assets/js/viewer.js' | relative_url }}" defer></script>
+{%- endunless %}
