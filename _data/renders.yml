@@ -120,3 +120,15 @@ beam-height-fixture-pvm:
   crop: [0, 2, 720, 396]
   alt: Dark gray, mid gray and white patches and single-line strokes on the Sony PVM-14L2 preset.
   caption: 'Beam height fixture: PPU codes $00, $10 and $20 on $0F black, phase 0. Sony PVM-14L2 preset, composite. 720×396 image of labeled native-pixel crops, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.'
+
+mega-man-2-title-toshiba-14af43-lettering:
+  file: assets/renders/mega-man-2-title-toshiba-14af43-composite-3840x2880-crop-1680-426-1020x684.png
+  file_1x: assets/renders/mega-man-2-title-toshiba-14af43-composite-3840x2880-crop-1680-426-1020x684@1x.png
+  full: assets/images/showcase/4k/toshiba_14af43.png
+  crop: [1680, 426, 1020, 684]
+  frame: [3840, 2880]
+  game: Mega Man 2
+  scene: title lettering
+  preset: toshiba_14af43
+  signal: composite
+  alt: The Mega Man 2 title lettering on the Toshiba 14AF preset.
