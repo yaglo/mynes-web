@@ -1,0 +1,136 @@
+{
+  "fps": 60.0988,
+  "aspect": [
+    4,
+    3
+  ],
+  "presets": [
+    {
+      "id": "sony_pvm_14l2",
+      "name": "Sony PVM-14L2",
+      "blurb": "Focused beam, fine aperture grille, D65, composite"
+    },
+    {
+      "id": "jvc_d_series_2000",
+      "name": "JVC D-Series",
+      "blurb": "Cooler whites, curved slot mask, two-line comb, composite"
+    },
+    {
+      "id": "toshiba_14af43",
+      "name": "Toshiba 14AF",
+      "blurb": "Softer beam, broad bright spot, three-line comb, composite"
+    },
+    {
+      "id": "stass_favourite",
+      "name": "Stas's Favourite",
+      "blurb": "Worn slot-mask set over channel-3 RF, imperfect convergence, horizontal recovery"
+    },
+    {
+      "id": "reference_composite",
+      "name": "Reference composite",
+      "blurb": "Neutral NTSC receiver and CRT in a dark room, no simulated wear"
+    },
+    {
+      "id": "vhs_sp_consumer",
+      "name": "VHS SP playback",
+      "blurb": "Slightly noisy SP tape on a slot-mask consumer set: soft delayed colour, luma grain, dropouts"
+    }
+  ],
+  "games": [
+    {
+      "id": "mega-man-2-title",
+      "title": "Mega Man 2",
+      "scene": "Rooftop title",
+      "default_preset": "sony_pvm_14l2"
+    },
+    {
+      "id": "kirby-title",
+      "title": "Kirby's Adventure",
+      "scene": "Animated title and opening",
+      "default_preset": "jvc_d_series_2000"
+    },
+    {
+      "id": "little-samson-opening",
+      "title": "Little Samson",
+      "scene": "Mountain and palace opening",
+      "default_preset": "jvc_d_series_2000"
+    },
+    {
+      "id": "darkwing-bridge",
+      "title": "Darkwing Duck",
+      "scene": "Bridge gameplay",
+      "default_preset": "stass_favourite"
+    },
+    {
+      "id": "mario-3-title",
+      "title": "Super Mario Bros. 3",
+      "scene": "Animated theatrical title",
+      "default_preset": "toshiba_14af43"
+    }
+  ],
+  "clips": {
+    "mega-man-2-title": {
+      "sony_pvm_14l2": {
+        "video": "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4",
+        "poster": "assets/hero/mega-man-2-title/sony_pvm_14l2.poster.webp",
+        "still": "assets/hero/mega-man-2-title/sony_pvm_14l2.4k.webp",
+        "still_size": [
+          3840,
+          2880
+        ],
+        "full": "assets/images/showcase/4k/sony_pvm_14l2.png"
+      },
+      "jvc_d_series_2000": {
+        "poster": "assets/hero/mega-man-2-title/jvc_d_series_2000.poster.webp",
+        "still": "assets/hero/mega-man-2-title/jvc_d_series_2000.4k.webp",
+        "still_size": [
+          3840,
+          2880
+        ],
+        "full": "assets/images/showcase/4k/jvc_d_series_2000.png"
+      },
+      "toshiba_14af43": {
+        "poster": "assets/hero/mega-man-2-title/toshiba_14af43.poster.webp",
+        "still": "assets/hero/mega-man-2-title/toshiba_14af43.4k.webp",
+        "still_size": [
+          3840,
+          2880
+        ],
+        "full": "assets/images/showcase/4k/toshiba_14af43.png"
+      },
+      "stass_favourite": {
+        "poster": "assets/hero/mega-man-2-title/stass_favourite.poster.webp",
+        "still": "assets/hero/mega-man-2-title/stass_favourite.4k.webp",
+        "still_size": [
+          3840,
+          2880
+        ],
+        "full": "assets/images/showcase/4k/stass_favourite.png"
+      }
+    },
+    "kirby-title": {
+      "jvc_d_series_2000": {
+        "video": "assets/images/showcase/kirby-jvc_d_series_2000.mp4",
+        "poster": "assets/hero/kirby-title/jvc_d_series_2000.poster.webp"
+      }
+    },
+    "little-samson-opening": {
+      "jvc_d_series_2000": {
+        "video": "assets/images/showcase/little-samson-jvc_d_series_2000.mp4",
+        "poster": "assets/hero/little-samson-opening/jvc_d_series_2000.poster.webp"
+      }
+    },
+    "darkwing-bridge": {
+      "stass_favourite": {
+        "video": "assets/images/showcase/darkwing-stass_favourite.mp4",
+        "poster": "assets/hero/darkwing-bridge/stass_favourite.poster.webp"
+      }
+    },
+    "mario-3-title": {
+      "toshiba_14af43": {
+        "video": "assets/images/showcase/mario-3-toshiba_14af43.mp4",
+        "poster": "assets/hero/mario-3-title/toshiba_14af43.poster.webp"
+      }
+    }
+  }
+}

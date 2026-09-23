@@ -2,17 +2,22 @@
 # repository (the ids of the hero manifest). name is the preset's name as
 # the preset file and the on-screen menu give it; note is the technical note
 # about the hardware the preset models, when there is one; variants are
-# spellings of the name that pages must not use.
+# spellings of the name that pages must not use; signal is the connection
+# the preset's renders use, as the preset's description gives it.
 sony_pvm_14l2:
   name: Sony PVM-14L2
+  signal: composite
   note: /notes/pvm-14l2/
   variants: ["PVM 14L2", "PVM14L2", "Sony PVM 14L2"]
 jvc_d_series_2000:
   name: JVC D-Series
+  signal: composite
 toshiba_14af43:
   name: Toshiba 14AF
+  signal: composite
 stass_favourite:
   name: Stas's Favourite
+  signal: channel 3 RF
 vhs_sp_consumer:
   name: VHS SP playback
 reference_composite:

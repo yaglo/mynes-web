@@ -1,0 +1,27 @@
+{%- comment -%}
+The presets of the hero data with at least one recording, each linked to
+its page with its description and the games recorded on it.
+Usage: {% include gallery-televisions.html %}
+{%- endcomment -%}
+{%- assign gt_n = 0 -%}
+{%- capture gt_items -%}
+{%- for preset in site.data.hero.presets -%}
+{%- assign gt_games = "" -%}{%- assign gt_count = 0 -%}
+{%- for game in site.data.hero.games -%}
+{%- include hero-clip.html game=game.id preset=preset.id -%}
+{%- if hc_any -%}
+{%- if gt_count > 0 -%}{%- assign gt_games = gt_games | append: ", " -%}{%- endif -%}
+{%- assign gt_games = gt_games | append: game.title -%}{%- assign gt_count = gt_count | plus: 1 -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if gt_count > 0 -%}{%- assign gt_n = gt_n | plus: 1 -%}{%- assign gt_url = preset.id | slugify | prepend: '/gallery/televisions/' | append: '/' %}
+<li><a href="{{ gt_url | relative_url }}">{{ preset.name }}</a>{% if preset.blurb %}: {{ preset.blurb }}{% endif %}. Recordings: {{ gt_games }}.</li>
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- if gt_n > 0 %}
+<ul class="gallery-list">{{ gt_items }}
+</ul>
+{%- else %}
+<p>No preset has recordings on the site yet.</p>
+{%- endif %}

@@ -1,0 +1,36 @@
+{%- comment -%}
+Reads one clip of the hero data (_data/hero.json, a copy of
+assets/hero/manifest.json, version 1 or 2) and sets hc_* variables for the
+gallery layouts. Usage: {% include hero-clip.html game=game.id preset=preset.id %}
+
+hc: the clip entry or nil. hc_game, hc_preset: the game and preset entries.
+hc_signal: the preset's connection from _data/presets.yml.
+hc_stage: the version 2 stage list; hc_video: a version 1 clip path (one
+960x720 SDR H.264 file, the size of every version 1 clip).
+hc_posters: the poster list (version 2) or path (version 1).
+hc_still, hc_still_hdr, hc_still_w, hc_still_h, hc_still_frame: the full
+frame (version 2 still, or the version 1 full PNG) and its HDR AVIF.
+hc_crop: the detail crop, {sdr, sdr_1x, hdr, hdr_1x, x, y, width, height}.
+hc_any: true when the clip has anything to show.
+{%- endcomment -%}
+{%- assign hc = site.data.hero.clips[include.game][include.preset] -%}
+{%- assign hc_game = site.data.hero.games | where: "id", include.game | first -%}
+{%- assign hc_preset = site.data.hero.presets | where: "id", include.preset | first -%}
+{%- assign hc_signal = site.data.presets[include.preset].signal -%}
+{%- assign hc_stage = nil -%}{%- assign hc_video = nil -%}{%- assign hc_posters = nil -%}
+{%- assign hc_still = nil -%}{%- assign hc_still_hdr = nil -%}{%- assign hc_still_w = nil -%}{%- assign hc_still_h = nil -%}{%- assign hc_still_frame = nil -%}
+{%- assign hc_crop = nil -%}{%- assign hc_any = false -%}
+{%- if hc -%}
+{%- if hc.stage.first -%}{%- assign hc_stage = hc.stage -%}{%- elsif hc.video -%}{%- assign hc_video = hc.video -%}{%- endif -%}
+{%- assign hc_posters = hc.poster -%}
+{%- if hc.still.sdr -%}
+{%- assign hc_still = hc.still.sdr -%}{%- assign hc_still_hdr = hc.still.hdr -%}
+{%- assign hc_still_w = hc.still.width | default: 3840 -%}{%- assign hc_still_h = hc.still.height | default: 2880 -%}
+{%- assign hc_still_frame = hc.still.frame -%}
+{%- elsif hc.full -%}
+{%- assign hc_still = hc.full -%}
+{%- assign hc_still_w = hc.still_size[0] | default: 3840 -%}{%- assign hc_still_h = hc.still_size[1] | default: 2880 -%}
+{%- endif -%}
+{%- if hc.crop.sdr -%}{%- assign hc_crop = hc.crop -%}{%- endif -%}
+{%- if hc_stage or hc_video or hc_still or hc_crop -%}{%- assign hc_any = true -%}{%- endif -%}
+{%- endif -%}

@@ -1,0 +1,26 @@
+{%- comment -%}
+The games of the hero data that have media, each linked to its page with
+its scene and the presets it was recorded on. Usage: {% include gallery-games.html %}
+{%- endcomment -%}
+{%- assign gg_n = 0 -%}
+{%- capture gg_items -%}
+{%- for game in site.data.hero.games -%}
+{%- assign gg_presets = "" -%}{%- assign gg_count = 0 -%}
+{%- for preset in site.data.hero.presets -%}
+{%- include hero-clip.html game=game.id preset=preset.id -%}
+{%- if hc_any -%}
+{%- if gg_count > 0 -%}{%- assign gg_presets = gg_presets | append: ", " -%}{%- endif -%}
+{%- assign gg_presets = gg_presets | append: preset.name -%}{%- assign gg_count = gg_count | plus: 1 -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if gg_count > 0 -%}{%- assign gg_n = gg_n | plus: 1 -%}{%- assign gg_url = game.id | slugify | prepend: '/gallery/games/' | append: '/' %}
+<li><a href="{{ gg_url | relative_url }}">{{ game.title }}</a>, {{ game.scene }}. {{ gg_presets }}.</li>
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- if gg_n > 0 %}
+<ul class="gallery-list">{{ gg_items }}
+</ul>
+{%- else %}
+<p>No game recordings are on the site yet.</p>
+{%- endif %}

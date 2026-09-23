@@ -1,0 +1,65 @@
+---
+layout: page
+---
+{%- comment -%}
+One game of the hero data (_data/hero.json): its clips, detail crops and
+full frames on every preset it was recorded with. The page is a stub in
+gallery/games/<game>.md with `game: <id>` (tools/gallery_pages.py writes
+the stubs); everything shown comes from the data, so the page fills in when
+the showcase pipeline installs new media and shows a plain line before.
+{%- endcomment -%}
+{%- assign hero = site.data.hero -%}
+{%- assign game = hero.games | where: "id", page.game | first -%}
+{%- assign clips = hero.clips[page.game] -%}
+{%- assign n_clips = 0 -%}{%- assign n_crops = 0 -%}{%- assign n_stills = 0 -%}
+{%- for preset in hero.presets -%}
+{%- include hero-clip.html game=page.game preset=preset.id -%}
+{%- if hc_stage or hc_video -%}{%- assign n_clips = n_clips | plus: 1 -%}{%- endif -%}
+{%- if hc_crop -%}{%- assign n_crops = n_crops | plus: 1 -%}{%- endif -%}
+{%- if hc_still -%}{%- assign n_stills = n_stills | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+{%- assign n_all = n_clips | plus: n_crops | plus: n_stills -%}
+{% if game and n_all > 0 %}
+<!-- TODO(copy): one sentence on the scene and what to look at; keep the scope sentence below factual. -->
+<p>{{ game.title }}, {{ game.scene }}: {% if n_clips > 0 %}{{ n_clips }} {% if n_clips == 1 %}clip{% else %}clips{% endif %}{% endif %}{% if n_clips > 0 and n_crops > 0 %}, {% endif %}{% if n_crops > 0 %}{{ n_crops }} detail {% if n_crops == 1 %}crop{% else %}crops{% endif %}{% endif %}{% if n_stills > 0 %}{% if n_clips > 0 or n_crops > 0 %} and {% endif %}{{ n_stills }} full {% if n_stills == 1 %}frame{% else %}frames{% endif %}{% endif %}, one per television preset, each at one source pixel per screen pixel.</p>
+{%- if n_clips > 0 %}
+
+<h2 id="clips">Clips</h2>
+{% for preset in hero.presets %}{% include hero-clip.html game=page.game preset=preset.id %}{% if hc_stage or hc_video %}
+{% include hero-video.html %}
+{% endif %}{% endfor %}
+{%- endif %}
+{%- if n_crops > 0 %}
+
+<h2 id="detail-crops">Detail crops</h2>
+<p>The same region of the frame on each preset.</p>
+{% for preset in hero.presets %}{% include hero-clip.html game=page.game preset=preset.id %}{% if hc_crop %}
+{% include hero-crop.html %}
+{% endif %}{% endfor %}
+{%- endif %}
+{%- if n_stills > 0 %}
+
+<h2 id="full-frames">Full frames</h2>
+{%- assign first_still = nil -%}{%- assign alt_n = 0 -%}
+{%- capture alternates -%}
+{%- for preset in hero.presets -%}
+{%- include hero-clip.html game=page.game preset=preset.id -%}
+{%- if hc_still -%}
+{%- include url.html path=hc_still -%}{%- assign alt_png = url_out -%}
+{%- include url.html path=hc_still_hdr -%}{%- assign alt_hdr = url_out -%}
+{%- unless first_still -%}{%- assign first_still = preset.id -%}{%- endunless -%}
+{%- capture alt_caption -%}{{ game.title }}, {{ game.scene }}. {{ preset.name }} preset{% if hc_signal %}, {{ hc_signal }}{% endif %}. {{ hc_still_w }}×{{ hc_still_h }} frame{% if hc_still_frame %} {{ hc_still_frame }} of the clip{% endif %}, shown 1:1. SDR PNG.{%- endcapture -%}
+{%- if alt_n > 0 %}, {% endif -%}{%- assign alt_n = alt_n | plus: 1 -%}
+<a href="{{ alt_png }}" data-pan-src="{{ alt_png }}"{% if alt_hdr != "" %} data-pan-hdr="{{ alt_hdr }}"{% endif %} data-pan-caption="{{ alt_caption | escape }}" data-pan-alt="{{ game.title | escape }} on the {{ preset.name | escape }} preset, the full frame"{% if first_still == preset.id %} aria-current="true"{% endif %}>{{ preset.name }}</a>
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- include hero-clip.html game=page.game preset=first_still -%}
+{%- capture still_caption -%}{{ game.title }}, {{ game.scene }}. {{ hc_preset.name }} preset{% if hc_signal %}, {{ hc_signal }}{% endif %}. {{ hc_still_w }}×{{ hc_still_h }} frame{% if hc_still_frame %} {{ hc_still_frame }} of the clip{% endif %}, shown 1:1. SDR PNG.{%- endcapture -%}
+{%- capture still_alt -%}{{ game.title }} on the {{ hc_preset.name }} preset, the full frame{%- endcapture %}
+{% if n_stills > 1 %}{% capture alternates %}The same frame on the presets {{ alternates | strip }}.{% endcapture %}{% else %}{% assign alternates = nil %}{% endif %}
+{% include pan.html src=hc_still hdr=hc_still_hdr width=hc_still_w height=hc_still_h alt=still_alt caption=still_caption alternates=alternates %}
+{%- endif %}
+{% else %}
+<p>No recordings of this game are on the site yet.</p>
+{% endif %}

@@ -1,0 +1,10 @@
+{%- comment -%}
+The clip figure for the hero clip read by hero-clip.html (call that first).
+Version 2 stage files carry AAC audio; version 1 clips are silent 960x720
+H.264 files. Usage: {% include hero-video.html %}
+{%- endcomment -%}
+{%- if hc_stage -%}
+{% include clip.html sources=hc_stage posters=hc_posters game=hc_game.title scene=hc_game.scene preset_name=hc_preset.name audio=true %}
+{%- elsif hc_video -%}
+{% include clip.html src=hc_video width=960 height=720 poster=hc_posters game=hc_game.title scene=hc_game.scene preset_name=hc_preset.name %}
+{%- endif -%}

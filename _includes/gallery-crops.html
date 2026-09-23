@@ -1,0 +1,14 @@
+{%- comment -%}
+Every detail crop of the hero data, by game and preset.
+Usage: {% include gallery-crops.html %}
+{%- endcomment -%}
+{%- assign gc_n = 0 -%}
+{%- for game in site.data.hero.games -%}{%- for preset in site.data.hero.presets -%}
+{%- include hero-clip.html game=game.id preset=preset.id -%}
+{%- if hc_crop -%}{%- assign gc_n = gc_n | plus: 1 %}
+{% include hero-crop.html %}
+{%- endif -%}
+{%- endfor -%}{%- endfor -%}
+{%- if gc_n == 0 %}
+<p>The showcase recordings have no detail crops on the site yet.</p>
+{%- endif %}

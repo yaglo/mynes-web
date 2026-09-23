@@ -1,0 +1,21 @@
+{%- comment -%}
+One clip per game of the hero data: on the game's default preset, or on the
+first preset that has a clip. Usage: {% include gallery-motion.html %}
+{%- endcomment -%}
+{%- assign gm_n = 0 -%}
+{%- for game in site.data.hero.games -%}
+{%- assign gm_preset = nil -%}
+{%- include hero-clip.html game=game.id preset=game.default_preset -%}
+{%- if hc_stage or hc_video -%}{%- assign gm_preset = game.default_preset -%}{%- endif -%}
+{%- unless gm_preset -%}{%- for preset in site.data.hero.presets -%}{%- unless gm_preset -%}
+{%- include hero-clip.html game=game.id preset=preset.id -%}
+{%- if hc_stage or hc_video -%}{%- assign gm_preset = preset.id -%}{%- endif -%}
+{%- endunless -%}{%- endfor -%}{%- endunless -%}
+{%- if gm_preset -%}{%- assign gm_n = gm_n | plus: 1 -%}
+{%- include hero-clip.html game=game.id preset=gm_preset %}
+{% include hero-video.html %}
+{%- endif -%}
+{%- endfor -%}
+{%- if gm_n == 0 %}
+<p>No clips are on the site yet.</p>
+{%- endif %}
