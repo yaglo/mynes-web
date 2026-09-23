@@ -19,7 +19,7 @@ Usage: {% include gallery-televisions.html %}
 {%- assign gt_n = gt_n | plus: 1 -%}{%- assign gt_url = preset.id | slugify | prepend: '/gallery/televisions/' | append: '/' -%}
 {%- assign gt_summary = site.data.presets[preset.id].summary | split: ". " | first | remove: "." -%}
 {%- unless gt_summary -%}{%- assign gt_summary = preset.blurb -%}{%- endunless %}
-<li><a href="{{ gt_url | relative_url }}">{{ preset.name }}</a>{% if gt_summary %}: {{ gt_summary }}{% endif %}. {% if gt_count > 0 %}Recordings: {{ gt_games }}.{% else %}No recordings yet.{% endif %}</li>
+<li><a href="{{ gt_url | relative_url }}">{{ preset.name }}</a>{% if gt_summary %}: {{ gt_summary }}{% endif %}. {% if gt_count > 0 %}Recordings: {{ gt_games }}.{% else %}Recordings: none yet.{% endif %}</li>
 {%- endfor -%}
 {%- endcapture -%}
 {%- if gt_n > 0 %}
