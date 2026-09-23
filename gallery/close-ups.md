@@ -11,6 +11,10 @@ redirect_from:
 
 The Castlevania and Darkwing gameplay captures are 3840×2880: the complete 4:3 game image is 3840 pixels wide, without side bars. The four-set title comparison also uses 3840×2880. Only the controlled measurement fixture below uses a 3840×2160 canvas with a 2880×2160 game viewport. Close-ups are cropped **without resizing**. Open the PNG at 100% to inspect the mask; fitting the image to a browser window can change its apparent pattern. They show one NTSC phase, not a blended exposure.
 
+## Detail crops from the showcase recordings
+
+{% include gallery-crops.html %}
+
 ## Castlevania: full screen and close-up
 
 {% include pan.html id="castlevania-castle-hall-pvm" %}

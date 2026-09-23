@@ -8,8 +8,6 @@ source: "docs/gpu-motion-review.md"
 archived: 2026-09-23
 replaced_by: "/gallery/motion/"
 sitemap: false
-redirect_from:
-  - "/gallery/motion/"
 ---
 
 The alternating picture is part of the presentation. Two-frame averages can help compare colour but hide the frame-to-frame chroma structure and can broaden displaced beams. The README provides **unaveraged animations** alongside native single-frame close-ups.

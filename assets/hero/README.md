@@ -103,9 +103,31 @@ pipeline's choice; the script only reads the fields.
 | `lens[]` | 3840x2880 clips in the same shape, with the same frame count and start as the stage clips. |
 | `still` | One frame at full size: `hdr` (AVIF, CICP 9/16/9, 10-bit 4:4:4), `sdr` (lossless PNG), `width`, `height`, and `frame`, the index of that frame in the stage clips. |
 | `hdr` | Mastering data of the HDR files: `white_nits` (SDR white), `headroom`, `max_cll`, `max_fall`. Shown in the line under the switcher. |
+| `crop` | Optional. The 1:1 detail crop of the still, for the gallery: `sdr` (PNG), `sdr_1x` (its `Image.reduce(2)` variant), `hdr` and `hdr_1x` (PQ AVIF), and `x`, `y`, `width`, `height` of the crop in the still, all even. The switcher ignores it. |
 
 Paths are relative to the site root, without a leading slash and without
 the `baseurl`; the script prefixes them.
+
+## The gallery reads a copy: _data/hero.json
+
+Jekyll cannot read files under `assets/` as data, so the site keeps a copy
+of this manifest in `_data/hero.json`. The gallery pages (Games,
+Televisions, Close-ups, Motion) are built from that copy and show only the
+clips, crops and stills it lists. Whatever installs media here must also:
+
+1. copy `manifest.json` over `_data/hero.json` (the two files must be
+   identical);
+2. run `python3 tools/gallery_pages.py`, which writes the stub page of each
+   new game (`gallery/games/<game>.md`) and preset
+   (`gallery/televisions/<preset>.md`) and never changes existing ones;
+3. check with `python3 tools/gallery_pages.py --check`, which fails when a
+   page is missing or the copy differs from the manifest.
+
+For the detail crops, the pipeline's `--with-crops` copies
+`crop-sdr.png`, `crop-sdr@1x.png`, `crop-hdr.avif` and `crop-hdr@1x.avif`
+next to the still; the gallery shows them once the clip's entry has the
+`crop` key above. A crop whose width and height are multiples of 6 (not
+only 2) is exact at pixel ratio 3 as well as 1 and 2.
 
 ## manifest.json, version 1 (seed data)
 

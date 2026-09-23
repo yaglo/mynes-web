@@ -2,7 +2,9 @@
 layout: default
 ---
 {% if page.section == 'gallery' %}
-<nav class="subnav" aria-label="Gallery pages">
+<nav class="subnav" aria-label="Gallery sections">
+  <a href="{{ '/gallery/games/' | relative_url }}"{% if page.url contains '/gallery/games/' %} class="active"{% endif %}>Games</a>
+  <a href="{{ '/gallery/televisions/' | relative_url }}"{% if page.url contains '/gallery/televisions/' %} class="active"{% endif %}>Televisions</a>
   <a href="{{ '/gallery/close-ups/' | relative_url }}"{% if page.url == '/gallery/close-ups/' %} class="active"{% endif %}>Close-ups</a>
   <a href="{{ '/gallery/motion/' | relative_url }}"{% if page.url == '/gallery/motion/' %} class="active"{% endif %}>Motion</a>
 </nav>

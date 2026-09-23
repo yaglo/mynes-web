@@ -244,3 +244,7 @@ figure.render figcaption, .pan-figure figcaption, .compare-figure figcaption { m
 .compare-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 0.6rem; }
 .compare-controls[hidden] { display: none; }
 .compare-range { width: min(100%, 22rem); accent-color: var(--accent); }
+
+/* Gallery lists */
+.gallery-list { padding-left: 1.2rem; }
+.gallery-list li { margin: 0.35rem 0; }
