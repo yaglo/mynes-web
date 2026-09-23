@@ -2,9 +2,10 @@
 layout: page
 ---
 {%- comment -%}
-One television preset: its entry in _data/presets.yml (specifications,
-technical note) and, from the hero data, the clip, detail crop and full
-frame of every game recorded on it. The page is a stub in
+One television preset: its entry in _data/presets.yml (summary,
+specifications, technical note) and, from the hero data, the clip, detail
+crop and full frame of every game recorded on it. Without a summary the
+page shows the manifest's blurb, and without specs it has no table. The page is a stub in
 gallery/televisions/<slug>.md with `preset: <id>` (tools/gallery_pages.py
 writes the stubs); it fills in when new media is installed.
 {%- endcomment -%}
@@ -13,8 +14,7 @@ writes the stubs); it fills in when new media is installed.
 {%- assign info = site.data.presets[page.preset] -%}
 {%- assign n_games = 0 -%}
 {%- for game in hero.games -%}{%- include hero-clip.html game=game.id preset=page.preset -%}{%- if hc_any -%}{%- assign n_games = n_games | plus: 1 -%}{%- endif -%}{%- endfor -%}
-<!-- TODO(copy): what the preset models, in one or two sentences, from the preset file and the technical note. -->
-{% if preset.blurb %}<p>{{ preset.blurb }}.</p>{% endif %}
+{% if info.summary %}<p>{{ info.summary }}</p>{% elsif preset.blurb %}<p>{{ preset.blurb }}.</p>{% endif %}
 {% if info.note %}{% assign note = site.pages | where: "url", info.note | first %}{% if note %}<p>Technical note: <a href="{{ note.url | relative_url }}">{{ note.title }}</a>.</p>{% endif %}{% endif %}
 {%- if info.specs %}
 
@@ -22,11 +22,9 @@ writes the stubs); it fills in when new media is installed.
 <table>
 <thead><tr><th>Property</th><th>Value</th><th>Source</th></tr></thead>
 <tbody>
-{% for spec in info.specs %}<tr><td>{{ spec.name }}</td><td>{{ spec.value }}</td><td>{{ spec.source }}</td></tr>
+{% for spec in info.specs %}<tr><td>{{ spec.name }}</td><td>{{ spec.value }}</td><td>{% if spec.url %}<a href="{{ spec.url }}">{{ spec.source }}</a>{% else %}{{ spec.source }}{% endif %}</td></tr>
 {% endfor %}</tbody>
 </table>
-{%- else %}
-<!-- TODO(copy): specifications table (mask type, pitch or TVL, beam spot FWHM, white point, inputs), each value with its source, as `specs` in _data/presets.yml. -->
 {%- endif %}
 
 <h2 id="recordings">Recordings</h2>

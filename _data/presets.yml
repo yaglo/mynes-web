@@ -4,21 +4,139 @@
 # about the hardware the preset models, when there is one; variants are
 # spellings of the name that pages must not use; signal is the connection
 # the preset's renders use, as the preset's description gives it.
+# summary is what the preset models, from the preset file's description; the
+# gallery shows it in place of the manifest's short blurb. specs are the
+# rows of the specifications table on the preset's Televisions page, each
+# with its value and its source (text and link).
 sony_pvm_14l2:
   name: Sony PVM-14L2
   signal: composite
   note: /notes/pvm-14l2/
   variants: ["PVM 14L2", "PVM14L2", "Sony PVM 14L2"]
+  summary: "A Sony PVM-14L2 monitor on composite video, with its aperture grille, a D65 white point and an adaptive comb filter. Its horizontal AFC has a 1 ms time constant, and its RGB bandwidth is 10 MHz at -3 dB."
+  specs:
+    - name: Mask
+      value: "Aperture grille, 1070 triads across the picture"
+      source: "presets/sony_pvm_14l2.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
+    - name: Sony specification
+      value: "0.25 mm aperture grille, 600 TVL"
+      source: "Sony PVM-14L2 specifications"
+      url: https://www.sony.jp/pro-monitor/products/PVM-14L2/
+    - name: Beam spot height parameter (FWHM)
+      value: "0.28 of a line at black to 0.52 at white"
+      source: "presets/sony_pvm_14l2.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
+    - name: White point
+      value: "6500 K (D65)"
+      source: "presets/sony_pvm_14l2.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
+    - name: Input
+      value: "Composite"
+      source: "presets/sony_pvm_14l2.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
 jvc_d_series_2000:
   name: JVC D-Series
   signal: composite
+  summary: "A consumer JVC D-Series television modeled on the AV-27D201, on composite video: a curved slot-mask tube, a 2-line comb filter and a cool white with a red push."
+  specs:
+    - name: Mask
+      value: "Slot mask, 661 triads across the picture"
+      source: "presets/jvc_d_series_2000.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
+    - name: Beam spot height parameter (FWHM)
+      value: "0.46 of a line at black to 0.98 at white"
+      source: "presets/jvc_d_series_2000.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
+    - name: White point
+      value: "9300 K"
+      source: "presets/jvc_d_series_2000.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
+    - name: Input
+      value: "Composite"
+      source: "presets/jvc_d_series_2000.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
 toshiba_14af43:
   name: Toshiba 14AF
   signal: composite
+  summary: "A small Toshiba television modeled on the 14AF43, on composite video: a flat slot-mask tube, a 3-line comb filter and a broad bright beam spot."
+  specs:
+    - name: Mask
+      value: "Slot mask, 480 triads across the picture"
+      source: "presets/toshiba_14af43.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
+    - name: Beam spot height parameter (FWHM)
+      value: "0.60 of a line at black to 1.20 at white"
+      source: "presets/toshiba_14af43.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
+    - name: White point
+      value: "8000 K"
+      source: "presets/toshiba_14af43.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
+    - name: Input
+      value: "Composite"
+      source: "presets/toshiba_14af43.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
 stass_favourite:
   name: Stas's Favourite
   signal: channel 3 RF
+  summary: "A worn consumer slot-mask television on channel 3 RF, with a cool white, a mild red push, imperfect gray tracking and convergence, and broad bright spots."
+  specs:
+    - name: Mask
+      value: "Slot mask, 440 triads across the picture"
+      source: "presets/stass_favourite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
+    - name: Beam spot height parameter (FWHM)
+      value: "0.55 of a line at black to 1.42 at white"
+      source: "presets/stass_favourite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
+    - name: White point
+      value: "7800 K"
+      source: "presets/stass_favourite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
+    - name: Input
+      value: "RF on channel 3 (61.25 MHz carrier)"
+      source: "presets/stass_favourite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
 vhs_sp_consumer:
   name: VHS SP playback
+  signal: composite
+  summary: "An NTSC VHS recording at SP speed, played back on a Toshiba-style slot-mask television: delayed soft color, horizontal luma grain, slow transport drift and occasional dropouts. Raised gun bias shows tape grain in dark areas, and lowered gain holds back highlights."
+  specs:
+    - name: Mask
+      value: "Slot mask, 480 triads across the picture"
+      source: "presets/vhs_sp_consumer.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
+    - name: Beam spot height parameter (FWHM)
+      value: "0.60 of a line at black to 1.20 at white"
+      source: "presets/vhs_sp_consumer.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
+    - name: White point
+      value: "8000 K"
+      source: "presets/vhs_sp_consumer.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
+    - name: Input
+      value: "Composite from VHS SP playback"
+      source: "presets/vhs_sp_consumer.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
 reference_composite:
   name: Reference composite
+  signal: composite
+  summary: "A neutral NTSC composite receiver and CRT in a dark room, with no simulated wear. It is the baseline for the signal, grayscale, mask and motion checks."
+  specs:
+    - name: Mask
+      value: "Aperture grille, 650 triads across the picture"
+      source: "presets/reference_composite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
+    - name: Beam spot height parameter (FWHM)
+      value: "0.38 of a line at black to 0.78 at white"
+      source: "presets/reference_composite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
+    - name: White point
+      value: "6500 K"
+      source: "presets/reference_composite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
+    - name: Input
+      value: "Composite"
+      source: "presets/reference_composite.json at 20224a3"
+      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
