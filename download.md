@@ -109,4 +109,4 @@ ctest --test-dir build --output-on-failure
 
 Settings, recent ROMs, battery saves and save states live under `~/.config/mynes/` (`config.json`, `saves/`, `states/`). Bundled presets load relative to the executable, and personal presets live in `~/.config/mynes/presets`.
 
-Releases are listed on the [GitHub releases page]({{ site.project.releases }}), and the 2012 version of MyNES is on the [`legacy` branch](https://github.com/yaglo/mynes/tree/legacy).
+{% if release.date %}Releases are listed on the [GitHub releases page]({{ site.project.releases }}), and the{% else %}The{% endif %} 2012 version of MyNES is on the [`legacy` branch](https://github.com/yaglo/mynes/tree/legacy).

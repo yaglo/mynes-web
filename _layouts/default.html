@@ -41,7 +41,9 @@ The page's source: the document in the code repository it was migrated from
 {%- endif %}
     <nav aria-label="Footer">
       <a href="{{ site.project.code_repo }}">GitHub</a>
+{%- if site.data.release.date %}
       <a href="{{ site.project.releases }}">Releases</a>
+{%- endif %}
       <a href="{{ '/gallery/' | relative_url }}">Gallery</a>
       <a href="{{ '/notes/' | relative_url }}">Technical notes</a>
       <a href="{{ '/blog/' | relative_url }}">Blog</a>

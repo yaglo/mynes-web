@@ -2,7 +2,8 @@
 # version is the code's CMake project version. date (YYYY-MM-DD), commit
 # (7 characters), notes (URL of the release notes) and platforms (list, for
 # the home page's download button) are set when the release is published on
-# GitHub; until then the footer and the home page name no release.
+# GitHub; until then the footer, the home page and the download page name
+# no release and do not link the GitHub releases page.
 # files lists the release assets for the download page, one entry per file:
 #   - platform: macOS      (macOS or Linux; the page has one section each)
 #     name: mynes-<version>-macos-arm64.tar.xz
