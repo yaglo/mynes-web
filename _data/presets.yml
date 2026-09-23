@@ -1,0 +1,19 @@
+# Presets the site names, by the id of their file in presets/ of the code
+# repository (the ids of the hero manifest). name is the preset's name as
+# the preset file and the on-screen menu give it; note is the technical note
+# about the hardware the preset models, when there is one; variants are
+# spellings of the name that pages must not use.
+sony_pvm_14l2:
+  name: Sony PVM-14L2
+  note: /notes/pvm-14l2/
+  variants: ["PVM 14L2", "PVM14L2", "Sony PVM 14L2"]
+jvc_d_series_2000:
+  name: JVC D-Series
+toshiba_14af43:
+  name: Toshiba 14AF
+stass_favourite:
+  name: Stas's Favourite
+vhs_sp_consumer:
+  name: VHS SP playback
+reference_composite:
+  name: Reference composite
