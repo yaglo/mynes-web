@@ -1,4 +1,4 @@
-# MyNES project site — built by GitHub Pages (Jekyll 3.10 via the github-pages gem).
+# MyNES project site, built by GitHub Pages (Jekyll 3.10 via the github-pages gem).
 title: MyNES
 tagline: A NES emulator that follows the picture from the console's video signal to the glow of a CRT
 description: >-
