@@ -10,7 +10,7 @@ redirect_from:
   - "/gallery/closeups/"
 ---
 
-This page shows crops of CRT renders at native pixels, mostly on the Sony PVM-14L2 preset, and measures how the beam height changes with brightness on 4 presets. The Castlevania, Darkwing Duck and Mega Man 2 renders are 3840×2880, with the whole 4:3 game image 3840 pixels wide and no side bars. The beam height fixture is the exception: a 2880×2160 game viewport on a 3840×2160 canvas. Crops are cut without resizing, and each image is one NTSC phase with no phases blended. Scaling a render changes its apparent mask pattern, so each render here is shown at one image pixel per device pixel and links to its PNG file.
+This page shows crops of CRT renders at native pixels, mostly on the Sony PVM-14L2 preset, and measures how the beam height changes with brightness on 4 presets. The Castlevania, Darkwing Duck and Mega Man 2 renders are 3840×2880, with the whole 4:3 game image 3840 pixels wide and no side bars. The beam height fixture is the exception: a 2880×2160 game viewport on a 3840×2160 canvas. Each image is a single NTSC phase. Scaling a render changes its apparent mask pattern, so each render here is shown at one image pixel per device pixel and links to its PNG file.
 
 ## Castlevania castle hall
 
@@ -28,7 +28,7 @@ The 2 crops are unchanged from the [archived Contra gallery]({{ '/archive/contra
 
 ## Darkwing Duck on the bridge
 
-The frame comes from play on the Sony PVM-14L2 preset, composite input, and holds Darkwing, the bridge rails, the supports and the city lights. It contains no test pattern and no enlarged lower-resolution source. Its beam buffer is 3840×2880 like the frame.
+The frame comes from play on the Sony PVM-14L2 preset, composite input, and holds Darkwing, the bridge rails, the supports and the city lights. Its beam buffer is 3840×2880 like the frame.
 
 {% include pan.html id="darkwing-duck-bridge-pvm" %}
 
@@ -51,7 +51,7 @@ The slider below compares the title lettering on the Sony PVM-14L2 and the Toshi
 
 {% include compare.html a="mega-man-2-title-sony-pvm-14l2-lettering" b="mega-man-2-title-toshiba-14af43-lettering" note="On the left the dim green strokes keep gaps between scanlines; on the right the outlines are softer and the slots coarser." %}
 
-On the Sony PVM-14L2 the dim green strokes keep visible gaps between scanlines, and the white lettering spreads vertically until it nearly fills them. On the Toshiba 14AF the outlines are softer, and the slot structure is coarser and stands out more. The differences come from each preset's beam, mask and signal processing; no image-editing filter is applied.
+On the Sony PVM-14L2 the dim green strokes keep visible gaps between scanlines, and the white lettering spreads vertically until it nearly fills them. On the Toshiba 14AF the outlines are softer, and the slot structure is coarser and stands out more. The differences come from each preset's beam, mask and signal processing.
 
 ## Beam height vs brightness on 4 presets
 
@@ -70,7 +70,7 @@ Each consecutive linear-light capture of the final image was measured separately
 
 At this viewport height a source scanline is nominally 9 output pixels tall (2160 rows for 240 lines); geometry and overscan change the local spacing. The widths are those of the final emitted light, including focus, optics and output response, and differ from the shader's input width parameters. RF and loading also change the drive, so this pattern does not necessarily reach a preset's maximum configured spot. The [raw measurements](https://github.com/yaglo/mynes/blob/master/docs/gpu-beam-measurements.json) are in the code repository.
 
-Brighter strokes are taller, and neighboring bright scanlines merge more than dim ones, which is the physically plausible direction. The shader sets the size of each gun's pixel-integrated Gaussian spot from that gun's current and applies shared focus and loading separately. The gaps between scanlines come from this spot model; the shader draws no fixed black lines over the picture.
+Brighter strokes are taller, and neighboring bright scanlines merge more than dim ones, which is the physically plausible direction. The shader sets the size of each gun's pixel-integrated Gaussian spot from that gun's current and applies shared focus and loading separately. The gaps between scanlines come from this spot model.
 
 ## Detail crops from the showcase recordings
 

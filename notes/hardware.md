@@ -103,11 +103,11 @@ The archived [visual review]({{ '/archive/visual-review/' | relative_url }}) hol
 
 ## White points and slot mask
 
-The [preset audit]({{ '/archive/presets/' | relative_url }}) lists the color defaults, RF assumptions and response ranges of the 4 curated presets. The PVM-14L2 uses its documented D65 white balance option. The consumer sets have cooler whites, with separate color-difference gain and small tracking errors. These are chosen defaults, and they make no attempt to reproduce the camera white balance of the Contra photograph.
+The [preset audit]({{ '/archive/presets/' | relative_url }}) lists the color defaults, RF assumptions and response ranges of the 4 curated presets. The PVM-14L2 uses its documented D65 white balance option. The consumer sets have cooler whites, with separate color-difference gain and small tracking errors. These are chosen defaults. None was tuned to the camera white balance of the Contra photograph.
 
 The slot-mask model keeps vertical phosphor stripes and staggers only the bridges between adjacent triads, as the inline slit-mask construction of patent US3973965A does[^slit-patent]. An ablation on the same Contra codes showed that the earlier coarse delta-dot pattern of Stas's Favourite generated the dominant diagonal weave. Its replacement, a less intrusive inline pattern, keeps visible RGB separation. Composite dot crawl can still produce phase-dependent diagonals, which are distinct from random RF noise.
 
-More owner photographs, close-ups of Mario and Adventure Island on a JVC AV-27D201[^sunthar-jvc], show an RGB-modified set. They inform spot and mask structure and give no composite decoder calibration. Analog Devices describes differential gain and phase[^adi-dgdp]. The model includes the level-dependent phase estimate of the measured source. It has no chip-specific curves of differential gain and phase for receivers, and no universal “chroma latching” effect, since no source supports one.
+More owner photographs, close-ups of Mario and Adventure Island on a JVC AV-27D201[^sunthar-jvc], show an RGB-modified set. They inform spot and mask structure only. Analog Devices describes differential gain and phase[^adi-dgdp]. The model includes the level-dependent phase estimate of the measured source. It has no chip-specific curves of differential gain and phase for receivers, and no universal “chroma latching” effect, since no source supports one.
 
 ## NES-001 output buffer circuit
 
@@ -165,7 +165,7 @@ The [Published CRT measurements]({{ '/notes/measurements/' | relative_url }}) no
 
 ## Limitations
 
-- The luma trap correction fixes the filter math. It is no calibration against hardware, and it does not fully remove excessive rainbowing.
+- The luma trap correction fixes the filter math and was not calibrated against hardware. Some excessive rainbowing remains.
 - The adaptive separator leaves some composite patterns ambiguous and does not reproduce the proprietary MC141627 algorithm.
 
 ## References

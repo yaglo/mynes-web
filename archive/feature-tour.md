@@ -39,9 +39,9 @@ The crops keep each preset's whole color, beam and mask response, so the compari
 
 The top pair shows the unmodified Toshiba 14AF and Bedroom RF 1990 presets on a common grid. Curvature and overscan both shape their outlines. The deflection models work in the image domain and do not reconstruct the radii of the glass.
 
-The lower pair is explicitly a diagnostic setup, and neither a shipped preset nor a measured tube. It uses Reference composite with `edge_focus = 1.2`, zero convergence offsets and zero vignette. Identical white crosses sit at source coordinates (128, 120) and (224, 32).
+The lower pair is a diagnostic setup built on Reference composite, with `edge_focus = 1.2`, zero convergence offsets and zero vignette. Identical white crosses sit at source coordinates (128, 120) and (224, 32).
 
-The 2 crops have the same size, are centered on their emitted light and are enlarged 2×. Neither was stretched, sharpened or normalized for exposure on its own. The pair shows the focus control apart from the subtler settings of the normal presets, and composite color stays in both crosses.
+The 2 crops have the same size, are centered on their emitted light and are enlarged 2×, with the same exposure. The pair shows the focus control apart from the subtler settings of the normal presets, and composite color stays in both crosses.
 
 ## Room light
 
@@ -63,7 +63,7 @@ Each side holds 48 consecutive frames of a 3840×2160 render of uniform gray and
 
 Playback is 67 ms per frame, about 4 times the frame time of the 60.1 Hz source. The loop jumps back after frame 77. It is a sequence for inspection and does not test host presentation or long transport motion.
 
-RF noise enters at reception, and tape luma grain, color noise and transport errors come before the television decoder. The VHS preset uses a slightly lifted receiver operating point so shadow grain survives the gun response, and a reduced gain keeps white close to the previous setting. The lifted black is an authored playback look and makes no claim that every VHS deck raises black to a fixed digital value. The audit records the [patch measurements before and after the change]({{ '/archive/presets/' | relative_url }}#assessment-of-the-shared-engine).
+RF noise enters at reception, and tape luma grain, color noise and transport errors come before the television decoder. The VHS preset uses a slightly lifted receiver operating point so shadow grain survives the gun response, and a reduced gain keeps white close to the previous setting. The lifted black is an authored playback look. The audit records the [patch measurements before and after the change]({{ '/archive/presets/' | relative_url }}#assessment-of-the-shared-engine).
 
 The [static first frame]({{ '/assets/images/feature-tour/noise-still.png' | relative_url }}) and the [capture settings, fixture hashes and renderer fingerprints]({{ '/assets/images/feature-tour/sources.json' | relative_url }}) are separate files.
 

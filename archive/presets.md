@@ -539,7 +539,7 @@ Preset file: [`presets/toshiba_14af43.json`](https://github.com/yaglo/mynes/blob
 
 ### VHS SP playback {#vhs_sp_consumer}
 
-A slightly noisy NTSC SP recording played on a slot-mask CRT like that of Toshiba 14AF, with delayed soft color, horizontal luma grain, gentle transport drift and occasional dropouts. A lifted gun bias shows tape grain in the shadows, and reduced gain holds back the highlights. The playback look is authored: no deck was calibrated, and it makes no claim that every VHS recording lifts black.
+A slightly noisy NTSC SP recording played on a slot-mask CRT like that of Toshiba 14AF, with delayed soft color, horizontal luma grain, gentle transport drift and occasional dropouts. A lifted gun bias shows tape grain in the shadows, and reduced gain holds back the highlights. The playback look is authored, and no deck was calibrated.
 
 {% include crop.html file="assets/images/preset-audit-4k/vhs_sp_consumer-game-native.png" width=480 height=160 x=1680 y=1000 frame_width=3840 frame_height=2160 game="Castlevania III" scene="block 1-02, frame 30" preset_name="VHS SP playback" signal="composite" %}
 
@@ -547,7 +547,7 @@ A slightly noisy NTSC SP recording played on a slot-mask CRT like that of Toshib
 
 {% include crop.html file="assets/images/preset-audit-4k/vhs_sp_consumer-beam-native.png" width=480 height=160 x=1680 y=1000 frame_width=3840 frame_height=2160 game="Isolated-scanline chart" scene="frame 30" preset_name="VHS SP playback" signal="composite" %}
 
-Audit assessment: Clear horizontal chroma softening and trailing color on the broad slot-mask tube of Toshiba 14AF, a consistent tape look. After the bias and noise retune, grain shows in the shadows and the color delay is clearer. The audit shortened the menu name and kept the file name. The preset makes no claim that all decks share its delay, snow or black level.
+Audit assessment: Clear horizontal chroma softening and trailing color on the broad slot-mask tube of Toshiba 14AF, a consistent tape look. After the bias and noise retune, grain shows in the shadows and the color delay is clearer. The audit shortened the menu name and kept the file name.
 
 Preset file: [`presets/vhs_sp_consumer.json`](https://github.com/yaglo/mynes/blob/master/presets/vhs_sp_consumer.json).
 
@@ -643,7 +643,7 @@ A wider beam still lights a fixed mask, so the phosphor pattern should stay when
 
 The 3840×2160 output helps. Still, a game 2880 pixels wide gets only 2.4 host pixels per triad on the 1200-triad Fine aperture grille, and 2.69 on the 1070-triad Sony PVM-14L2 grille. At those pitches the RGB stripes cannot all stay resolved. The physically filtered grille therefore looks faint, and it should not be made coarser to stand out. Panel pixels alignment is available as a compromise for the look; this audit uses the physical pitch.
 
-The coarse dot masks of Basement TV, Famicom Kitchen and Dying CRT stay clearly visible at native size. That texture is a valid generic style and makes no claim about the mask of every household set of the period.
+The coarse dot masks of Basement TV, Famicom Kitchen and Dying CRT stay clearly visible at native size. That texture is a generic style.
 
 ### Curvature
 

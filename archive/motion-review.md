@@ -23,7 +23,7 @@ The alternation between frames is part of the picture MyNES presents. An average
 
 Both clips also exist as 640×480 GIF files: the [Sony PVM-14L2 GIF]({{ '/assets/images/motion/boss-sony_pvm_14l2.gif' | relative_url }}) and the [Stas's Favourite GIF]({{ '/assets/images/motion/boss-stass_favourite.gif' | relative_url }}). Each GIF holds 24 consecutive rendered frames with one fixed 256-color palette and no dithering, and the palette reduction loses some mask and chroma detail.
 
-A GIF frame lasts 20 ms, which is 50 fps, so the 24 frames play 20% longer than at the 60.1 fps of the emulator. GIF frames of 10 ms would come closer, but some players clamp them. The GIFs loop after 0.48 s because of how they were exported, and the loop is no evidence that RF noise repeats in the emulator.
+A GIF frame lasts 20 ms, which is 50 fps, so the 24 frames play 20% longer than at the 60.1 fps of the emulator. GIF frames of 10 ms would come closer, but some players clamp them. The GIFs loop after 0.48 s, the length of the 24 exported frames.
 
 These clips play at the emulator's frame rate:
 
@@ -72,7 +72,7 @@ The [sequence measurements](https://github.com/yaglo/mynes/blob/master/docs/gpu-
 
 ## Capture method
 
-All clips come from the GPU renderer with Panel-pixels mask alignment, a 960×720 offscreen drawable and a common linear exposure of 0.6 before sRGB encoding. The boss input is frozen while the carrier phase, the noise and the temporal state keep advancing. The 240-frame Sony PVM-14L2 and Stas's Favourite captures contain every frame from 60 to 299 with no gaps. Screenshot readback can run slower than real time, so the exported video follows the emulated frame cadence and ignores the disk-write timestamps. No optical-flow interpolation or frame averaging is applied.
+All clips come from the GPU renderer with Panel-pixels mask alignment, a 960×720 offscreen drawable and a common linear exposure of 0.6 before sRGB encoding. The boss input is frozen while the carrier phase, the noise and the temporal state keep advancing. The 240-frame Sony PVM-14L2 and Stas's Favourite captures contain every frame from 60 to 299 with no gaps. Screenshot readback can run slower than real time, so the exported video follows the emulated frame cadence and ignores the disk-write timestamps. Each video frame is one emulator frame.
 
 ```sh
 ./build/bin/mynes_gpu --simulate-frame /path/to/contra-boss.bin \
