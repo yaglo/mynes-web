@@ -90,7 +90,7 @@ The named consumer presets describe the NTSC versions of their sets. A PAL game 
 - Broadcast and NES timing: receiver assumptions come from television timing[^bt470], and the source keeps NES timing. The NTSC fixed 1H store is therefore 2730 samples long, against a 2728-sample NES line.
 - Beam and current: measured beam profiles vary in both their central region and their tails[^hitachi-beam]. Conserving integrated energy is necessary, and it does not prove that the Gaussian shape of MyNES matches a particular tube.
 - Image-dependent CRT output: measured CRT luminance can depend on pattern orientation, DC restoration and supply regulation[^garcia-peli]. Streaks and loading are therefore modeled before light is emitted, and no decorative overlay draws them.
-- Persistence: at low levels phosphor decay need not stay a single exponential, and an LCD's hold interval is a separate limitation[^display-timing]. The 2-frame still exposure used in reviews does not simulate CRT motion persistence.
+- Persistence: at low levels phosphor decay need not stay a single exponential, and an LCD's hold interval is a separate limitation[^display-timing]. Reviews use still exposures of 2 frames, and [Motion]({{ '/gallery/motion/' | relative_url }}) says what still images and 60 fps video show of phosphor decay.
 - Host pixels: backing pixels and native panel pixels are separate API quantities in AppKit[^apple-backing] and SDL[^sdl-hidpi]. MyNES queries both and offers native fullscreen. This measures nothing about the panel's optics and does not prove its subpixel order.
 
 ## Photographs used in review

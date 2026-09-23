@@ -194,7 +194,7 @@ Preset file: [`presets/dying_crt.json`](https://github.com/yaglo/mynes/blob/mast
 
 ### Famicom Kitchen {#famicom_kitchen}
 
-A small, cool RF television under a soft kitchen light, with coarse shadow-mask texture, soft focus, gray-tracking error and a faint, broad reflection on the glass. The household character is generic, and neither the tube nor the room was measured.
+A small, cool RF television under a soft kitchen light, with coarse shadow-mask texture, soft focus, gray-tracking error and a faint, broad reflection on the glass. The household character is generic.
 
 {% include crop.html file="assets/images/preset-audit-4k/famicom_kitchen-game-native.png" width=480 height=160 x=1680 y=1000 frame_width=3840 frame_height=2160 game="Castlevania III" scene="block 1-02, frame 30" preset_name="Famicom Kitchen" signal="RF" %}
 
@@ -734,5 +734,5 @@ All 121 saved TV fields have OSD controls, including the conditional legacy focu
 
 - The audit covers the spatial look and the variation over 3 frames. It measures no panel luminance and validates neither flicker-free playback nor long VHS transport motion and phosphor decay.
 - The 2-frame noise differences are relative luminance values of the final render, uncalibrated as a signal-to-noise ratio, and settling and geometry can add to them.
-- The captures are SDR, which compresses the local phosphor peaks and changes the look, so they do not test HDR output.
+- The captures are SDR, so the audit does not test HDR output. The [HDR output note]({{ '/notes/hdr/' | relative_url }}) covers the phosphor peaks above SDR white.
 - The presets have changed since the audit, and the preset files in the code repository hold the current values.
