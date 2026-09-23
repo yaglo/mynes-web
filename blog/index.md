@@ -7,9 +7,9 @@ description: Posts about MyNES by year, among them the series on the CPU timing 
 ---
 {%- assign series_posts = site.posts | where_exp: "p", "p.series" -%}
 
-The blog lists posts by year and date, among them the {{ series_posts.size }} parts of the series <cite>{{ series_posts.first.series_title }}</cite>. The title of each part names its topic.
+The blog lists posts by year and date, among them the {{ series_posts.size }} parts of the series <cite>{{ series_posts.first.series_title }}</cite>.
 
-Some posts describe an earlier prototype. Where the current implementation differs, the post says so and links to the current documentation. The [Atom feed]({{ '/feed.xml' | relative_url }}) lists new posts.
+Some posts describe code of an earlier prototype. The [GPU pipeline reference]({{ site.project.blob }}/docs/gpu-pipeline-reference.md) in the code repository describes the current implementation. The [Atom feed]({{ '/feed.xml' | relative_url }}) lists new posts.
 
 {% assign years = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
 {% for year in years %}
