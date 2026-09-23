@@ -102,5 +102,18 @@ class Links(SiteCase):
         self.assertTrue(any("without the baseurl" in e for e in errors))
 
 
+class MainContent(unittest.TestCase):
+    def test_empty_sections_and_todo_comments(self):
+        page = ('<main><h1>T</h1><p>x</p><h2 id="a"><a href="#a">A</a></h2>\n<!-- TODO(copy): later -->\n'
+                '<h2 id="b">B</h2><p>b</p><h3 id="c">C</h3>\n</main>')
+        errors = check_site.check_main(page)
+        self.assertEqual(len(errors), 3, errors)
+        self.assertTrue(any("'A'" in e for e in errors) and any("'C'" in e for e in errors))
+        self.assertTrue(any("TODO" in e for e in errors))
+        self.assertEqual(check_site.check_main('<main><h2>A</h2><table></table><h2>B</h2><ul><li>x</li></ul></main>'), [])
+        self.assertEqual(check_site.check_main('<main><h2>A</h2>\n<h3>A1</h3><p>x</p></main>'), [])
+        self.assertEqual(check_site.check_main('<p>no main</p><h2>A</h2>'), [])
+
+
 if __name__ == "__main__":
     unittest.main()

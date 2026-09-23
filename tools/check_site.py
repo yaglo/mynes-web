@@ -5,7 +5,9 @@ Walks every HTML file under the build directory and checks that each internal
 link, image, video source, poster, stylesheet and script resolves to a file in
 the build, that fragment links point at an existing element id, that internal
 absolute paths carry the configured baseurl, and that no unrendered Liquid or
-Liquid error text is left in the output.
+Liquid error text is left in the output. In <main> it also fails a section
+heading (h2 or h3) with nothing under it before the next heading or the end
+of the page, and an HTML comment that starts with TODO.
 
 It also checks that every page URL of the site before the restructure, listed
 in tools/old-urls.txt, still answers: with a page, or with a redirect page
@@ -89,6 +91,28 @@ def resolve(site, baseurl, page_rel, ref):
     return target, None
 
 
+# A heading, then only whitespace and comments, then a heading of the same or a
+# higher level or the end of the page. An h2 followed by its h3s is not empty.
+EMPTY_SECTION = [re.compile(r"<(h%d)\b[^>]*>((?:(?!</?h[1-6]\b).)*?)</\1>(?:\s|<!--(?:(?!-->).)*-->)*"
+                            r"(?=<h[1-%d]\b|</main>|</article>)" % (n, n), re.S | re.I) for n in (2, 3)]
+TODO_COMMENT = re.compile(r"<!--\s*TODO", re.I)
+
+
+def check_main(text):
+    """Problems in the <main> of a page: empty sections and TODO comments."""
+    m = re.search(r"<main\b.*?</main>", text, re.S | re.I)
+    if not m:
+        return []
+    main = m.group(0)
+    out = []
+    for h in (h for pattern in EMPTY_SECTION for h in pattern.finditer(main)):
+        title = re.sub(r"<[^>]+>", "", h.group(2)).strip()
+        out.append(f"section {title!r} ({h.group(1)}) has nothing under it")
+    if TODO_COMMENT.search(main):
+        out.append("a TODO comment is left in the page")
+    return out
+
+
 def check_links(site, baseurl, cache=None):
     """(errors, stats) for the links, media and fragments of every page."""
     cache = {} if cache is None else cache
@@ -107,6 +131,7 @@ def check_links(site, baseurl, cache=None):
                 if marker in text:
                     errors.append(f"{rel}: unrendered Liquid or Liquid error marker {marker!r}")
                     break
+            errors += [f"{rel}: {e}" for e in check_main(text)]
             col = parse(path, cache)
             for tag, attr, ref in col.refs:
                 if ref.startswith(SKIP_SCHEMES) or ref.startswith("//"):
