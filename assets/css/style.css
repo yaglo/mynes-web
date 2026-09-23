@@ -248,3 +248,5 @@ figure.render figcaption, .pan-figure figcaption, .compare-figure figcaption { m
 /* Gallery lists */
 .gallery-list { padding-left: 1.2rem; }
 .gallery-list li { margin: 0.35rem 0; }
+.notes-list { padding-left: 1.2rem; }
+.notes-list li { margin: 0.4rem 0; }
