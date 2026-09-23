@@ -45,6 +45,7 @@ timezone: UTC
 
 exclude:
   - README.md
+  - STYLE.md
   - Gemfile
   - Gemfile.lock
   - tools

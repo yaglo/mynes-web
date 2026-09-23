@@ -4,6 +4,7 @@
 #     --destination "$TMPDIR/mynes-web-preview" --port 4011
 exclude:
   - README.md
+  - STYLE.md
   - Gemfile
   - Gemfile.lock
   - vendor
