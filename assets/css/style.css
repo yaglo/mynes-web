@@ -123,17 +123,7 @@ strong { font-weight: 650; }
 .btn-primary:hover { background: var(--accent-hover); color: #1a1408; }
 .btn-secondary { color: var(--accent); }
 .btn-secondary:hover { border-color: var(--accent-hover); }
-.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin: 1.2rem 0 0.6rem; padding: 0; list-style: none; }
-.tiles li { margin: 0; }
-.tile { text-decoration: none; color: var(--fg); display: block; }
-.tile img { width: 100%; border-radius: 4px; }
-.tile span { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 0.35rem; }
-.tile:hover span { color: var(--accent); }
 .pipeline { font-size: 0.86rem; }
-.series-list { padding-left: 1.2rem; }
-.section-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1.5rem; padding: 0; list-style: none; }
-.section-links li { margin: 0; }
-.section-links small { display: block; color: var(--muted); }
 
 /* Videos on gallery pages */
 .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -151,11 +141,6 @@ strong { font-weight: 650; }
 .settings dd { margin: 0; }
 .preset-index { columns: 2; column-gap: 2rem; padding-left: 1.2rem; }
 
-/* Index cards (gallery / research landing) */
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; padding: 0; list-style: none; }
-.cards li { margin: 0; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 6px; padding: 0.9rem 1rem; }
-.cards a.card-title { font-weight: 650; text-decoration: none; }
-.cards p { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.92rem; }
 
 /* Rouge syntax colours (dark) */
 .highlight .c, .highlight .c1, .highlight .cm, .highlight .cp { color: #7f786d; font-style: italic; }
@@ -170,10 +155,8 @@ strong { font-weight: 650; }
   h1 { font-size: 1.6rem; }
   h2 { font-size: 1.25rem; }
   .hero h1 { font-size: 1.7rem; }
-  .tiles { grid-template-columns: repeat(2, 1fr); }
-  .video-grid { grid-template-columns: 1fr; }
-  .section-links { grid-template-columns: 1fr; }
-  .preset-index { columns: 1; }
+    .video-grid { grid-template-columns: 1fr; }
+    .preset-index { columns: 1; }
   .post-nav { flex-direction: column; }
   .settings { grid-template-columns: 1fr; gap: 0; }
   .settings dt { margin-top: 0.4rem; }
