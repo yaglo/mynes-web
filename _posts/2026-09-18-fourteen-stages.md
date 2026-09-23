@@ -1,26 +1,25 @@
 ---
 layout: "post"
-title: "14 Stages from DAC to Glass"
+title: "Part 4: The 14 stages of the GPU pipeline"
 date: "2026-09-18"
+updated: "2026-09-23"
 series: 4
 slug: "fourteen-stages"
 permalink: "/blog/fourteen-stages/"
-teaser: "Most CRT shaders are a single fragment shader. They darken every other row, warp the image with barrel distortion, maybe overlay a phosphor mask texture."
-description: "Most CRT shaders are a single fragment shader. They darken every other row, warp the image with barrel distortion, maybe overlay a phosphor mask texture."
+teaser: "The MyNES GPU pipeline models the NES signal path and a CRT television as 14 compute shaders run by one data-driven runner."
+description: "The MyNES GPU pipeline models the NES signal path and a CRT television as 14 compute shaders run by one data-driven runner."
 source: "docs/blog/04-fourteen-stages.md"
 ---
 
-*Modeling a CRT television as a GPU compute pipeline*
+[Part 3: The composite waveform]({{ '/blog/signal-nobody-sees/' | relative_url }}) described the waveform that the 2C02 outputs. This part describes the GPU pipeline that processes it in MyNES: 14 compute shaders, one per stage of the signal path.
 
----
+A CRT shader written as a single fragment shader darkens every other row, warps the image with barrel distortion and sometimes overlays a phosphor mask texture. The result is recognizable as a filter applied to a clean digital image.
 
-Most CRT shaders are a single fragment shader. They darken every other row, warp the image with barrel distortion, maybe overlay a phosphor mask texture. The result looks vaguely CRT-like, in the same way a guitar amp skin on a music app looks vaguely like a Marshall stack. It is immediately recognizable as a filter applied to a clean digital image.
+The cause is the architecture. A CRT television has 14 stages of analog electronics between the video input and the phosphor screen, and each stage adds its own artifacts. The artifacts interact, and a post-process filter cannot reproduce the interactions. They depend on the composite waveform, which a fragment shader never receives.
 
-The reason is architectural. A real CRT television has 14 stages of analog electronics between the video input and the phosphor glow. Each stage introduces characteristic artifacts. Those artifacts interact with each other in ways that a post-process filter cannot reproduce, because the interactions depend on the signal -- the actual composite waveform -- which a fragment shader never had.
+Chroma bleed is one example. The comb filter separates luma from chroma incompletely. The residual cross-color enters the chroma demodulator, which phase-shifts it by the subcarrier angle at that sample position. The matrix decode then maps the shifted values to specific wrong colors that depend on the original palette index. These colors come from the math of the stages, and a lookup table applied afterwards cannot produce them.
 
-Consider chroma bleed. The comb filter imperfectly separates luma from chroma. The residual cross-color enters the chroma demodulator, which phase-shifts it according to the subcarrier angle at that sample position. The matrix decode then maps those shifted values to specific wrong colors that depend on the original palette index. You cannot paint this on after the fact. The wrong colors are a consequence of the math, not a lookup table.
-
-## The pipeline
+## The 14 stages
 
 | Stage | Name | Domain | What it models |
 |-------|------|--------|----------------|
@@ -33,31 +32,30 @@ Consider chroma bleed. The comb filter imperfectly separates luma from chroma. T
 | 7 | Chroma demodulator | Signal | I/Q recovery via quadrature multiplication |
 | 8 | Luma processing | Signal | FIR bandwidth limiting |
 | 9 | Matrix decode | Signal | YIQ to RGB conversion |
-| | | | *--- signal domain ends ---* |
 | 10 | Video amplifier | Display | Per-gun bandwidth, gamma |
 | 11 | Electron beam | Display | Bloom, convergence, noise, geometry |
 | 12 | Phosphor screen | Display | Temporal persistence, dot crawl cancellation |
 | 13 | CRT glass | Display | Halation, barrel distortion, tint |
 | 14 | Environment | Display | Vignette, ambient light, tone mapping |
 
-Each stage is a separate GPU compute shader. The signal domain operates on 491,520 float samples (2048 samples per scanline, 240 scanlines). The display domain converts that into the output resolution with CRT physics.
+Each stage is a separate GPU compute shader. The signal domain (stages 1 to 9) operates on 491,520 float samples: 2048 samples per scanline, 240 scanlines. The display domain (stages 10 to 14) converts the samples into the output resolution with the CRT physics.
 
-## Connection types are not a quality slider
+## Stages active per connection type
 
-Different cables physically bypass different stages. This is not an approximation or a simplification. It is what actually happens when you change the cable.
+Different cables physically bypass different stages, and the pipeline bypasses the same stages as the hardware does when the cable changes.
 
-| Connection | Active stages | Why |
+| Connection | Active stages | Reason |
 |------------|--------------|-----|
 | RF | All 14 | Full signal path through RF modulator and TV tuner |
-| Composite | 1-3, 5-14 | Skips RF mod/demod (no carrier) |
-| S-Video | 1-3, 5 (bypass comb), 7-14 | Y/C pre-separated by cable |
-| Component | 1-3, 5, 8-14 | Baseband Cb/Cr, no chroma modulation |
-| RGB | 1-3, 10-14 | No color space conversion needed |
-| Direct | 1-2, 10-14 | No cable, shortest path |
+| Composite | 1 to 3, 5 to 14 | Skips RF mod/demod (no carrier) |
+| S-Video | 1 to 3, 5 (bypass comb), 7 to 14 | Y/C pre-separated by cable |
+| Component | 1 to 3, 5, 8 to 14 | Baseband Cb/Cr, no chroma modulation |
+| RGB | 1 to 3, 10 to 14 | No color space conversion needed |
+| Direct | 1 and 2, 10 to 14 | No cable, shortest path |
 
-An S-Video cable carries luma and chroma on separate wires. There is no composite signal to comb-filter because the signals were never combined. The comb filter stage is not "skipped for better quality." It is physically absent from the signal path. You cannot get composite artifacts from an S-Video connection any more than you can get wet from disconnected plumbing.
+An S-Video cable carries luma and chroma on separate wires. The 2 signals are never combined, so there is no composite signal to comb-filter. The comb filter stage is absent from the S-Video signal path, independent of any quality setting, and an S-Video connection shows no composite artifacts.
 
-The implementation is a single function call:
+One function decides which stages are active:
 
 ```c
 bool video_chain_stage_active(const VideoChain *chain, int stage) {
@@ -74,11 +72,11 @@ bool video_chain_stage_active(const VideoChain *chain, int stage) {
 }
 ```
 
-Hot-switching from RF to S-Video is toggling `enabled` flags on the stage array. The runner does not change. The shaders do not change. The signal path reconfigures itself.
+Switching from RF to S-Video while the emulator runs toggles the `enabled` flags in the stage array. The runner and the shaders stay the same.
 
 ## The signal chain runner
 
-All dispatch boilerplate is handled by a generic, data-driven runner. The same runner handles both video and audio chains.
+A generic, data-driven runner handles all dispatch boilerplate, for the video chain and for the audio chain.
 
 ```c
 typedef struct {
@@ -96,28 +94,28 @@ typedef struct {
 } ChainStage;
 ```
 
-Adding a stage means appending a struct. No C code changes. The runner iterates the array, dispatches each enabled stage's kernel, and manages buffer routing. It does not know or care what any stage does.
+Adding a stage means appending a struct, and no other C code changes. The runner iterates over the array, dispatches the kernel of each enabled stage and routes the buffers. It contains no code specific to any stage.
 
 ## Ping-pong buffers
 
-Two GPU buffers alternate as input and output. Stage N reads from buffer A and writes to buffer B. Stage N+1 reads from buffer B and writes to buffer A. The runner tracks which buffer holds the current data.
+The runner alternates 2 GPU buffers as input and output. Stage N reads from buffer A and writes to buffer B, and stage N+1 reads from buffer B and writes to buffer A. The runner tracks which buffer holds the current data.
 
-Some kernels operate in-place. The RC filter processes each scanline sequentially -- it reads and writes the same buffer because the IIR feedback requires the previous output sample. The runner knows not to swap buffers for these stages.
+Some kernels work in place. The RC filter processes each scanline sequentially and reads and writes the same buffer, because its IIR feedback needs the previous output sample. The runner does not swap buffers for these stages.
 
-Some kernels produce dual output. The comb filter writes Y to one buffer and C to another. The modulator in IQ mode writes I and Q simultaneously. Auxiliary buffers handle this -- up to 4 extra buffers beyond the ping-pong pair, routed automatically by flags on the `ChainStage` struct: `dual_output` for the modulator, `reads_secondary` for stages that consume the second output.
+Some kernels write 2 outputs. The comb filter writes Y to one buffer and C to another, and the modulator in IQ mode writes I and Q at the same time. Up to 4 auxiliary buffers beyond the ping-pong pair hold these outputs. Flags on the `ChainStage` struct route them automatically: `dual_output` for the modulator and `reads_secondary` for stages that read the second output.
 
-The same runner processes audio through 10 stages (coupling cap, feedback network, amplifier saturation, PSU hum, cable capacitance, speaker model, decimation). Different buffer sizes -- audio is ~29,829 float samples per frame versus video's 491,520 -- but the dispatch machinery is identical.
+The same runner processes audio through 10 stages (coupling cap, feedback network, amplifier saturation, PSU hum, cable capacitance, speaker model, decimation). An audio frame is about 29,829 float samples and a video frame 491,520, and the dispatch code is the same for both.
 
-## Emergent artifacts
+## Sources of the CRT artifacts
 
-The key insight: none of the characteristic CRT artifacts are special-cased.
+No CRT artifact in the pipeline has special-case code. Each one comes out of the signal processing of a stage.
 
-Dot crawl exists because the 3.579545 MHz subcarrier phase advances between frames. The DAC shader (Stage 1) encodes this phase. The comb filter (Stage 6) fails to fully cancel it. The residual shows up as a crawling rainbow pattern. No code says "add dot crawl here."
+Dot crawl comes from the 3.579545 MHz subcarrier phase, which advances between frames. The DAC shader (stage 1) encodes this phase, and the comb filter (stage 6) does not cancel it fully. The residual shows up as a crawling rainbow pattern, and no code adds dot crawl.
 
-Chroma bleed exists because the FIR bandwidth in Stage 7 is set to 1 MHz for a composite connection. At that bandwidth, low-frequency I/Q components spread 4-5 pixels horizontally. A PVM with 1.5 MHz chroma bandwidth has less bleed. The difference is one float in a uniform buffer.
+Chroma bleed comes from the FIR bandwidth in stage 7, which is set to 1 MHz for a composite connection. At that bandwidth, low-frequency I/Q components spread 4 to 5 pixels horizontally. A PVM with 1.5 MHz chroma bandwidth has less bleed, and the difference is one float in a uniform buffer.
 
-Rainbow shimmer on horizontal stripes exists because the 1-line comb filter averages two scanlines. When vertical detail changes rapidly, the luma estimate is wrong, and the error leaks into the chroma channel. A 3-line comb averages four scanlines and largely eliminates this -- but introduces slight vertical softening. The tradeoff is real. It is the same tradeoff TV engineers made in the 1980s.
+Rainbow shimmer on horizontal stripes comes from the 1-line comb filter, which averages 2 scanlines. Where vertical detail changes quickly, the luma estimate is wrong and the error leaks into the chroma channel. A 3-line comb averages 4 scanlines and removes most of the shimmer, at the cost of some vertical softening. TV engineers made the same tradeoff in the 1980s.
 
-Convergence fringing exists because the red and blue electron beams are offset from green. The beam shader (Stage 11) reads RGB values from shifted sample positions. The offset is worst at screen edges, scaled by `edge_factor = cx^2 + cy^2`. On a well-calibrated PVM, the offsets are near zero. On the Basement TV preset: `conv_r_x = 6.0, conv_b_x = -5.0`. Every edge has visible red-blue fringing.
+Convergence fringing comes from the offset of the red and blue electron beams from green. The beam shader (stage 11) reads RGB values from shifted sample positions. The offset is largest at the screen edges, scaled by `edge_factor = cx^2 + cy^2`. On a well-calibrated PVM the offsets are near zero, while the Basement TV preset sets `conv_r_x = 6.0, conv_b_x = -5.0` and shows red-blue fringing on every edge.
 
-These are not effects. They are consequences of the signal processing. The pipeline does not simulate a CRT. It simulates the electronics that drive one, and the CRT behavior follows.
+The pipeline simulates the electronics that drive a CRT, and the behavior of the CRT, artifacts included, follows from that simulation.

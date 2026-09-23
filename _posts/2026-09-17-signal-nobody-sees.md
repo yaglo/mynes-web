@@ -1,43 +1,40 @@
 ---
 layout: "post"
-title: "The Signal Nobody Sees"
+title: "Part 3: The composite waveform"
 date: "2026-09-17"
+updated: "2026-09-23"
 series: 3
 slug: "signal-nobody-sees"
 permalink: "/blog/signal-nobody-sees/"
-teaser: "There is a widespread misconception about the NES: that it outputs RGB. It does not."
-description: "There is a widespread misconception about the NES: that it outputs RGB. It does not."
+teaser: "The NES 2C02 PPU outputs one composite waveform, and the MyNES GPU pipeline generates it from Bisqwit's voltage model."
+description: "The NES 2C02 PPU outputs one composite waveform, and the MyNES GPU pipeline generates it from Bisqwit's voltage model."
 source: "docs/blog/03-signal-nobody-sees.md"
 ---
 
-*What actually comes out of the NES composite video pin*
+[Part 2: DMC DMA timing from the CPU DSL]({{ '/blog/compiler-knows-more/' | relative_url }}) was about the CPU and the DMC DMA. This part covers the composite video signal of the NES and how the MyNES GPU pipeline generates it.
 
----
+The NES has no RGB output. Its 2C02 PPU outputs a composite waveform: one analog signal on one wire that encodes brightness and color at the same time through phase modulation. The signal varies between about 0.35 V and 1.55 V and changes shape 3.58 million times per second.
 
-There is a widespread misconception about the NES: that it outputs RGB. It does not. The 2C02 PPU outputs a composite waveform -- a single analog signal on a single wire that encodes both brightness and color simultaneously through phase modulation. No red channel. No green channel. No blue channel. Just one signal that varies between approximately 0.35V and 1.55V, changing shape 3.58 million times per second.
+An emulator that decodes the 2C02's 64-entry palette to RGB through a lookup table never has this signal. The lookup is convenient and fast. Composite artifacts such as dot crawl, chroma bleed and rainbow shimmer on sharp edges then have to be faked as post-effects. What a TV does to the NES signal cannot be simulated without the signal. To reproduce the NES picture on a CRT, the emulator has to generate the waveform first.
 
-Most emulators decode the 2C02's 64-entry palette to RGB via a lookup table and never touch the actual signal. This is convenient and fast, but it means composite artifacts -- dot crawl, chroma bleed, rainbow shimmer on sharp edges -- can only be faked as post-effects. You cannot simulate what a real TV does to the NES signal because you never had the signal.
+## Composite video
 
-To reproduce what the NES actually looked like on a CRT, you need to generate the waveform first.
+NTSC composite video is a luminance (Y) base signal plus a chrominance (C) signal modulated onto a 3.579545 MHz subcarrier. The color is encoded as the phase and amplitude of this subcarrier relative to a reference burst: phase sets the hue and amplitude sets the saturation. This is quadrature amplitude modulation (QAM), which WiFi, cellular radio and digital TV also use. The 1953 NTSC committee chose a standard modulation scheme that happened to be compatible with existing black-and-white sets.
 
-## What Composite Video Actually Is
+At any moment, the composite signal is the sum of 2 components:
 
-NTSC composite video is a luminance (Y) base signal plus a chrominance (C) signal modulated onto a 3.579545 MHz subcarrier. The color information is encoded as the phase and amplitude of this subcarrier relative to a reference burst. Phase determines hue. Amplitude determines saturation. This is quadrature amplitude modulation (QAM) -- the same technique used in WiFi, cellular radio, and digital TV. The 1953 NTSC committee did not invent a weird analog hack; they used a standard modulation scheme that happened to be compatible with existing black-and-white sets.
+- Luma (Y): the brightness, which varies slowly (DC to about 4.2 MHz). A black-and-white TV displays only this.
+- Chroma (C): a burst of 3.579545 MHz oscillation whose instantaneous phase and amplitude encode hue and saturation. The TV's demodulator multiplies it by a reference cosine and sine to extract the I (in-phase, orange-cyan axis) and Q (quadrature, green-magenta axis) color difference signals.
 
-The composite signal is the sum of two components at any given moment:
+The TV separates Y and C from the combined signal with a comb filter, the main source of the look of composite video. The separation is always incomplete. Some luma leaks into chroma (rainbow shimmer on sharp horizontal edges), and some chroma leaks into luma (dot patterns on saturated color fields).
 
-- **Luma (Y):** The brightness, varying slowly (DC to about 4.2 MHz). A black-and-white TV just displays this.
-- **Chroma (C):** A burst of 3.579545 MHz oscillation whose instantaneous phase and amplitude encode hue and saturation. The TV's demodulator multiplies this by reference cosine and sine to extract the I (in-phase, orange-cyan axis) and Q (quadrature, green-magenta axis) color difference signals.
+## Bisqwit's voltage model
 
-A TV has to separate Y and C from the combined signal. This is the comb filter's job, and it is the primary source of composite video's characteristic look. The separation is never perfect, so some luma leaks into chroma (rainbow shimmer on sharp horizontal edges) and some chroma leaks into luma (dot patterns on saturated color fields).
+The 2C02 generates the composite waveform directly from its palette decoder, with no internal RGB stage. The 6-bit palette index and the 3 emphasis bits select its voltage levels.
 
-## The Bisqwit Voltage Model
+For each subcarrier phase slot, the PPU's output circuit selects one of 2 voltage levels. It compares the palette color value (0 to 13) with the current phase position (0 to 11). Gray entries produce a flat line with no chroma. Saturated colors produce a square-ish wave whose phase offset relative to the colorburst encodes the hue.
 
-The 2C02 does not internally produce RGB and then encode it. It generates the composite waveform directly from its palette decoder, using voltage levels selected by the 6-bit palette index and 3-bit emphasis bits.
-
-The PPU's output circuit selects between two voltage levels per subcarrier phase slot based on a comparison between the palette color value (0-13) and the current phase position (0-11). The result is a shaped waveform: grey entries produce a flat line (no chroma), saturated colors produce a square-ish wave whose phase offset relative to the colorburst encodes the hue.
-
-The signal table is precomputed from Bisqwit's voltage model. Here is the actual precomputation from `signal_precompute.h`:
+MyNES precomputes its signal table from Bisqwit's voltage model. This is the precomputation in `signal_precompute.h`:
 
 ```c
 static inline void signal_precompute_ntsc(SignalPrecompute *sp) {
@@ -73,27 +70,27 @@ static inline void signal_precompute_ntsc(SignalPrecompute *sp) {
 }
 ```
 
-Eight voltage levels. A comparison that determines whether each phase slot is "high" or "low." Emphasis bits that attenuate specific phase octants by a factor of 0.746. That is the complete 2C02 video output model. Everything else -- every color the NES displays, every dot crawl pattern, every rainbow shimmer -- is a consequence of these numbers and the downstream signal processing.
+The complete 2C02 video output model has 8 voltage levels, a high or low comparison per phase slot, and emphasis bits that scale selected phase octants by 0.746. The colors the NES displays and its dot crawl and rainbow patterns all follow from these numbers and the signal processing after them.
 
 The table has 512 entries (64 palette values times 8 emphasis combinations), each producing 12 phase slots. The slots are duplicated to 24 so that an 8-sample read starting at any offset stays in bounds without a modulo.
 
-Consider a few example waveforms:
+Example waveforms:
 
-- **Palette $0F (black):** All 12 slots at the minimum level. Flat line, no chroma. The TV sees pure low-luminance signal.
-- **Palette $30 (white):** All 12 slots at the maximum level. Flat line again, but high. Pure high luminance.
-- **Palette $16 (red):** Six slots high, six slots low, phased to align with the red axis of the subcarrier. The TV's demodulator sees strong I-channel energy at the red hue angle.
-- **Palette $12 (blue):** Same square-wave pattern, but phase-shifted 180 degrees from red. Strong negative-I, positive-Q.
-- **Palette $16 with emphasis bits $40:** The red waveform, but slots in the attenuated octant are multiplied by 0.746. Lower amplitude at certain phases shifts the decoded color slightly and reduces saturation.
+- Palette $0F (black): all 12 slots at the minimum level. The flat line carries no chroma, and the TV sees only a low luminance signal.
+- Palette $30 (white): all 12 slots at the maximum level. The line is flat again, but high, and carries only luminance.
+- Palette $16 (red): 6 slots high and 6 slots low, phased to align with the red axis of the subcarrier. The TV's demodulator sees strong I-channel energy at the red hue angle.
+- Palette $12 (blue): the same square wave, phase-shifted 180 degrees from red. It gives strong negative I and positive Q.
+- Palette $16 with emphasis bits $40: the red waveform, with the slots in the attenuated octant multiplied by 0.746. The lower amplitude at those phases shifts the decoded color a little and reduces saturation.
 
-## The Sampling Relationship
+## Samples per pixel
 
-The NES emits 8 waveform samples per pixel at a sample rate derived from the master oscillator. The subcarrier completes one full cycle every 12 phase slots. So each NES pixel spans 8/12 = 2/3 of a subcarrier cycle.
+The NES emits 8 waveform samples per pixel at a sample rate derived from the master oscillator. The subcarrier completes one full cycle every 12 phase slots, so each NES pixel spans 8/12 = 2/3 of a subcarrier cycle.
 
-This is not an arbitrary choice. The NTSC standard defines the relationship between the pixel clock and the colorburst frequency, and the NES's master oscillator produces both from the same crystal. The ratio 2/3 is the real NTSC relationship.
+The NTSC standard defines the relationship between the pixel clock and the colorburst frequency, and the NES master oscillator produces both from the same crystal. The 2/3 ratio is the relationship on NTSC hardware.
 
-PAL is different: 10 samples per pixel at 12 phase slots per cycle gives 10/12 = 5/6 cycles per pixel. Both regions use the same 12-slot color wheel -- they just sample it at different rates.
+PAL uses 10 samples per pixel at 12 phase slots per cycle, which gives 10/12 = 5/6 of a cycle per pixel. Both regions use the same 12-slot color wheel and sample it at different rates.
 
-On the GPU, the DAC shader converts the 256x240 palette index buffer into a 2048x240 (NTSC) or 2560x240 (PAL) float waveform:
+On the GPU, the DAC shader converts the 256×240 palette index buffer into a float waveform of 2048×240 (NTSC) or 2560×240 (PAL) samples:
 
 ```glsl
 void main() {
@@ -122,29 +119,27 @@ void main() {
 }
 ```
 
-256 threads per workgroup (one per NES pixel), 240 workgroups (one per scanline). 61,440 threads total. Each thread reads one palette index, computes the subcarrier phase for that pixel position, and writes 8 (or 10) float samples. The entire 2048x240 waveform is generated in a single dispatch.
+The shader runs 240 workgroups (one per scanline) of 256 threads (one per NES pixel), 61,440 threads in total. Each thread reads one palette index, computes the subcarrier phase at that pixel position and writes 8 (or 10) float samples. One dispatch generates the whole 2048×240 waveform.
 
-## Dot Crawl: Not a Bug
+## Dot crawl
 
-The subcarrier phase advances between frames. The `phase_base` uniform tracks this, advancing by `phase_field_adv` slots per frame. Because the phase relationship between the pixel grid and the subcarrier changes frame-to-frame, the visible chroma artifacts shift position. On sharp color transitions -- where palette index $16 (red) sits next to $30 (white) -- the imperfect Y/C separation in the TV's comb filter creates visible dots at the chroma frequency. These dots crawl across the screen as the phase cycles.
+The subcarrier phase advances between frames. The `phase_base` uniform tracks it and advances by `phase_field_adv` slots per frame. The phase relationship between the pixel grid and the subcarrier changes with every frame, so the visible chroma artifacts shift position. At sharp color transitions, such as palette index $16 (red) next to $30 (white), the incomplete Y/C separation in the TV's comb filter leaves visible dots at the chroma frequency. The dots crawl across the screen as the phase cycles.
 
-This is not a bug in the NES or in the TV. It is inherent to NTSC. The subcarrier frequency was chosen to be an odd multiple of half the line rate specifically so that the phase would alternate between frames, making the chroma artifacts less visible through temporal averaging. Dot crawl is the visible evidence of this deliberate design choice.
+Dot crawl is inherent to NTSC, and the NES and the TV both work as designed when it appears. The subcarrier frequency was chosen to be an odd multiple of half the line rate so that the phase alternates between frames. Temporal averaging then makes the chroma artifacts less visible, and dot crawl is the visible trace of that design choice.
 
-On a real TV, if you stare at a static NES screen, you see the dots slowly shift over a 2-3 frame cycle. Some TVs with 3D comb filters or frame buffers cancel it entirely. Cheap TVs with no comb filter show aggressive crawling. The GPU pipeline reproduces this naturally because the phase offset is tracked per frame and fed into the DAC shader.
+On a static NES screen, a TV shows the dots shifting over a cycle of 2 to 3 frames. Some TVs with 3D comb filters or frame buffers cancel it entirely, and cheap TVs with no comb filter show strong crawling. The GPU pipeline reproduces this because it tracks the phase offset per frame and feeds it into the DAC shader.
 
-PAL has a different dot crawl pattern because the V-phase inverts per scanline (the "Phase Alternating Line" that gives PAL its name). The CPU composite path handles this by maintaining two signal tables -- one for even scanlines and one for odd -- with the V-component flipped:
+PAL has a different dot crawl pattern because the V phase inverts on every scanline (the Phase Alternating Line that gives PAL its name). The CPU composite path keeps 2 signal tables, one for even scanlines and one for odd, with the V component flipped:
 
 ```c
 float signal_table[COMP_SIGNAL_ENTRIES][COMP_TABLE_STRIDE];
 float signal_table_alt[COMP_SIGNAL_ENTRIES][COMP_TABLE_STRIDE];
 ```
 
-The emission loop picks the appropriate table based on scanline parity, modeling the 2C07's per-line V-phase inversion at the encoder.
+The emission loop picks the table by scanline parity, which models the 2C07's per-line V-phase inversion at the encoder.
 
-## Why This Matters
+A dot crawl pattern cannot be added to an RGB image afterwards, so reproducing the NES on a TV has to start from the waveform. The pattern depends on the subcarrier phase at each pixel position. That phase depends on where the pixel sits in the 12-slot color wheel, which depends on the scanline and the frame counter.
 
-To faithfully reproduce what the NES looked like on a real TV, you cannot start from RGB and work backwards. There is no "dot crawl filter" you can apply to an RGB image that produces the right pattern, because the pattern depends on the subcarrier phase at each specific pixel position, which depends on where the pixel sits within the 12-slot color wheel, which depends on the scanline and the frame counter.
+The artifacts carry information. Experienced NES players learned to read them. Faint color fringing showed that a sprite was one pixel away from a background tile, and a dot pattern showed a specific palette combination. Game artists used them on purpose. They placed specific palette indices next to each other so that the composite signal would blend them into colors that the NES palette does not contain.
 
-The artifacts are not decorative. They are information. Experienced NES players learned to read them -- the slight color fringing that tells you a sprite is one pixel away from a background tile, the dot pattern that indicates a specific palette combination. Game artists used them deliberately, placing specific palette indices next to each other knowing that the composite signal would blend them into colors that do not exist in the NES palette.
-
-The composite waveform is the ground truth. Everything downstream -- the comb filter, the demodulator, the CRT beam -- processes this signal. Generate it wrong and every subsequent stage produces wrong artifacts. Generate it right and the artifacts emerge naturally from the math, without any special-case code. That is what the GPU pipeline does: 14 stages of signal processing, starting from this waveform, ending at the phosphor screen.
+Every later stage processes this waveform: the comb filter, the demodulator and the CRT beam. The artifacts come out of the math in those stages with no special-case code, so an error in the waveform carries into every stage after it. The GPU pipeline's 14 stages of signal processing start from this waveform and end at the phosphor screen.

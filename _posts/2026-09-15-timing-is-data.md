@@ -1,45 +1,55 @@
 ---
 layout: "post"
-title: "Timing Is Data, Not Code"
+title: "Part 1: The 6502 timing DSL"
 date: "2026-09-15"
+updated: "2026-09-23"
 series: 1
 slug: "timing-is-data"
 permalink: "/blog/timing-is-data/"
-teaser: "Hand-writing a cycle-accurate 6502 emulator in C is a combinatorial nightmare."
-description: "Hand-writing a cycle-accurate 6502 emulator in C is a combinatorial nightmare."
+teaser: "The MyNES 6502 core is generated from a declarative DSL that gives the bus operation of every cycle of all 256 opcodes."
+description: "The MyNES 6502 core is generated from a declarative DSL that gives the bus operation of every cycle of all 256 opcodes."
 source: "docs/blog/01-timing-is-data.md"
 ---
 
-*A declarative DSL for cycle-accurate 6502 CPU emulation*
+Updated 2026-09-22: the Results section gives the current AccuracyCoin result and retracts the earlier 119 of 138.
 
----
+The MyNES 6502 core is generated from a declarative DSL that gives the bus operation of every cycle. This part describes the DSL, the compiler that turns it into C, and the bugs that the design rules out.
 
-Hand-writing a cycle-accurate 6502 emulator in C is a combinatorial nightmare. You have 256 opcodes across 13 addressing modes, with conditional extra cycles for page boundary crossings and taken branches. Each cycle has exactly one bus operation -- a read, a write, or a dummy read -- and the exact address and timing of that operation determines interrupt recognition, DMA interaction, and PPU synchronization. Get a single cycle wrong and the bug won't show up until some obscure test ROM checks the exact behavior of a DMC sample fetch landing on the fourth cycle of an INC instruction.
+## Cycle timing in a hand-written 6502 core
 
-The bugs that kill you are not algorithmic. They are bookkeeping errors. A forgotten dummy read in a read-modify-write instruction. An off-by-one cycle in a page-crossing penalty. The double-write sequence that RMW instructions perform on real silicon (write old value, then write new value) skipped entirely because it seemed redundant. A CLI instruction that clears the interrupt flag immediately instead of after a one-instruction delay. Each of these is a one-line mistake in a sea of nearly identical switch cases, invisible until a specific game relies on the exact timing.
+A 6502 core written by hand in C covers 256 opcodes across 13 addressing modes, with conditional extra cycles for page boundary crossings and taken branches. Each cycle performs exactly one bus operation: a read, a write or a dummy read. The address and timing of that operation decide interrupt recognition, DMA interaction and PPU synchronization. One wrong cycle can stay hidden until a test ROM checks a case such as a DMC sample fetch landing on the fourth cycle of an INC instruction.
 
-The standard approaches all share the same fundamental problem: the timing specification is interleaved with the implementation. Whether you write a giant switch with manual cycle counting (FCEUX), per-instruction functions with cycle tables (Nestopia), or instruction-level execution with fixups, the "what happens on cycle 3" is expressed as imperative code. When the specification is code, there is no structural guarantee against miscounted cycles.
+The bugs in such a core are bookkeeping errors, for example:
 
-## The Insight: Timing Follows the Addressing Mode
+- a dummy read left out of a read-modify-write (RMW) instruction;
+- a page-crossing penalty that is off by one cycle;
+- the double write that RMW instructions perform on the chip (the old value, then the new value), skipped because it looks redundant;
+- a CLI instruction that clears the interrupt flag immediately, where the 6502 clears it after a one-instruction delay.
 
-6502 instruction timing is not arbitrary. It follows regular patterns dictated by the addressing mode. Every absolute-indexed read instruction does the same thing:
+Each is a one-line mistake in one of many nearly identical switch cases, and it stays invisible until a game relies on the exact timing.
+
+The usual designs put the timing specification inside the implementation. FCEUX uses a large switch with manual cycle counting, Nestopia uses per-instruction functions with cycle tables, and other cores execute whole instructions and apply fixups. In each of them, what happens on cycle 3 is written as imperative code. When the specification is code, nothing in its structure prevents a miscounted cycle.
+
+## Timing follows the addressing mode
+
+The timing of 6502 instructions follows regular patterns set by the addressing mode. Every absolute-indexed read instruction does the same thing:
 
 1. Fetch low address byte, increment PC
 2. Fetch high address byte, add index to low byte, latch carry
 3. Read from (possibly wrong) effective address
 4. If carry was set, fix high byte, re-read from correct address
 
-This is true for LDA abs,X and AND abs,X and ADC abs,X. The only thing that changes is what the instruction does with the byte it read. The bus access pattern -- the timing -- is *data*. It can be described once and reused.
+This holds for `LDA abs,X`, `AND abs,X` and `ADC abs,X`. The only difference between them is what the instruction does with the byte it read. The bus access pattern, which is the timing, is data that can be described once and reused.
 
-If you express timing as structured data rather than imperative code, a compiler can ensure every cycle has exactly one bus operation, eliminate manual cycle counting, and generate the tedious C automatically.
+With the timing written as structured data, a compiler can check that every cycle has exactly one bus operation, remove manual cycle counting and generate the repetitive C.
 
-## Four Layers of Composition
+## The 4 layers of the DSL
 
-The DSL in `src/cpu/nes6502.dsl` describes all 256 opcodes in a layered S-expression format. A Chicken Scheme compiler reads it and generates C. Here is how the layers compose.
+The DSL in `src/cpu/nes6502.dsl` describes all 256 opcodes in 4 layers of S-expressions. A Chicken Scheme compiler reads it and generates C.
 
-### Layer 1: `defcycle` -- Name the Atoms
+### Cycle macros (`defcycle`)
 
-Named single-cycle patterns for common bus operations:
+Layer 1 names single-cycle patterns for common bus operations:
 
 ```scheme
 (defcycle fetch-adl       (fetch adl pc))
@@ -49,11 +59,11 @@ Named single-cycle patterns for common bus operations:
 (defcycle write-nz-dl     (write ad dl) (nz dl))
 ```
 
-`(fetch-adl)` anywhere in a state body expands to one clock cycle that reads from PC into the address low latch and increments PC. Twenty of these cover the common patterns: fetch operands, read from effective address, write results, dummy reads for timing padding.
+`(fetch-adl)` anywhere in a state body expands to one clock cycle that reads from PC into the address low latch and increments PC. The DSL uses 20 of these macros for the common patterns: operand fetches, reads from the effective address, result writes and dummy reads that pad the timing.
 
-### Layer 2: `template` -- Compose Addressing Modes
+### Addressing-mode templates (`template`)
 
-Templates compose cycle macros into multi-cycle patterns with parameters:
+Layer 2 composes cycle macros into multi-cycle patterns with parameters:
 
 ```scheme
 (template read-abs (op reg)
@@ -68,9 +78,9 @@ Templates compose cycle macros into multi-cycle patterns with parameters:
   (write-nz-dl))
 ```
 
-`read-abs` takes an operation and a register as parameters. When instantiated, `op` and `reg` are substituted textually. The template defines the bus access pattern; the parameters define what to do with the data.
+`read-abs` takes an operation and a register as parameters. When the template is instantiated, `op` and `reg` are substituted as text. The template defines the bus access pattern, and the parameters define what happens to the data.
 
-The `when` construct handles variable-length instructions:
+The `when` construct handles instructions of variable length:
 
 ```scheme
 (template read-abx (op reg)
@@ -81,11 +91,11 @@ The `when` construct handles variable-length instructions:
     (cycle (adc8-from-pagecross adh adh) (read dl ad) (op reg dl))))
 ```
 
-The third cycle performs the operation optimistically. If no page cross occurred, the instruction is done in 4 cycles. If the indexed add carried, the read used a wrong high byte, so a fourth cycle fixes the address and re-reads. This matches the real 6502 exactly: the "penalty cycle" is not a number you add to a total. It is a conditional extra bus access with specific behavior.
+The third cycle performs the operation on the assumption that no page was crossed. Without a page cross, the instruction ends after 4 cycles. If the indexed add carried, the read used the wrong high byte, so a fourth cycle fixes the address and reads again. This matches the 6502, where the penalty cycle is a conditional extra bus access with its own behavior.
 
-### Layer 3: `state` -- Instantiate with Operations
+### Instruction states (`state`)
 
-States instantiate templates with specific operations. All eight LDA addressing variants are eight one-liners:
+Layer 3 instantiates templates with specific operations. The 8 LDA addressing variants are 8 one-line states:
 
 ```scheme
 (state lda-imm (read-imm load-nz a))
@@ -98,9 +108,11 @@ States instantiate templates with specific operations. All eight LDA addressing 
 (state lda-izy (read-izy load-nz a))
 ```
 
-Compare this to hand-writing 4-8 switch cases per variant, each with manual bus reads, flag updates, and cycle transitions. The DSL version has no room for the "off by one cycle" or "forgot the dummy read" bugs.
+Written by hand, each variant takes 4 to 8 switch cases with manual bus reads, flag updates and cycle transitions. The DSL version leaves no place for an off-by-one cycle or a forgotten dummy read.
 
-### Layer 4: `opcode` -- Map Bytes
+### Opcode table (`opcode`)
+
+Layer 4 maps opcode bytes to states:
 
 ```scheme
 (opcode #xA9 lda-imm)
@@ -108,11 +120,11 @@ Compare this to hand-writing 4-8 switch cases per variant, each with manual bus 
 (opcode #xAD lda-abs)
 ```
 
-Maps bytes to states. The compiler builds a 256-entry lookup table.
+The compiler builds a 256-entry lookup table from these lines.
 
-## The Interesting Example: Branches
+## Branches
 
-The branch template is the most instructive because it shows how `when` blocks compile to conditional microcode jumps:
+The branch template shows how `when` blocks compile to conditional microcode jumps:
 
 ```scheme
 (template branch-if (cond)
@@ -123,7 +135,7 @@ The branch template is the most instructive because it shows how `when` blocks c
     (cycle (dummy pc) (branch-correct-pch dl))))
 ```
 
-All eight branch instructions are single-word definitions:
+All 8 branch instructions are one-word definitions, and 6 of them are shown here:
 
 ```scheme
 (state bpl (branch-if (not n)))
@@ -134,7 +146,7 @@ All eight branch instructions are single-word definitions:
 (state beq (branch-if z))
 ```
 
-Here is what the compiler generates for BPL (cases 440-442 of `cpu_gen.c`):
+The compiler generates this C for BPL (cases 440 to 442 of `cpu_gen.c`):
 
 ```c
 case 440: /* bpl */
@@ -159,16 +171,17 @@ case 442: /* bpl when page-cross */
     cpu->uPC = 0; return;
 ```
 
-Three possible outcomes, three possible cycle counts:
-- **Not taken (2 cycles):** Case 440 reads the offset, decides not to branch, jumps to uPC 0.
-- **Taken, same page (3 cycles):** Case 440 sets `branch_taken`, falls to 441. Case 441 updates PCL only, sees no page cross, jumps to 0.
-- **Taken, page cross (4 cycles):** Case 441 sees page cross, falls to 442. Case 442 fixes PCH.
+The 3 cases give the 3 possible cycle counts:
 
-No cycle counter. No "add 1 if taken, add 1 more if page cross." The variable timing emerges from the conditional microcode structure.
+- Not taken, 2 cycles: case 440 reads the offset, decides not to branch and jumps to uPC 0.
+- Taken on the same page, 3 cycles: case 440 sets `branch_taken` and moves to 441. Case 441 updates PCL only, finds no page cross and jumps to 0.
+- Taken across a page, 4 cycles: case 441 finds a page cross and moves to 442, which fixes PCH.
 
-## The NMI Handler Reads Like a Datasheet
+The generated code has no cycle counter and no rule such as "add 1 if taken, add 1 more if page cross". The variable timing comes from the structure of the conditional microcode.
 
-Compare the NMI handler DSL to the corresponding timing diagram in the 6502 datasheet:
+## NMI handler and the datasheet timing diagram
+
+The NMI handler in the DSL follows the timing diagram in the 6502 datasheet:
 
 ```scheme
 (state nmi-handler
@@ -181,11 +194,11 @@ Compare the NMI handler DSL to the corresponding timing diagram in the 6502 data
   (goto fetch))
 ```
 
-Each line maps 1:1 to a row in the timing diagram. The bus operation, the register manipulation, and the cycle boundary are all visible in one place. You can hold the DSL in one hand and the datasheet in the other and verify them against each other.
+Each line maps 1:1 to a row in the timing diagram. The bus operation, the register changes and the cycle boundary sit on the same line, so the DSL and the datasheet can be checked against each other row by row.
 
-## Unofficial Opcodes Compose Naturally
+## Unofficial opcodes built from official ones
 
-The unofficial opcode DCP (decrement memory, then compare) is a RMW instruction. In the DSL, its core is literally DEC followed by CMP:
+The unofficial opcode DCP (decrement memory, then compare) is an RMW instruction. In the DSL, its core is DEC followed by CMP:
 
 ```scheme
 (state dcp-zp
@@ -194,9 +207,9 @@ The unofficial opcode DCP (decrement memory, then compare) is a RMW instruction.
   (cycle (write ad dl) (cmp a dl)))
 ```
 
-The first write puts back the original value after decrementing internally. The second write puts back the decremented result. This matches the real silicon behavior where RMW instructions write the unmodified value, perform the operation, then write the result. The DSL makes this double-write visible and explicit.
+The first write puts back the original value after the decrement happens internally. The second write puts back the decremented result. RMW instructions on the chip do the same: they write the unmodified value, perform the operation, then write the result. The DSL shows both writes as separate cycles.
 
-All seven DCP addressing variants follow the same pattern -- take the addressing mode's setup cycles, append the DEC+CMP write pair:
+The 7 DCP addressing variants follow one pattern: the setup cycles of the addressing mode, then the DEC+CMP write pair.
 
 ```scheme
 (state dcp-zp  (fetch-zp-addr) (read-to-dl) ...)
@@ -205,26 +218,24 @@ All seven DCP addressing variants follow the same pattern -- take the addressing
 (state dcp-abx (fetch-adl) (fetch-adh-add-x) (fixup-page-read) (read-to-dl) ...)
 ```
 
-The same holds for ISC (INC + SBC), SLO (ASL + ORA), RLA (ROL + AND), SRE (LSR + EOR), and RRA (ROR + ADC). Each combines two official operations, and the DSL makes the composition transparent.
+ISC (INC + SBC), SLO (ASL + ORA), RLA (ROL + AND), SRE (LSR + EOR) and RRA (ROR + ADC) are built the same way. Each combines 2 official operations, and the DSL shows the composition.
 
-## The Compiler
+## The compiler
 
-The compiler is 904 lines of Chicken Scheme. There are no clever tricks.
+The compiler is 904 lines of Chicken Scheme and works in 3 steps.
 
-**Template expansion** is textual substitution. When the compiler sees `(read-abs load-nz a)`, it looks up the `read-abs` template, substitutes `op` with `load-nz` and `reg` with `a`, then recursively expands any nested templates. The result is a flat sequence of `(cycle ...)` forms.
+Template expansion is text substitution. For `(read-abs load-nz a)`, the compiler looks up the `read-abs` template, substitutes `load-nz` for `op` and `a` for `reg`, then expands nested templates recursively. The result is a flat sequence of `(cycle ...)` forms.
 
-**uPC assignment** is sequential. The compiler walks states in definition order. Each state gets a contiguous range of case labels. The `fetch` state is always case 0.
+uPC assignment is sequential. The compiler walks the states in definition order and gives each state a contiguous range of case labels. The `fetch` state is always case 0.
 
-**`when` blocks** compile to conditional jumps. The cycle before a `when` block emits: "if condition is true, go to the when's first case; else skip past all consecutive when blocks to uPC 0." This is how variable-timing instructions work without any runtime cycle counter.
-
-The whole thing is simple enough to understand in an afternoon.
+`when` blocks compile to conditional jumps. The cycle before a `when` block tests the condition. If it holds, the next step is the first case of the `when` block; otherwise the jump skips all consecutive `when` blocks and goes to uPC 0. Variable-timing instructions work this way without a runtime cycle counter.
 
 ## Results
 
-1,401 lines of DSL generate 5,300 lines of C containing 834 microcode steps. The generated `cpu_gen.c` compiles to a tight jump table that modern C compilers optimize well.
+The 1,401 lines of DSL generate 5,300 lines of C containing 834 microcode steps. The generated `cpu_gen.c` compiles to a jump table that modern C compilers optimize well.
 
-**Updated 22 September 2026:** MyNES passes all 144 tests in the current bundled AccuracyCoin ROM, with no failures or unrun tests at the default CPU/PPU alignment. The earlier 119/138 result described an older implementation and fixture. See the [fixture revision](https://github.com/yaglo/mynes/blob/master/tests/accuracy_coin/UPSTREAM.md) and [testing guide](https://github.com/yaglo/mynes/blob/master/docs/architecture/testing.md).
+MyNES passes {{ site.data.facts.tests.passed }} of {{ site.data.facts.tests.total }} tests in the current bundled AccuracyCoin ROM, with no failures and no unrun tests at the default CPU/PPU alignment. The 119 of 138 result that this post gave before described an older implementation and fixture. The [AccuracyCoin fixture revision](https://github.com/yaglo/mynes/blob/master/tests/accuracy_coin/UPSTREAM.md) and the [MyNES testing guide](https://github.com/yaglo/mynes/blob/master/docs/architecture/testing.md) give the details.
 
-When a timing bug is found, the fix is typically a one-line change to the DSL -- adding a missing `(snapshot-i)`, reordering operations within a cycle, or adding a `(when page-cross ...)` block. The C code regenerates automatically. The specification is the single source of truth.
+A timing bug is usually fixed with a one-line change to the DSL, such as adding a missing `(snapshot-i)`, reordering operations within a cycle or adding a `(when page-cross ...)` block. The C code regenerates automatically, and the DSL remains the only place where the timing is specified.
 
-The DSL approach means an entire class of bugs -- miscounted cycles, forgotten dummy reads, wrong RMW write sequences, misplaced flag updates -- simply cannot occur. The template structure makes correctness compositional: if the template is right, every instruction using that template is right. You verify the addressing mode once, not once per opcode.
+The DSL rules out 4 kinds of bugs: miscounted cycles, forgotten dummy reads, wrong RMW write sequences and misplaced flag updates. Correctness composes through the templates: if a template is right, every instruction that uses it is right, so each addressing mode is verified once for all of its opcodes.
