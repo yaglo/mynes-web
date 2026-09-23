@@ -11,13 +11,13 @@ description: "The MyNES GPU pipeline models the NES signal path and a CRT televi
 source: "docs/blog/04-fourteen-stages.md"
 ---
 
+Updated 2026-09-23: the 3-line comb now uses the center line and its 2 neighbors. The prototype this post first described averaged 4 scanlines.
+
 [Part 3: The composite waveform]({{ '/blog/signal-nobody-sees/' | relative_url }}) described the waveform that the 2C02 outputs. This part describes the GPU pipeline that processes it in MyNES: 14 compute shaders, one per stage of the signal path.
 
-A CRT shader written as a single fragment shader darkens every other row, warps the image with barrel distortion and sometimes overlays a phosphor mask texture. The result is recognizable as a filter applied to a clean digital image.
+A CRT television has 14 stages of analog electronics between the video input and the phosphor screen, and each stage adds its own artifacts. The artifacts interact, and they depend on the composite waveform, so MyNES runs one compute shader per stage on that waveform.
 
-The cause is the architecture. A CRT television has 14 stages of analog electronics between the video input and the phosphor screen, and each stage adds its own artifacts. The artifacts interact, and a post-process filter cannot reproduce the interactions. They depend on the composite waveform, which a fragment shader never receives.
-
-Chroma bleed is one example. The comb filter separates luma from chroma incompletely. The residual cross-color enters the chroma demodulator, which phase-shifts it by the subcarrier angle at that sample position. The matrix decode then maps the shifted values to specific wrong colors that depend on the original palette index. These colors come from the math of the stages, and a lookup table applied afterwards cannot produce them.
+Chroma bleed is one example. The comb filter separates luma from chroma incompletely. The residual cross-color enters the chroma demodulator, which phase-shifts it by the subcarrier angle at that sample position. The matrix decode then maps the shifted values to specific wrong colors that depend on the original palette index. These colors come from the math of the stages.
 
 ## The 14 stages
 
@@ -114,7 +114,7 @@ Dot crawl comes from the 3.579545 MHz subcarrier phase, which advances between f
 
 Chroma bleed comes from the FIR bandwidth in stage 7, which is set to 1 MHz for a composite connection. At that bandwidth, low-frequency I/Q components spread 4 to 5 pixels horizontally. A PVM with 1.5 MHz chroma bandwidth has less bleed, and the difference is one float in a uniform buffer.
 
-Rainbow shimmer on horizontal stripes comes from the 1-line comb filter, which averages 2 scanlines. Where vertical detail changes quickly, the luma estimate is wrong and the error leaks into the chroma channel. A 3-line comb averages 4 scanlines and removes most of the shimmer, at the cost of some vertical softening. TV engineers made the same tradeoff in the 1980s.
+Rainbow shimmer on horizontal stripes comes from the 1-line comb filter, which averages 2 scanlines. Where vertical detail changes quickly, the luma estimate is wrong and the error leaks into the chroma channel. A 3-line comb uses the center line and its 2 neighbors and removes most of the shimmer, at the cost of some vertical softening.
 
 Convergence fringing comes from the offset of the red and blue electron beams from green. The beam shader (stage 11) reads RGB values from shifted sample positions. The offset is largest at the screen edges, scaled by `edge_factor = cx^2 + cy^2`. On a well-calibrated PVM the offsets are near zero, while the Basement TV preset sets `conv_r_x = 6.0, conv_b_x = -5.0` and shows red-blue fringing on every edge.
 
