@@ -181,7 +181,7 @@ and the landing page in headless Chrome (see the site README).
 | `mega-man-2-title` | `sony_pvm_14l2` (960×720) | `sony_pvm_14l2`, `jvc_d_series_2000`, `toshiba_14af43`, `stass_favourite` (one shared title frame, from `assets/images/showcase/4k/`) |
 | `kirby-title` | `jvc_d_series_2000` | none |
 | `little-samson-opening` | `jvc_d_series_2000` | none |
-| `darkwing-bridge` | `stass_favourite` | none (the existing Darkwing 4K frame is a PVM render, a different preset) |
+| `darkwing-bridge` | `stass_favourite` | none (the existing 3840×2880 Darkwing frame is a PVM render, a different preset) |
 | `mario-3-title` | `toshiba_14af43` | none |
 
 `reference_composite` and `vhs_sp_consumer` are listed in `presets` without

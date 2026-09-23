@@ -29,7 +29,7 @@ GitHub allows: `jekyll-seo-tag`, `jekyll-sitemap`, `jekyll-feed`,
 | `assets/images/` | Every image and video from the code repository's former `docs/images/` tree, with the original directory layout |
 | `assets/previews/` | WebP previews of rasters over 1 MB, used by the archived pages |
 | `assets/posters/` | Poster frames for the MP4 clips |
-| `assets/hero/` | Manifest, posters and 4K lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)) |
+| `assets/hero/` | Manifest, posters and 3840×2880 lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)) |
 | `assets/js/tv-switcher.js`, `assets/css/tv.css`, `_includes/tv-switcher.html` | The switcher's script, styles and markup |
 | `assets/js/render.js`, `viewer.js`, `compare.js` | Sizing of renders, the pan viewer and the comparison slider |
 | `assets/video/` | `showcase-reel-1280x960.mp4`, the reel re-encoded at 1280×960 (H.264, crf 30, about 2.4 MB), and its poster, used by an archived page |
