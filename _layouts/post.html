@@ -7,7 +7,7 @@ layout: default
 <h1>{{ page.title }}</h1>
 {% include anchor-headings.html html=content %}
 <nav class="post-nav" aria-label="Series navigation">
-  {% if page.previous %}<a href="{{ page.previous.url | relative_url }}" rel="prev">&larr; Part {{ page.previous.series }}: {{ page.previous.title }}</a>{% else %}<span></span>{% endif %}
-  {% if page.next %}<a href="{{ page.next.url | relative_url }}" rel="next">Part {{ page.next.series }}: {{ page.next.title }} &rarr;</a>{% else %}<span></span>{% endif %}
+  {% if page.previous %}<a href="{{ page.previous.url | relative_url }}" rel="prev">&larr; {{ page.previous.title }}</a>{% else %}<span></span>{% endif %}
+  {% if page.next %}<a href="{{ page.next.url | relative_url }}" rel="next">{{ page.next.title }} &rarr;</a>{% else %}<span></span>{% endif %}
 </nav>
 </article>
