@@ -15,7 +15,7 @@ source: "docs/blog/03-signal-nobody-sees.md"
 
 The NES has no RGB output. Its 2C02 PPU outputs a composite waveform: one analog signal on one wire that encodes brightness and color at the same time through phase modulation. The signal varies between about 0.35 V and 1.55 V and changes shape 3.58 million times per second.
 
-An emulator that decodes the 2C02's 64-entry palette to RGB through a lookup table never has this signal. The lookup is convenient and fast. Composite artifacts such as dot crawl, chroma bleed and rainbow shimmer on sharp edges then have to be faked as post-effects. What a TV does to the NES signal cannot be simulated without the signal. To reproduce the NES picture on a CRT, the emulator has to generate the waveform first.
+An emulator that decodes the 2C02's 64-entry palette to RGB through a lookup table never generates this signal. MyNES generates the waveform first, and dot crawl, chroma bleed and rainbow shimmer on sharp edges come from decoding it.
 
 ## Composite video
 
@@ -125,7 +125,7 @@ The shader runs 240 workgroups (one per scanline) of 256 threads (one per NES pi
 
 The subcarrier phase advances between frames. The `phase_base` uniform tracks it and advances by `phase_field_adv` slots per frame. The phase relationship between the pixel grid and the subcarrier changes with every frame, so the visible chroma artifacts shift position. At sharp color transitions, such as palette index $16 (red) next to $30 (white), the incomplete Y/C separation in the TV's comb filter leaves visible dots at the chroma frequency. The dots crawl across the screen as the phase cycles.
 
-Dot crawl is inherent to NTSC, and the NES and the TV both work as designed when it appears. The subcarrier frequency was chosen to be an odd multiple of half the line rate so that the phase alternates between frames. Temporal averaging then makes the chroma artifacts less visible, and dot crawl is the visible trace of that design choice.
+The NTSC standard puts the subcarrier at an odd multiple of half the line rate, so the phase alternates between frames. Temporal averaging then hides part of the chroma artifacts, and dot crawl is the part that stays visible.
 
 On a static NES screen, a TV shows the dots shifting over a cycle of 2 to 3 frames. Some TVs with 3D comb filters or frame buffers cancel it entirely, and cheap TVs with no comb filter show strong crawling. The GPU pipeline reproduces this because it tracks the phase offset per frame and feeds it into the DAC shader.
 
@@ -138,8 +138,6 @@ float signal_table_alt[COMP_SIGNAL_ENTRIES][COMP_TABLE_STRIDE];
 
 The emission loop picks the table by scanline parity, which models the 2C07's per-line V-phase inversion at the encoder.
 
-A dot crawl pattern cannot be added to an RGB image afterwards, so reproducing the NES on a TV has to start from the waveform. The pattern depends on the subcarrier phase at each pixel position. That phase depends on where the pixel sits in the 12-slot color wheel, which depends on the scanline and the frame counter.
-
-The artifacts carry information. Experienced NES players learned to read them. Faint color fringing showed that a sprite was one pixel away from a background tile, and a dot pattern showed a specific palette combination. Game artists used them on purpose. They placed specific palette indices next to each other so that the composite signal would blend them into colors that the NES palette does not contain.
+The dot crawl pattern depends on the subcarrier phase at each pixel position. That phase depends on where the pixel sits in the 12-slot color wheel, which depends on the scanline and the frame counter, and the DAC shader computes it for every sample.
 
 Every later stage processes this waveform: the comb filter, the demodulator and the CRT beam. The artifacts come out of the math in those stages with no special-case code, so an error in the waveform carries into every stage after it. The GPU pipeline's 14 stages of signal processing start from this waveform and end at the phosphor screen.
