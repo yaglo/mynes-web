@@ -242,6 +242,7 @@
       drag = { x: e.clientX, y: e.clientY, left: box.scrollLeft, top: box.scrollTop, id: e.pointerId };
       box.setPointerCapture(e.pointerId);
       box.classList.add('is-dragging');
+      box.focus({ preventScroll: true });  // preventDefault below also cancels the focus change, and the keys need it
       e.preventDefault();
     });
     box.addEventListener('pointermove', function (e) {
