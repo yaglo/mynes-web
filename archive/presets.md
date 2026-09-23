@@ -722,7 +722,7 @@ The Sony PVM-14L2 values come from [Sony's published specification](https://www.
 | Toshiba 14AF | Composite | 8000 K | +6% / +2.5% | 2.4, small tracking offsets | 45% |
 | Stas's Favourite | RF | 7800 K | +10% / −3.5% | 2.2, worn tracking | 55% |
 
-The color settings of the consumer presets are estimates, and no factory coefficients were extracted. The JVC owner record reports a cool Standard mode and red push. Toshiba's service procedure specifies a visual white-balance adjustment and does not establish the 8000 K target used here. The PVM-14L2's D65 is documented. The nominal 525-line phosphor primaries approximate the tubes from the standards, since the tubes were not measured.
+The color settings of the consumer presets are estimates, and no factory coefficients were extracted. The JVC owner record reports a cool Standard mode and red push. Toshiba's service procedure specifies a visual white-balance adjustment and does not establish the 8000 K target used here. The PVM-14L2's D65 is documented. The phosphor primaries are the nominal 525-line primaries of the standards, as an approximation to the tubes ([how the presets were built]({{ '/about/#how-the-images-are-made' | relative_url }})).
 
 The decoder's color-difference gains keep the gray axis, and gun balance and phosphor gamut act at their own stages. Stas's Favourite uses channel 3 metadata, a sync-tip carrier of −25 dBm, injected channel noise of −65 dBm and an equivalent video corner of 4.1 MHz. RF can be selected on any display; on the PVM-14L2, which has no tuner, it stands for an external receiver. Stock NES composite and RF and the hypothetical modified component and RGB sources are separate choices.
 
