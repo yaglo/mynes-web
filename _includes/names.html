@@ -1,0 +1,10 @@
+{%- comment -%}
+Joins a list of names as in running text, "A", "A and B", "A, B and C", into
+names_out. Usage: {% include names.html list=some_array %}
+{%- endcomment -%}
+{%- assign names_out = "" -%}
+{%- for n in include.list -%}
+{%- if forloop.first -%}{%- assign names_out = n -%}
+{%- elsif forloop.last -%}{%- assign names_out = names_out | append: " and " | append: n -%}
+{%- else -%}{%- assign names_out = names_out | append: ", " | append: n -%}{%- endif -%}
+{%- endfor -%}

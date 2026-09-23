@@ -12,16 +12,25 @@ the showcase pipeline installs new media and shows a plain line before.
 {%- assign game = hero.games | where: "id", page.game | first -%}
 {%- assign clips = hero.clips[page.game] -%}
 {%- assign n_clips = 0 -%}{%- assign n_crops = 0 -%}{%- assign n_stills = 0 -%}
+{%- assign names_clips = "" | split: "" -%}{%- assign names_crops = "" | split: "" -%}{%- assign names_stills = "" | split: "" -%}
 {%- for preset in hero.presets -%}
 {%- include hero-clip.html game=page.game preset=preset.id -%}
-{%- if hc_stage or hc_video -%}{%- assign n_clips = n_clips | plus: 1 -%}{%- endif -%}
-{%- if hc_crop -%}{%- assign n_crops = n_crops | plus: 1 -%}{%- endif -%}
-{%- if hc_still -%}{%- assign n_stills = n_stills | plus: 1 -%}{%- endif -%}
+{%- if hc_stage or hc_video -%}{%- assign n_clips = n_clips | plus: 1 -%}{%- assign names_clips = names_clips | push: preset.name -%}{%- endif -%}
+{%- if hc_crop -%}{%- assign n_crops = n_crops | plus: 1 -%}{%- assign names_crops = names_crops | push: preset.name -%}{%- endif -%}
+{%- if hc_still -%}{%- assign n_stills = n_stills | plus: 1 -%}{%- assign names_stills = names_stills | push: preset.name -%}{%- endif -%}
 {%- endfor -%}
 {%- assign n_all = n_clips | plus: n_crops | plus: n_stills -%}
 {% if game and n_all > 0 %}
-<!-- TODO(copy): one sentence on the scene and what to look at; keep the scope sentence below factual. -->
-<p>{{ game.title }}, {{ game.scene }}: {% if n_clips > 0 %}{{ n_clips }} {% if n_clips == 1 %}clip{% else %}clips{% endif %}{% endif %}{% if n_clips > 0 and n_crops > 0 %}, {% endif %}{% if n_crops > 0 %}{{ n_crops }} detail {% if n_crops == 1 %}crop{% else %}crops{% endif %}{% endif %}{% if n_stills > 0 %}{% if n_clips > 0 or n_crops > 0 %} and {% endif %}{{ n_stills }} full {% if n_stills == 1 %}frame{% else %}frames{% endif %}{% endif %}, one per television preset, each at one source pixel per screen pixel.</p>
+<p>{{ game.title }}, {{ game.scene }}, as MyNES renders it on the television presets below.</p>
+<ul class="gallery-counts">
+{%- if n_clips > 0 %}{% include names.html list=names_clips %}
+<li>Clips: {{ n_clips }}, on the {{ names_out }} {% if n_clips == 1 %}preset{% else %}presets{% endif %}.</li>
+{%- endif %}{% if n_crops > 0 %}{% include names.html list=names_crops %}
+<li>Detail crops: {{ n_crops }}, on the {{ names_out }} {% if n_crops == 1 %}preset{% else %}presets{% endif %}.</li>
+{%- endif %}{% if n_stills > 0 %}{% include names.html list=names_stills %}
+<li>Full frames: {{ n_stills }}, on the {{ names_out }} {% if n_stills == 1 %}preset{% else %}presets{% endif %}.</li>
+{%- endif %}
+</ul>
 {%- if n_clips > 0 %}
 
 <h2 id="clips">Clips</h2>
