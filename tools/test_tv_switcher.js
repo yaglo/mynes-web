@@ -79,7 +79,7 @@ function checkManifest(raw, label) {
     assert.ok(fs.existsSync(abs), where + ': missing file ' + p);
     return abs;
   };
-  const keys = version === 1 ? ['video', 'poster', 'still', 'still_size', 'full'] : ['poster', 'stage', 'lens', 'still', 'hdr'];
+  const keys = version === 1 ? ['video', 'poster', 'still', 'still_size', 'full'] : ['poster', 'stage', 'lens', 'still', 'hdr', 'crop'];
   for (const [gid, byPreset] of Object.entries(raw.clips)) {
     assert.ok(gameIds.has(gid), label + ': clips for unknown game ' + gid);
     for (const [pid, c] of Object.entries(byPreset)) {
@@ -120,6 +120,16 @@ function checkManifest(raw, label) {
           }
         }
         if ((c.stage || []).some((s) => s.hdr)) assert.ok(c.hdr && c.hdr.white_nits > 0, where + ': HDR clips need the hdr block');
+        if (c.crop) {
+          // The gallery's detail crop: four files, even size and position, a multiple of 6 where possible.
+          for (const k of ['sdr', 'sdr_1x', 'hdr', 'hdr_1x']) file(where + ' crop', c.crop[k]);
+          assert.ok(c.crop.sdr.endsWith('.png') && c.crop.sdr_1x.endsWith('@1x.png'), where + ': crop PNGs');
+          assert.ok(c.crop.hdr.endsWith('.avif') && c.crop.hdr_1x.endsWith('@1x.avif'), where + ': crop AVIFs');
+          for (const k of ['x', 'y', 'width', 'height']) assert.ok(Number.isInteger(c.crop[k]) && c.crop[k] % 2 === 0, where + ': crop ' + k + ' even');
+          assert.deepStrictEqual(imageSize(path.join(root, c.crop.sdr)), [c.crop.width, c.crop.height], where + ': crop size');
+          assert.deepStrictEqual(imageSize(path.join(root, c.crop.sdr_1x)), [c.crop.width / 2, c.crop.height / 2], where + ': crop @1x size');
+          if (c.still) assert.ok(c.crop.x + c.crop.width <= c.still.width && c.crop.y + c.crop.height <= c.still.height, where + ': crop inside the still');
+        }
         // Stage and lens clips of one preset share frame count; HDR files carry PQ BT.2020 tags.
         if (haveFfprobe && (c.stage || []).length) {
           const all = (c.stage || []).concat(c.lens || []);
@@ -146,18 +156,23 @@ test('live manifest', () => checkManifest(liveRaw, 'live'));
 test('fixture manifest', () => checkManifest(fixtureRaw, 'fixture'));
 
 /* ---- normalisation ---- */
-test('normalize: version 1 seed', () => {
-  assert.strictEqual(live.version, 1);
-  const k = TV.clipFor(live, 'kirby-title', 'jvc_d_series_2000');
-  assert.deepStrictEqual(k.stage, [{ src: 'assets/images/showcase/kirby-jvc_d_series_2000.mp4', type: 'video/mp4', hdr: false, width: null, height: null, bytes: null }]);
-  assert.deepStrictEqual(k.lens, []);
-  assert.strictEqual(k.still, null);
-  const mm = TV.clipFor(live, 'mega-man-2-title', 'sony_pvm_14l2');
-  // The lossless PNG stands in for the still; frame 0 is the frame the seed still shows.
-  assert.deepStrictEqual(mm.still, { hdr: null, sdr: 'assets/images/showcase/4k/sony_pvm_14l2.png', width: 3840, height: 2880, frame: 0 });
-  assert.strictEqual(mm.full, 'assets/images/showcase/4k/sony_pvm_14l2.png');
-  assert.deepStrictEqual(TV.clipFor(live, 'mega-man-2-title', 'jvc_d_series_2000').stage, []);
+test('normalize: live manifest, version 2 from the showcase pipeline', () => {
+  assert.strictEqual(live.version, 2);
+  const m = TV.clipFor(live, 'super-mario-bros', 'sony_pvm_14l2');
+  assert.strictEqual(m.stage.length, 6);                 // 1920x1440 and 960x720, HDR HEVC, HDR AV1 and SDR
+  assert.deepStrictEqual(m.posters.map((p) => p.width), [1920, 960]);
+  assert.strictEqual(m.still.sdr, 'assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-sdr.png');
+  assert.strictEqual(m.still.hdr, 'assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-hdr.avif');
+  assert.strictEqual(m.full, m.still.sdr);
+  assert.strictEqual(m.hdr.white_nits, 203);
+  // A preset recorded for its crop only has nothing the switcher can show, so it is dropped.
+  assert.ok(liveRaw.clips['super-mario-bros'].zenith_system_3.crop, 'crop-only clip in the manifest');
+  assert.strictEqual(TV.clipFor(live, 'super-mario-bros', 'zenith_system_3'), null);
+  // Version 1 clips are still read.
   assert.strictEqual(TV.normalizeClip({ still: 'a.webp', still_size: [3840, 2880] }, 1).still.sdr, 'a.webp');
+  const v1 = TV.normalizeClip({ video: 'k.mp4', poster: 'k.webp' }, 1);
+  assert.deepStrictEqual(v1.stage, [{ src: 'k.mp4', type: 'video/mp4', hdr: false, width: null, height: null, bytes: null }]);
+  assert.strictEqual(v1.still, null);
 });
 
 test('normalize: version 2 fixture', () => {
@@ -225,10 +240,11 @@ test('applyCaptions: the site caption replaces the manifest blurb', () => {
 });
 
 /* ---- selection helpers ---- */
+const SIX = ['sony_pvm_14l2', 'jvc_d_series_2000', 'toshiba_14af43', 'stass_favourite', 'vhs_sp_consumer', 'reference_composite'];
+
 test('available: manifest order, disabled presets, broken videos', () => {
-  assert.deepStrictEqual(TV.available(live, 'mega-man-2-title'),
-    ['sony_pvm_14l2', 'jvc_d_series_2000', 'toshiba_14af43', 'stass_favourite']);
-  assert.deepStrictEqual(TV.available(live, 'kirby-title'), ['jvc_d_series_2000']);
+  assert.deepStrictEqual(TV.available(live, 'super-mario-bros'), SIX);  // the 18 crop-only presets are left out
+  assert.ok(live.presets.length > SIX.length, 'every preset is listed');
   assert.deepStrictEqual(TV.available(live, 'no-such-game'), []);
   assert.deepStrictEqual(TV.available(fixture, 'test-pattern'), ['fixture_grille', 'fixture_slot', 'fixture_dots']);
   // A clip whose videos all failed stays selectable with a poster; one without any fallback drops out.
@@ -237,9 +253,9 @@ test('available: manifest order, disabled presets, broken videos', () => {
 });
 
 test('choosePreset: keep, default, first, none', () => {
-  assert.strictEqual(TV.choosePreset(live, 'mega-man-2-title', 'toshiba_14af43'), 'toshiba_14af43');
-  assert.strictEqual(TV.choosePreset(live, 'kirby-title', 'toshiba_14af43'), 'jvc_d_series_2000');
-  assert.strictEqual(TV.choosePreset(live, 'darkwing-bridge', null), 'stass_favourite');
+  assert.strictEqual(TV.choosePreset(live, 'super-mario-bros', 'toshiba_14af43'), 'toshiba_14af43');
+  assert.strictEqual(TV.choosePreset(live, 'super-mario-bros', 'zenith_system_3'), 'sony_pvm_14l2');  // crop only: the default
+  assert.strictEqual(TV.choosePreset(live, 'super-mario-bros', null), 'sony_pvm_14l2');
   const m = TV.normalize({ presets: [{ id: 'a' }, { id: 'b' }], games: [{ id: 'g', default_preset: 'zz' }], clips: { g: { b: { video: 'b.mp4' } } } });
   assert.strictEqual(TV.choosePreset(m, 'g', 'a'), 'b');
   assert.strictEqual(TV.choosePreset(m, 'nothing', 'a'), null);
@@ -251,10 +267,11 @@ test('step wraps, keyPreset honours availability', () => {
   assert.strictEqual(TV.step(l, 'a', -1), 'c');
   assert.strictEqual(TV.step(l, 'zz', 1), 'a');
   assert.strictEqual(TV.step([], 'a', 1), null);
-  const avail = TV.available(live, 'mega-man-2-title');
+  const avail = TV.available(live, 'super-mario-bros');
   assert.strictEqual(TV.keyPreset('1', live, avail), 'sony_pvm_14l2');
   assert.strictEqual(TV.keyPreset('4', live, avail), 'stass_favourite');
-  assert.strictEqual(TV.keyPreset('5', live, avail), null);   // reference_composite: not rendered yet
+  assert.strictEqual(TV.keyPreset('6', live, avail), 'reference_composite');
+  assert.strictEqual(TV.keyPreset('7', live, avail), null);   // the seventh preset has a crop and no clip
   assert.strictEqual(TV.keyPreset('9', live, avail), null);
   assert.strictEqual(TV.keyPreset('0', live, avail), null);
   assert.strictEqual(TV.keyPreset('a', live, avail), null);
@@ -308,7 +325,9 @@ test('chooseStage: HDR when the display and decoder allow it', () => {
 });
 
 test('chooseStage: version 1 and nothing playable', () => {
-  const k = TV.clipFor(live, 'kirby-title', 'jvc_d_series_2000');
+  const v1 = TV.normalize({ presets: [{ id: 'a' }], games: [{ id: 'g', default_preset: 'a' }],
+    clips: { g: { a: { video: 'assets/k.mp4', poster: 'assets/k.webp' } } } });
+  const k = TV.clipFor(v1, 'g', 'a');
   assert.strictEqual(TV.chooseStage(k.stage, { dpr: 2, availW: 960, hdrDisplay: true, caps: {} }).src, k.stage[0].src);
   const none = capsAll(dots, () => ({ supported: false }));
   assert.strictEqual(TV.chooseStage(dots.stage, { dpr: 1, availW: 960, hdrDisplay: false, caps: none }), null);
@@ -394,12 +413,15 @@ test('inspectTier: lens, still, none', () => {
   const stillOnly = Object.assign({}, slot, { lens: [] });
   assert.strictEqual(TV.inspectTier(stillOnly, Object.assign({ broken: { [slot.still.hdr]: true, [slot.still.sdr]: true } }, env), null).reason, TV.STILL_FAILED);
   assert.strictEqual(TV.inspectTier(null, env, null).tier, 'none');
-  // Version 1: the Mega Man clips have the 4K PNG, the others nothing.
+  // Version 1: a clip with the 4K PNG can be inspected as a still, one without has nothing.
   const e1 = { dpr: 2, availW: 960, hdrDisplay: true, caps: {} };
-  const mm = TV.clipFor(live, 'mega-man-2-title', 'sony_pvm_14l2');
+  const v1 = TV.normalize({ presets: [{ id: 'a' }, { id: 'b' }], games: [{ id: 'g', default_preset: 'a' }],
+    clips: { g: { a: { video: 'assets/a.mp4', poster: 'assets/a.webp', full: 'assets/a.png', still_size: [3840, 2880] },
+                  b: { video: 'assets/b.mp4', poster: 'assets/b.webp' } } } });
+  const mm = TV.clipFor(v1, 'g', 'a');
   t = TV.inspectTier(mm, e1, TV.chooseStage(mm.stage, e1));
-  assert.deepStrictEqual([t.tier, t.still.src, t.still.hdr], ['still', 'assets/images/showcase/4k/sony_pvm_14l2.png', false]);
-  const k = TV.clipFor(live, 'kirby-title', 'jvc_d_series_2000');
+  assert.deepStrictEqual([t.tier, t.still.src, t.still.hdr], ['still', 'assets/a.png', false]);
+  const k = TV.clipFor(v1, 'g', 'b');
   assert.strictEqual(TV.inspectTier(k, e1, TV.chooseStage(k.stage, e1)).tier, 'none');
 });
 
@@ -688,8 +710,8 @@ test('prefetchAllowed', () => {
 });
 
 test('caption, labels, sizes', () => {
-  const g = TV.gameById(live, 'mega-man-2-title'), p = TV.presetById(live, 'sony_pvm_14l2');
-  assert.strictEqual(TV.caption(g, p), 'Mega Man 2 · Rooftop title · Sony PVM-14L2 · Focused beam, fine aperture grille, D65, composite');
+  const g = TV.gameById(live, 'super-mario-bros'), p = TV.presetById(live, 'sony_pvm_14l2');
+  assert.strictEqual(TV.caption(g, p), 'Super Mario Bros. · World 1-1, running right past the first blocks · Sony PVM-14L2 · Focused beam, fine aperture grille, D65, composite');
   assert.strictEqual(TV.caption({ title: 'G' }, { name: 'P' }), 'G · P');
   assert.strictEqual(TV.lensLabel(1, 'Sony PVM-14L2'), '1:1 · Sony PVM-14L2');
   assert.strictEqual(TV.lensLabel(4, ''), '4:1');
@@ -763,11 +785,12 @@ test('sourceLine: what plays and why, in words', () => {
     'Playing the 1920×1440 HDR10 clip (PQ, BT.2020), SDR white at 203 nits, brightest pixel 812 nits.');
   assert.strictEqual(TV.sourceLine(sdr, grille, { hdrDisplay: false, caps }, 1920, 1440),
     'Playing the 1920×1440 SDR clip: this display does not report HDR.');
-  const k = TV.clipFor(live, 'kirby-title', 'jvc_d_series_2000');
+  const v1 = TV.normalize({ presets: [{ id: 'a' }, { id: 'b' }], games: [{ id: 'g', default_preset: 'a' }],
+    clips: { g: { a: { video: 'assets/a.mp4', poster: 'assets/a.webp' }, b: { poster: 'assets/b.webp' } } } });
+  const k = TV.clipFor(v1, 'g', 'a');
   assert.strictEqual(TV.sourceLine(k.stage[0], k, { hdrDisplay: true }, null, null), 'Playing the SDR clip: no HDR render of this clip yet.');
   assert.strictEqual(TV.sourceLine(k.stage[0], k, { hdrDisplay: true }, 960, 720), 'Playing the 960×720 SDR clip: no HDR render of this clip yet.');
-  assert.strictEqual(TV.sourceLine(null, TV.clipFor(live, 'mega-man-2-title', 'jvc_d_series_2000'), {}),
-    'Showing a still picture: no clip of this television yet.');
+  assert.strictEqual(TV.sourceLine(null, TV.clipFor(v1, 'g', 'b'), {}), 'Showing a still picture: no clip of this television yet.');
   assert.strictEqual(TV.sourceLine(null, k, {}), 'Showing a still picture: the clip could not be played.');
 });
 

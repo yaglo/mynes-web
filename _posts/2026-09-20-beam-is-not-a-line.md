@@ -50,7 +50,7 @@ The `bloom_gamma` parameter sets the curve of the bloom. At `bloom_gamma = 1.0` 
 
 The Gaussian `exp(-d^2 / 2*sigma^2)` gives the beam intensity at vertical distance `d` from the scanline center. With a small sigma (a dark pixel) the falloff is steep, and almost no energy reaches the adjacent line. With a large sigma (a bright pixel) the falloff is gradual, and a large part of the energy spreads up and down into the gap between scanlines.
 
-The close-ups gallery shows both cases in a [1:1 crop of the Mega Man 2 title lettering]({{ '/gallery/close-ups/#mega-man-2-title-screen-on-4-presets' | relative_url }}) on the Sony PVM-14L2 preset. It also measures the [beam height at 3 brightness levels on 4 presets]({{ '/gallery/close-ups/#beam-height-vs-brightness-on-4-presets' | relative_url }}).
+The [Super Mario Bros. page]({{ '/gallery/games/super-mario-bros/#detail-crops' | relative_url }}) shows both cases in 1:1 crops of the same region on every preset, the Sony PVM-14L2 among them. The close-ups gallery measures the [beam height at 3 brightness levels on 4 presets]({{ '/gallery/close-ups/#beam-height-vs-brightness-on-4-presets' | relative_url }}).
 
 ## Per-channel convergence error
 

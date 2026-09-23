@@ -99,11 +99,11 @@ The supplied photograph of the Contra waterfall boss and a palette-only screensh
 
 I also inspected owner photographs of the PVM-14L2[^crtdb-pvm14l2], PVM-20M4U[^crtdb-pvm20m4u], JVC AV-27D201[^jvc-owner] and Toshiba 14AF43[^crtdb-14af43]. A BVM owner's macro photograph with its capture settings[^bvm-macro] helped with grille grouping and spot shape, and its tube dimensions were not transferred to the PVM-14L2. Search results that showed other shaders were excluded as hardware evidence.
 
-The archived [visual review]({{ '/archive/visual-review/' | relative_url }}) holds paired MyNES renders and their limitations. Third-party photos are linked and are not copied into the repository.
+Third-party photos are linked and are not copied into the repository.
 
 ## White points and slot mask
 
-The [preset audit]({{ '/archive/presets/' | relative_url }}) lists the color defaults, RF assumptions and response ranges of the 4 curated presets. The PVM-14L2 uses its documented D65 white balance option. The consumer sets have cooler whites, with separate color-difference gain and small tracking errors. These are chosen defaults. None was tuned to the camera white balance of the Contra photograph.
+The [Televisions pages]({{ '/gallery/televisions/' | relative_url }}) give each preset's mask, beam spot, white point and input with their sources. The PVM-14L2 uses its documented D65 white balance option. The consumer sets have cooler whites, with separate color-difference gain and small tracking errors. These are chosen defaults. None was tuned to the camera white balance of the Contra photograph.
 
 The slot-mask model keeps vertical phosphor stripes and staggers only the bridges between adjacent triads, as the inline slit-mask construction of patent US3973965A does[^slit-patent]. An ablation on the same Contra codes showed that the earlier coarse delta-dot pattern of Stas's Favourite generated the dominant diagonal weave. Its replacement, a less intrusive inline pattern, keeps visible RGB separation. Composite dot crawl can still produce phase-dependent diagonals, which are distinct from random RF noise.
 

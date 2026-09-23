@@ -3,55 +3,22 @@ layout: "page"
 title: "Close-ups"
 permalink: "/gallery/close-ups/"
 section: "gallery"
-description: "Crops of 3840×2880 CRT renders at native pixels, and the beam height measured at 3 brightness levels on 4 presets."
+description: "Detail crops of the showcase recordings at native pixels, and the beam height measured at 3 brightness levels on 4 presets."
 source: "docs/gpu-beam-closeups.md"
 updated: 2026-09-23
 redirect_from:
   - "/gallery/closeups/"
+  - "/gallery/feature-tour/"
+  - "/archive/feature-tour/"
 ---
 
-This page shows crops of CRT renders at native pixels, mostly on the Sony PVM-14L2 preset, and measures how the beam height changes with brightness on 4 presets. The Castlevania, Darkwing Duck and Mega Man 2 renders are 3840×2880, with the whole 4:3 game image 3840 pixels wide and no side bars. The beam height fixture is the exception: a 2880×2160 game viewport on a 3840×2160 canvas. Each image is a single NTSC phase. Scaling a render changes its apparent mask pattern, so each render here is shown at one image pixel per device pixel and links to its PNG file.
+This page shows detail crops of the showcase recordings at native pixels and measures how the beam height changes with brightness on 4 presets. The crops are cut from 3840×2880 frames, with the whole 4:3 game image 3840 pixels wide and no side bars; the beam height fixture is a 2880×2160 game viewport on a 3840×2160 canvas. Each image is a single NTSC phase. Scaling a render changes its apparent mask pattern, so each render here is shown at one image pixel per device pixel and links to its PNG file.
 
-## Castlevania castle hall
+## Detail crops from the showcase recordings
 
-The frame is emulated frame 2500 on the Sony PVM-14L2 preset, composite input, at an exposure of 0.6. The frame and its beam buffer are both 3840×2880. Drag the full frame below to move around it; the crop after it comes from the same frame.
+One crop per game, on the preset its clip plays on first. Each game page shows the same region on every preset it was recorded with, and the [Super Mario Bros. page]({{ '/gallery/games/super-mario-bros/' | relative_url }}#detail-crops) has it on every preset MyNES ships.
 
-{% include pan.html id="castlevania-castle-hall-pvm" %}
-
-{% include crop.html id="castlevania-castle-hall-pvm-detail" note="Simon, the window tracery and the damaged masonry, with the beam spot and the aperture grille visible on each." %}
-
-## Contra boss on the Studio aperture grille preset
-
-{% include crop.html id="contra-boss-studio-aperture-grille-details" alt="The Contra boss's face and a platform on the Studio aperture grille preset, 2 labeled crops." %}
-
-The 2 crops are unchanged from the [archived Contra gallery]({{ '/archive/contra/' | relative_url }}): one unaveraged frame of a 3840×2880 render. Averaging 2 phases whose scanlines sit on different rows makes the beam look wider than it is in either phase, so the image keeps a single phase. The crops come from different heights in the frame and are separated and labeled. They differ in position as well as in brightness, so they show the scanline structure without isolating spot growth with brightness; the fixture in [beam height vs brightness](#beam-height-vs-brightness-on-4-presets) measures that. Studio aperture grille is a generic Y/C monitor preset and a separate preset from the Sony PVM-14L2.
-
-## Darkwing Duck on the bridge
-
-The frame comes from play on the Sony PVM-14L2 preset, composite input, and holds Darkwing, the bridge rails, the supports and the city lights. Its beam buffer is 3840×2880 like the frame.
-
-{% include pan.html id="darkwing-duck-bridge-pvm" %}
-
-{% include crop.html id="darkwing-duck-bridge-pvm-detail" note="The bright support fills more of the gaps between scanlines, and the dim blue sky keeps distinct narrow rows." %}
-
-The crop holds Darkwing, the dim blue sky, the orange rails and the bright support. The earlier [1280×1152 crop at (1600, 1000)]({{ '/assets/images/showcase/4k/darkwing-pvm-gameplay-detail.png' | relative_url }}) of the same frame is also available as a PNG file. On the PVM preset the composite signal visibly softens the edges, which unfiltered RGB pixel art would keep sharp.
-
-## Mega Man 2 title screen on 4 presets
-
-The title screen has dim green strokes, blue shading, bright lettering and fine edges, and the rooftop adds intermediate grays. All 4 renders are emulated frame 900, after Start at frame 600, with the same exposure of 0.6 and the pixel-aligned mask mode. The table links the 1024×683 title crops at (1680, 427), the full frames and the 768×683 rooftop crops at (2973, 1413).
-
-| Preset | Title crop, 1024×683 | Full frame, 3840×2880 | Rooftop crop, 768×683 |
-|---|---|---|---|
-| Sony PVM-14L2 | [Beam and grille]({{ '/assets/images/showcase/4k/sony_pvm_14l2-beam.png' | relative_url }}) | [3840×2880 PNG]({{ '/assets/images/showcase/4k/sony_pvm_14l2.png' | relative_url }}) | [768×683 PNG]({{ '/assets/images/showcase/4k/sony_pvm_14l2-rooftop.png' | relative_url }}) |
-| JVC D-Series | [Beam and slots]({{ '/assets/images/showcase/4k/jvc_d_series_2000-beam.png' | relative_url }}) | [3840×2880 PNG]({{ '/assets/images/showcase/4k/jvc_d_series_2000.png' | relative_url }}) | [768×683 PNG]({{ '/assets/images/showcase/4k/jvc_d_series_2000-rooftop.png' | relative_url }}) |
-| Toshiba 14AF | [Beam and slots]({{ '/assets/images/showcase/4k/toshiba_14af43-beam.png' | relative_url }}) | [3840×2880 PNG]({{ '/assets/images/showcase/4k/toshiba_14af43.png' | relative_url }}) | [768×683 PNG]({{ '/assets/images/showcase/4k/toshiba_14af43-rooftop.png' | relative_url }}) |
-| Stas's Favourite | [Beam and slots]({{ '/assets/images/showcase/4k/stass_favourite-beam.png' | relative_url }}) | [3840×2880 PNG]({{ '/assets/images/showcase/4k/stass_favourite.png' | relative_url }}) | [768×683 PNG]({{ '/assets/images/showcase/4k/stass_favourite-rooftop.png' | relative_url }}) |
-
-The slider below compares the title lettering on the Sony PVM-14L2 and the Toshiba 14AF, cut again at 1020×684 from (1680, 426) of the same frames. The Toshiba 14AF overscans by 2.2% at each edge and the PVM-14L2 not at all. The lettering is therefore larger on the right, and the 2 sides do not line up at the divider.
-
-{% include compare.html a="mega-man-2-title-sony-pvm-14l2-lettering" b="mega-man-2-title-toshiba-14af43-lettering" note="On the left the dim green strokes keep gaps between scanlines; on the right the outlines are softer and the slots coarser." %}
-
-On the Sony PVM-14L2 the dim green strokes keep visible gaps between scanlines, and the white lettering spreads vertically until it nearly fills them. On the Toshiba 14AF the outlines are softer, and the slot structure is coarser and stands out more. The differences come from each preset's beam, mask and signal processing.
+{% include gallery-crops.html %}
 
 ## Beam height vs brightness on 4 presets
 
@@ -71,10 +38,6 @@ Each consecutive linear-light capture of the final image was measured separately
 At this viewport height a source scanline is nominally 9 output pixels tall (2160 rows for 240 lines); geometry and overscan change the local spacing. The widths are those of the final emitted light, including focus, optics and output response, and differ from the shader's input width parameters. RF and loading also change the drive, so this pattern does not necessarily reach a preset's maximum configured spot. The [raw measurements](https://github.com/yaglo/mynes/blob/master/docs/gpu-beam-measurements.json) are in the code repository.
 
 Brighter strokes are taller, and neighboring bright scanlines merge more than dim ones, which is the physically plausible direction. The shader sets the size of each gun's pixel-integrated Gaussian spot from that gun's current and applies shared focus and loading separately. The gaps between scanlines come from this spot model.
-
-## Detail crops from the showcase recordings
-
-{% include gallery-crops.html %}
 
 ## Limitations
 

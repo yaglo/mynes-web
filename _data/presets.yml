@@ -1,150 +1,550 @@
 # Presets the site names, by the id of their file in presets/ of the code
 # repository (the ids of the hero manifest). name is the preset's name as
-# the preset file and the on-screen menu give it; note is the technical note
-# about the hardware the preset models, when there is one; variants are
-# spellings of the name that pages must not use; signal is the connection
-# the preset's renders use, as the preset's description gives it.
-# summary is what the preset models, from the preset file's description; the
-# gallery shows it in place of the manifest's short blurb. caption is the
-# short line the television switcher shows after the preset name, in place of
-# the manifest's blurb, which the recording pipeline writes. specs are the
-# rows of the specifications table on the preset's Televisions page, each
-# with its value and its source (text and link).
+# the site gives it, the preset file's name without its qualifier; note is
+# the technical note about the hardware the preset models, when there is
+# one; variants are spellings of the name that pages must not use; signal
+# is the connection the preset's renders use, as the preset's description
+# gives it. summary is what the preset models, from the preset file's
+# description; the gallery shows it in place of the manifest's short blurb.
+# caption is the short line the television switcher shows after the preset
+# name, in place of the manifest's blurb, which the recording pipeline
+# writes. specs are the rows of the specifications table on the preset's
+# Televisions page, each with its value and its source (text and link); the
+# values come from the preset files at the commit each row links.
+
 sony_pvm_14l2:
-  name: Sony PVM-14L2
-  signal: composite
+  name: "Sony PVM-14L2"
+  signal: "composite"
   note: /notes/pvm-14l2/
   variants: ["PVM 14L2", "PVM14L2", "Sony PVM 14L2"]
   summary: "A Sony PVM-14L2 monitor on composite video, with its aperture grille, a D65 white point and an adaptive comb filter. Its horizontal AFC has a 1 ms time constant, and its RGB bandwidth is 10 MHz at -3 dB."
   caption: "Aperture grille, D65 white, adaptive comb, composite"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Aperture grille, 1070 triads across the picture"
-      source: "presets/sony_pvm_14l2.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
-    - name: Sony specification
+      source: "presets/sony_pvm_14l2.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_14l2.json
+    - name: "Sony specification"
       value: "0.25 mm aperture grille, 600 TVL"
       source: "Sony PVM-14L2 specifications"
       url: https://www.sony.jp/pro-monitor/products/PVM-14L2/
-    - name: Beam spot height parameter (FWHM)
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.28 of a line at black to 0.52 at white"
-      source: "presets/sony_pvm_14l2.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
-    - name: White point
+      source: "presets/sony_pvm_14l2.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_14l2.json
+    - name: "White point"
       value: "6500 K (D65)"
-      source: "presets/sony_pvm_14l2.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
-    - name: Input
+      source: "presets/sony_pvm_14l2.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_14l2.json
+    - name: "Input"
       value: "Composite"
-      source: "presets/sony_pvm_14l2.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/sony_pvm_14l2.json
+      source: "presets/sony_pvm_14l2.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_14l2.json
 jvc_d_series_2000:
-  name: JVC D-Series
-  signal: composite
+  name: "JVC D-Series"
+  signal: "composite"
   summary: "A consumer JVC D-Series television modeled on the AV-27D201, on composite video: a curved slot-mask tube, a 2-line comb filter and a cool white with a red push."
   caption: "Curved slot mask, 9300 K white, 2-line comb, composite"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Slot mask, 661 triads across the picture"
-      source: "presets/jvc_d_series_2000.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
-    - name: Beam spot height parameter (FWHM)
+      source: "presets/jvc_d_series_2000.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/jvc_d_series_2000.json
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.46 of a line at black to 0.98 at white"
-      source: "presets/jvc_d_series_2000.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
-    - name: White point
+      source: "presets/jvc_d_series_2000.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/jvc_d_series_2000.json
+    - name: "White point"
       value: "9300 K"
-      source: "presets/jvc_d_series_2000.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
-    - name: Input
+      source: "presets/jvc_d_series_2000.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/jvc_d_series_2000.json
+    - name: "Input"
       value: "Composite"
-      source: "presets/jvc_d_series_2000.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/jvc_d_series_2000.json
+      source: "presets/jvc_d_series_2000.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/jvc_d_series_2000.json
 toshiba_14af43:
-  name: Toshiba 14AF
-  signal: composite
+  name: "Toshiba 14AF"
+  signal: "composite"
   summary: "A small Toshiba television modeled on the 14AF43, on composite video: a flat slot-mask tube, a 3-line comb filter and a broad bright beam spot."
   caption: "Flat slot mask, 8000 K white, 3-line comb, composite"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Slot mask, 480 triads across the picture"
-      source: "presets/toshiba_14af43.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
-    - name: Beam spot height parameter (FWHM)
+      source: "presets/toshiba_14af43.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/toshiba_14af43.json
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.60 of a line at black to 1.20 at white"
-      source: "presets/toshiba_14af43.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
-    - name: White point
+      source: "presets/toshiba_14af43.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/toshiba_14af43.json
+    - name: "White point"
       value: "8000 K"
-      source: "presets/toshiba_14af43.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
-    - name: Input
+      source: "presets/toshiba_14af43.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/toshiba_14af43.json
+    - name: "Input"
       value: "Composite"
-      source: "presets/toshiba_14af43.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/toshiba_14af43.json
+      source: "presets/toshiba_14af43.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/toshiba_14af43.json
 stass_favourite:
-  name: Stas's Favourite
-  signal: channel 3 RF
+  name: "Stas's Favourite"
+  signal: "channel 3 RF"
   summary: "A worn consumer slot-mask television on channel 3 RF, with a cool white, a mild red push, imperfect gray tracking and convergence, and broad bright spots."
   caption: "Worn slot-mask set, 7800 K white, channel 3 RF"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Slot mask, 440 triads across the picture"
-      source: "presets/stass_favourite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
-    - name: Beam spot height parameter (FWHM)
+      source: "presets/stass_favourite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/stass_favourite.json
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.55 of a line at black to 1.42 at white"
-      source: "presets/stass_favourite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
-    - name: White point
+      source: "presets/stass_favourite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/stass_favourite.json
+    - name: "White point"
       value: "7800 K"
-      source: "presets/stass_favourite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
-    - name: Input
+      source: "presets/stass_favourite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/stass_favourite.json
+    - name: "Input"
       value: "RF on channel 3 (61.25 MHz carrier)"
-      source: "presets/stass_favourite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/stass_favourite.json
+      source: "presets/stass_favourite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/stass_favourite.json
 vhs_sp_consumer:
-  name: VHS SP playback
-  signal: composite
-  summary: "An NTSC VHS recording at SP speed, played back on a Toshiba-style slot-mask television: delayed soft color, horizontal luma grain, slow transport drift and occasional dropouts. Raised gun bias shows tape grain in dark areas, and lowered gain holds back highlights."
-  caption: "VHS SP tape played on a slot-mask set, 8000 K white"
+  name: "VHS worn tape"
+  signal: "composite"
+  summary: "The NES recorded and played back on a well-used NTSC SP tape in a consumer VHS deck, into a Toshiba-style slot-mask television. The tape path has FM luma with emphasis and clipping, color-under chroma through a 1H comb, the deck's timing error and head switch, tape noise, dropouts and line jitter."
+  caption: "Worn VHS tape on a slot-mask set, 8000 K white"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Slot mask, 480 triads across the picture"
-      source: "presets/vhs_sp_consumer.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
-    - name: Beam spot height parameter (FWHM)
+      source: "presets/vhs_sp_consumer.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vhs_sp_consumer.json
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.60 of a line at black to 1.20 at white"
-      source: "presets/vhs_sp_consumer.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
-    - name: White point
+      source: "presets/vhs_sp_consumer.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vhs_sp_consumer.json
+    - name: "White point"
       value: "8000 K"
-      source: "presets/vhs_sp_consumer.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
-    - name: Input
-      value: "Composite from VHS SP playback"
-      source: "presets/vhs_sp_consumer.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/vhs_sp_consumer.json
+      source: "presets/vhs_sp_consumer.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vhs_sp_consumer.json
+    - name: "Input"
+      value: "Composite from VHS playback"
+      source: "presets/vhs_sp_consumer.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vhs_sp_consumer.json
 reference_composite:
-  name: Reference composite
-  signal: composite
+  name: "Reference composite"
+  signal: "composite"
   summary: "A neutral NTSC composite receiver and CRT in a dark room, with no simulated wear. It is the baseline for the signal, grayscale, mask and motion checks."
   caption: "Aperture grille, D65 white, composite, dark room"
   specs:
-    - name: Mask
+    - name: "Mask"
       value: "Aperture grille, 650 triads across the picture"
-      source: "presets/reference_composite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
-    - name: Beam spot height parameter (FWHM)
+      source: "presets/reference_composite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/reference_composite.json
+    - name: "Beam spot height parameter (FWHM)"
       value: "0.38 of a line at black to 0.78 at white"
-      source: "presets/reference_composite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
-    - name: White point
-      value: "6500 K"
-      source: "presets/reference_composite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
-    - name: Input
+      source: "presets/reference_composite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/reference_composite.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/reference_composite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/reference_composite.json
+    - name: "Input"
       value: "Composite"
-      source: "presets/reference_composite.json at 20224a3"
-      url: https://github.com/yaglo/mynes/blob/20224a3/presets/reference_composite.json
+      source: "presets/reference_composite.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/reference_composite.json
+zenith_system_3:
+  name: "Zenith System 3"
+  signal: "channel 3 RF"
+  summary: "A 19-inch Zenith System 3 table set of 1981 (L1960P9 class) on the NES RF modulator, channel 3, through a short cable and an RF switch. The tube has an in-line gun, phosphor stripes and a black matrix. There is no comb filter, the sharpness control adds peaking, and Color Sentry holds tint and contrast; the factory white is cool. Tube type, controls and circuits come from Zenith's 1984 catalog and the L1960P9 owner's manual; stripe pitch, bandwidths and spot are class estimates."
+  caption: "Slot mask, 9000 K white, no comb, channel 3 RF"
+  specs:
+    - name: "Mask"
+      value: "Slot mask, 480 triads across the picture"
+      source: "presets/zenith_system_3.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/zenith_system_3.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.55 of a line at black to 1.20 at white"
+      source: "presets/zenith_system_3.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/zenith_system_3.json
+    - name: "White point"
+      value: "9000 K"
+      source: "presets/zenith_system_3.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/zenith_system_3.json
+    - name: "Input"
+      value: "RF on channel 3 (61.25 MHz carrier)"
+      source: "presets/zenith_system_3.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/zenith_system_3.json
+living_room_1988:
+  name: "Living room 1988"
+  signal: "composite"
+  summary: "A rounded household composite television in warm evening light: a neutral picture, a softer dot-mask raster, moderate beam growth and a little grain in the shadows. A table lamp lifts the blacks and sits on the glass. A generic 19-inch dot-mask set of its year."
+  caption: "Shadow mask, 6500 K white, composite, lamp on the glass"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 440 triads across the picture"
+      source: "presets/living_room_1988.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/living_room_1988.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.58 of a line at black to 1.22 at white"
+      source: "presets/living_room_1988.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/living_room_1988.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/living_room_1988.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/living_room_1988.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/living_room_1988.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/living_room_1988.json
+basement_tv:
+  name: "Basement TV"
+  signal: "channel 3 RF"
+  summary: "A generic worn RF television: mild gun imbalance, reduced glass transmission and regulation, a visible raster and a spot that grows with current. An antenna switch leaves a ghost, hum bars roll through, and reception noise enters at RF."
+  caption: "Worn shadow-mask set, 6500 K white, channel 3 RF"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 340 triads across the picture"
+      source: "presets/basement_tv.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/basement_tv.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.48 of a line at black to 1.10 at white"
+      source: "presets/basement_tv.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/basement_tv.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/basement_tv.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/basement_tv.json
+    - name: "Input"
+      value: "RF on channel 3 (61.25 MHz carrier)"
+      source: "presets/basement_tv.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/basement_tv.json
+bedroom_rf_1990:
+  name: "Bedroom RF 1990"
+  signal: "channel 3 RF"
+  summary: "A generic 1990 in-line slot-mask television on RF: soft chroma, a distinct raster that grows with current, cool highlights and a mild gray-tracking error. RF snow and a cable echo come with the connection. Not a measured chassis."
+  caption: "In-line slot mask, 7800 K white, channel 3 RF"
+  specs:
+    - name: "Mask"
+      value: "Slot mask, 410 triads across the picture"
+      source: "presets/bedroom_rf_1990.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/bedroom_rf_1990.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.40 of a line at black to 0.95 at white"
+      source: "presets/bedroom_rf_1990.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/bedroom_rf_1990.json
+    - name: "White point"
+      value: "7800 K"
+      source: "presets/bedroom_rf_1990.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/bedroom_rf_1990.json
+    - name: "Input"
+      value: "RF on channel 3 (61.25 MHz carrier)"
+      source: "presets/bedroom_rf_1990.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/bedroom_rf_1990.json
+famicom_kitchen:
+  name: "Famicom kitchen"
+  signal: "RF"
+  summary: "A small, cool RF television under a soft kitchen light: a coarse shadow mask, soft focus, gray tracking and a restrained broad reflection on the glass. A generic household set."
+  caption: "Coarse shadow mask, 9300 K white, channel 3 RF"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 380 triads across the picture"
+      source: "presets/famicom_kitchen.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/famicom_kitchen.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.60 of a line at black to 1.30 at white"
+      source: "presets/famicom_kitchen.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/famicom_kitchen.json
+    - name: "White point"
+      value: "9300 K"
+      source: "presets/famicom_kitchen.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/famicom_kitchen.json
+    - name: "Input"
+      value: "RF from the Famicom modulator (95.75 MHz carrier)"
+      source: "presets/famicom_kitchen.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/famicom_kitchen.json
+dying_crt:
+  name: "Dying CRT"
+  signal: "composite"
+  summary: "A worn consumer shadow-mask television: a weak blue gun, soft focus in the corners, poor DC restoration and supply regulation, and mild hum. The geometry is stable, and the faults are generic aging."
+  caption: "Worn shadow mask, weak blue gun, composite"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 350 triads across the picture"
+      source: "presets/dying_crt.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/dying_crt.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.76 of a line at black to 1.68 at white"
+      source: "presets/dying_crt.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/dying_crt.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/dying_crt.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/dying_crt.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/dying_crt.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/dying_crt.json
+rca_colortrak_1986:
+  name: "Large consumer shadow mask"
+  signal: "composite"
+  summary: "A large, softly focused consumer dot-mask television: warm whites, broad bright spots and rounded geometry. A mellow household look on a generic chassis."
+  caption: "Shadow mask, 6000 K white, composite"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 400 triads across the picture"
+      source: "presets/rca_colortrak_1986.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/rca_colortrak_1986.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.62 of a line at black to 1.35 at white"
+      source: "presets/rca_colortrak_1986.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/rca_colortrak_1986.json
+    - name: "White point"
+      value: "6000 K"
+      source: "presets/rca_colortrak_1986.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/rca_colortrak_1986.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/rca_colortrak_1986.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/rca_colortrak_1986.json
+vivid_living_room:
+  name: "Vivid living room"
+  signal: "composite"
+  summary: "A vivid composite consumer television curated from a saved living-room setup: cool whites, rich color and modest red drive, controlled glass scatter and stable geometry. A preference profile."
+  caption: "Shadow mask, 9300 K white, rich color, composite"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 480 triads across the picture"
+      source: "presets/vivid_living_room.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vivid_living_room.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.55 of a line at black to 1.15 at white"
+      source: "presets/vivid_living_room.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vivid_living_room.json
+    - name: "White point"
+      value: "9300 K"
+      source: "presets/vivid_living_room.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vivid_living_room.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/vivid_living_room.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/vivid_living_room.json
+late_crt_wega:
+  name: "Late consumer aperture grille"
+  signal: "composite"
+  summary: "A late consumer aperture-grille television on composite: firm detail, broad bright scanlines, little horizontal bow and visible composite edge color. A generic receiver."
+  caption: "Aperture grille, 6500 K white, composite"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, 680 triads across the picture"
+      source: "presets/late_crt_wega.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/late_crt_wega.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.46 of a line at black to 1.05 at white"
+      source: "presets/late_crt_wega.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/late_crt_wega.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/late_crt_wega.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/late_crt_wega.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/late_crt_wega.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/late_crt_wega.json
+retro_gaming_setup:
+  name: "Clean consumer grille"
+  signal: "S-Video"
+  summary: "A clean gaming setup on separated luminance and chroma: quiet color, a moderately focused consumer aperture grille and barely curved geometry. It is broader and gentler than the studio monitors, and not a named commercial set."
+  caption: "Aperture grille, 6500 K white, S-Video"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, 620 triads across the picture"
+      source: "presets/retro_gaming_setup.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/retro_gaming_setup.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.44 of a line at black to 0.88 at white"
+      source: "presets/retro_gaming_setup.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/retro_gaming_setup.json
+    - name: "White point"
+      value: "6504 K"
+      source: "presets/retro_gaming_setup.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/retro_gaming_setup.json
+    - name: "Input"
+      value: "S-Video (separate luminance and chroma)"
+      source: "presets/retro_gaming_setup.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/retro_gaming_setup.json
+warm_desktop_monitor:
+  name: "Warm desktop monitor"
+  signal: "S-Video"
+  summary: "A 1980s 13-inch desktop color monitor on separated luminance and chroma, of the kind sold with home computers. It has a 0.42 mm dot mask, P22 phosphors run a little warm at 6000 K, 5 MHz luma and 1.3 MHz chroma. The spot is tight with a small convergence error, and a desk lamp leaves an amber reflection on the glass."
+  caption: "0.42 mm dot mask, 6000 K white, S-Video, desk lamp"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 600 triads across the picture"
+      source: "presets/warm_desktop_monitor.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/warm_desktop_monitor.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.50 of a line at black to 1.00 at white"
+      source: "presets/warm_desktop_monitor.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/warm_desktop_monitor.json
+    - name: "White point"
+      value: "6000 K"
+      source: "presets/warm_desktop_monitor.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/warm_desktop_monitor.json
+    - name: "Input"
+      value: "S-Video (separate luminance and chroma)"
+      source: "presets/warm_desktop_monitor.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/warm_desktop_monitor.json
+commodore_1702:
+  name: "Compact video monitor"
+  signal: "S-Video"
+  summary: "A generic compact video monitor on separated luminance and chroma: a shadow mask, a focused raster and modest spot growth. The file name is kept for compatibility; it is not a measured Commodore 1702."
+  caption: "Shadow mask, 6500 K white, S-Video"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 520 triads across the picture"
+      source: "presets/commodore_1702.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/commodore_1702.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.42 of a line at black to 0.90 at white"
+      source: "presets/commodore_1702.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/commodore_1702.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/commodore_1702.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/commodore_1702.json
+    - name: "Input"
+      value: "S-Video (separate luminance and chroma)"
+      source: "presets/commodore_1702.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/commodore_1702.json
+studio_pvm:
+  name: "Studio aperture grille"
+  signal: "S-Video"
+  summary: "A regulated studio aperture grille on separated luminance and chroma: a fine 900-triad face and narrow spots. A generic monitor."
+  caption: "900-triad aperture grille, 6500 K white, S-Video"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, 900 triads across the picture"
+      source: "presets/studio_pvm.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/studio_pvm.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.32 of a line at black to 0.60 at white"
+      source: "presets/studio_pvm.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/studio_pvm.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/studio_pvm.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/studio_pvm.json
+    - name: "Input"
+      value: "S-Video (separate luminance and chroma)"
+      source: "presets/studio_pvm.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/studio_pvm.json
+sony_pvm_20m4u:
+  name: "Fine aperture grille"
+  signal: "S-Video"
+  summary: "A high-resolution aperture grille on separated luminance and chroma: a 1200-triad face and tightly focused spots. A generic monitor whose fine structure needs enough output resolution; the file name is kept for compatibility."
+  caption: "1200-triad aperture grille, 6500 K white, S-Video"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, 1200 triads across the picture"
+      source: "presets/sony_pvm_20m4u.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_20m4u.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.28 of a line at black to 0.52 at white"
+      source: "presets/sony_pvm_20m4u.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_20m4u.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/sony_pvm_20m4u.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_20m4u.json
+    - name: "Input"
+      value: "S-Video (separate luminance and chroma)"
+      source: "presets/sony_pvm_20m4u.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_pvm_20m4u.json
+arcade_cabinet:
+  name: "Arcade cabinet"
+  signal: "RGB"
+  summary: "A generic RGB arcade monitor fed by a 2C03 RGB PPU's own palette, three bits per gun: a coarse shadow mask, a spot that grows with beam current and fine scatter in the faceplate. Not a stock NES output."
+  caption: "Coarse shadow mask, 6500 K white, 2C03 RGB"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 440 triads across the picture"
+      source: "presets/arcade_cabinet.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/arcade_cabinet.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.40 of a line at black to 1.05 at white"
+      source: "presets/arcade_cabinet.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/arcade_cabinet.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/arcade_cabinet.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/arcade_cabinet.json
+    - name: "Input"
+      value: "RGB from a 2C03 PPU palette"
+      source: "presets/arcade_cabinet.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/arcade_cabinet.json
+nec_xm29_arcade:
+  name: "Large RGB monitor"
+  signal: "RGB"
+  summary: "A regulated large RGB monitor fed by a 2C03 RGB PPU's own palette: a fine shadow mask and tighter focus than the arcade cabinet. Not a measured NEC model."
+  caption: "Fine shadow mask, 6500 K white, 2C03 RGB"
+  specs:
+    - name: "Mask"
+      value: "Shadow mask, 760 triads across the picture"
+      source: "presets/nec_xm29_arcade.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/nec_xm29_arcade.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.38 of a line at black to 0.75 at white"
+      source: "presets/nec_xm29_arcade.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/nec_xm29_arcade.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/nec_xm29_arcade.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/nec_xm29_arcade.json
+    - name: "Input"
+      value: "RGB from a 2C03 PPU palette"
+      source: "presets/nec_xm29_arcade.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/nec_xm29_arcade.json
+sony_gdm_fw900:
+  name: "Sony GDM-FW900 and scaler"
+  signal: "composite"
+  note: /notes/fw900/
+  variants: ["GDM FW900", "FW-900", "Sony FW900"]
+  summary: "The measured spatial and tonal response of a Sony GDM-FW900 at 1920×1200 behind a generic composite decoder and an external 5x vertical scaler, pillarboxed to 4:3. The source and host cadence are unchanged; this is not an 85 Hz conversion."
+  caption: "Measured FW900 response, 5x scaler, composite"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, the measured GDM-FW900 response at 1920×1200 in place of a triad count"
+      source: "presets/sony_gdm_fw900.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_gdm_fw900.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.38 of a line at black to 0.78 at white"
+      source: "presets/sony_gdm_fw900.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_gdm_fw900.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/sony_gdm_fw900.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_gdm_fw900.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/sony_gdm_fw900.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/sony_gdm_fw900.json
+measured_glare_experiment:
+  name: "Lab: measured glass scatter"
+  signal: "composite"
+  summary: "An optics comparison: the Reference composite preset with a two-point veiling-glare fit from a Hitachi 751 and an assumed 270 mm picture height. Compare it with Reference composite to see light spill into dark backgrounds."
+  caption: "Reference composite with measured veiling glare"
+  specs:
+    - name: "Mask"
+      value: "Aperture grille, 650 triads across the picture"
+      source: "presets/measured_glare_experiment.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/measured_glare_experiment.json
+    - name: "Beam spot height parameter (FWHM)"
+      value: "0.38 of a line at black to 0.78 at white"
+      source: "presets/measured_glare_experiment.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/measured_glare_experiment.json
+    - name: "White point"
+      value: "6500 K (D65)"
+      source: "presets/measured_glare_experiment.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/measured_glare_experiment.json
+    - name: "Input"
+      value: "Composite"
+      source: "presets/measured_glare_experiment.json at 7822acc"
+      url: https://github.com/yaglo/mynes/blob/7822acc/presets/measured_glare_experiment.json

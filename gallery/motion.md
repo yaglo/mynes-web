@@ -3,6 +3,8 @@ layout: page
 title: Motion
 permalink: /gallery/motion/
 section: gallery
+redirect_from:
+  - /archive/motion-review/
 description: One clip per game on the MyNES television presets, with one emulator frame per video frame.
 ---
 
@@ -11,5 +13,3 @@ description: One clip per game on the MyNES television presets, with one emulato
 ## Clips
 
 {% include gallery-motion.html %}
-
-The [NTSC phase and motion review]({{ '/archive/motion-review/' | relative_url }}) in the archive has 960×720 clips of the Contra boss with the NTSC phase changing between frames, and the frame-to-frame measurements made from them.

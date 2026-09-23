@@ -103,7 +103,7 @@ pipeline's choice; the script only reads the fields.
 | `lens[]` | 3840×2880 clips in the same shape, with the same frame count and start as the stage clips. |
 | `still` | One frame at full size: `hdr` (AVIF, CICP 9/16/9, 10-bit 4:4:4), `sdr` (lossless PNG), `width`, `height`, and `frame`, the index of that frame in the stage clips. |
 | `hdr` | Mastering data of the HDR files: `white_nits` (SDR white), `headroom`, `max_cll`, `max_fall`. Shown in the line under the switcher. |
-| `crop` | Optional. The 1:1 detail crop of the still, for the gallery: `sdr` (PNG), `sdr_1x` (its `Image.reduce(2)` variant), `hdr` and `hdr_1x` (PQ AVIF), and `x`, `y`, `width`, `height` of the crop in the still, all even. The switcher ignores it. |
+| `crop` | Optional. The 1:1 detail crop of the still, for the gallery: `sdr` (PNG), `sdr_1x` (its `Image.reduce(2)` variant), `hdr` and `hdr_1x` (PQ AVIF), and `x`, `y`, `width`, `height` of the crop in the still, all even. The switcher ignores it. A clip may hold `crop` and nothing else: a preset recorded for its still frame only, which the gallery shows and the switcher leaves out. |
 
 Paths are relative to the site root, without a leading slash and without
 the `baseurl`; the script prefixes them.

@@ -3,6 +3,15 @@ layout: page
 title: Televisions
 permalink: /gallery/televisions/
 section: gallery
+redirect_from:
+  - /gallery/consumer-crt/
+  - /gallery/contra/
+  - /gallery/presets/
+  - /gallery/visual-review/
+  - /archive/consumer-crt/
+  - /archive/contra/
+  - /archive/presets/
+  - /archive/visual-review/
 description: The MyNES television presets of the gallery, each with its specifications and the games recorded on it.
 ---
 

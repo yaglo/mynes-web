@@ -8,7 +8,7 @@ tests:
   suite: AccuracyCoin
   literal: "144 of 144"
 presets:
-  count: 23
+  count: 24
 frame:
   width: 3840
   height: 2880
@@ -19,4 +19,4 @@ clip:
 # come from several commits; set this when the showcase pipeline installs
 # one set of media, and the footer names it.
 renderer:
-  commit:
+  commit: c175db3

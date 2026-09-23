@@ -17,21 +17,21 @@ and the one in assets/css/tv.css that sizes the stage before the script runs
 must stay the same (tools/test_tv_switcher.js checks this).
 {%- endcomment -%}
 {%- assign tv_manifest = include.manifest | default: "/assets/hero/manifest.json" -%}
-{%- assign tv_game = include.game | default: "mega-man-2-title" -%}
-{%- assign tv_game_title = include.game_title | default: "Mega Man 2" -%}
-{%- assign tv_scene = include.scene | default: "Rooftop title" -%}
+{%- assign tv_game = include.game | default: "super-mario-bros" -%}
+{%- assign tv_game_title = include.game_title | default: "Super Mario Bros." -%}
+{%- assign tv_scene = include.scene | default: "World 1-1, running right past the first blocks" -%}
 {%- assign tv_preset = include.preset | default: "sony_pvm_14l2" -%}
 {%- assign tv_preset_name = include.preset_name | default: "Sony PVM-14L2" -%}
 {%- assign tv_blurb = include.blurb | default: site.data.presets[tv_preset].caption -%}
-{%- assign tv_poster = include.poster | default: "assets/hero/mega-man-2-title/sony_pvm_14l2.poster.webp" -%}
+{%- assign tv_poster = include.poster | default: "assets/hero/super-mario-bros/sony_pvm_14l2/960x720/poster.webp" -%}
 {%- assign tv_w = include.poster_width | default: 960 -%}
 {%- assign tv_h = include.poster_height | default: 720 -%}
-{%- assign tv_poster_2x = include.poster_2x -%}
+{%- assign tv_poster_2x = include.poster_2x | default: "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/poster.webp" -%}
 {%- assign tv_w2 = tv_w | times: 2 -%}
 {%- assign tv_h2 = tv_h | times: 2 -%}
 {%- assign tv_media_2x = "(min-resolution: 2dppx) and (min-width: 992px), (min-resolution: 3dppx) and (min-width: 672px)" -%}
-{%- assign tv_video = include.video | default: "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4" -%}
-{%- assign tv_full = include.full | default: "assets/images/showcase/4k/sony_pvm_14l2.png" -%}
+{%- assign tv_video = include.video | default: "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/stage-sdr.mp4" -%}
+{%- assign tv_full = include.full | default: "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-sdr.png" -%}
 <link rel="stylesheet" href="{{ '/assets/css/tv.css' | relative_url }}">
 <div class="tv" data-manifest="{{ tv_manifest | relative_url }}" data-base="{{ '/' | relative_url }}" data-game="{{ tv_game }}" data-preset="{{ tv_preset }}" data-width="{{ tv_w }}" data-height="{{ tv_h }}"{% if tv_poster_2x %} data-width2="{{ tv_w2 }}" data-height2="{{ tv_h2 }}" style="--tv-w: {{ tv_w }}; --tv-h: {{ tv_h }}; --tv-w2: {{ tv_w2 }}; --tv-h2: {{ tv_h2 }}"{% else %} style="--tv-w: {{ tv_w }}; --tv-h: {{ tv_h }}"{% endif %}>
 <div class="tv-tabs" role="tablist" aria-label="Game recording">

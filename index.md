@@ -33,8 +33,8 @@ The PPU's color and emphasis codes select the NES DAC waveform, and the GPU fron
 
 The [technical notes]({{ '/notes/' | relative_url }}) give the evidence behind each stage.
 
-## Sony PVM-14L2 and Stas's Favourite on Mega Man 2
+## Sony PVM-14L2 and Stas's Favourite on Super Mario Bros.
 
-{% include compare.html a="mega-man-2-title-sony-pvm-14l2-rooftop" b="mega-man-2-title-stass-favourite-rooftop" note="Look at the mask: the aperture grille on the left repeats every 4 px across the frame, and the slot mask on the right every 9 px." %}
+{% include compare.html a="super-mario-bros-sony-pvm-14l2-hill" b="super-mario-bros-stass-favourite-hill" note="Look at the mask: the aperture grille on the left repeats every 4 px across the frame, and the slot mask on the right every 9 px." %}
 
 [Gallery]({{ '/gallery/' | relative_url }}) · [Technical notes]({{ '/notes/' | relative_url }}) · [Download and build]({{ '/download/' | relative_url }})

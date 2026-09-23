@@ -19,116 +19,37 @@
 #             single crop); it keeps the render-scale and render-range spans
 #   x, y      pan.html: the source pixel at the centre of the view at first
 
-# Home page slider: Mega Man on the rooftop, emulated frame 900.
-mega-man-2-title-sony-pvm-14l2-rooftop:
-  file: assets/renders/mega-man-2-title-sony-pvm-14l2-composite-3840x2880-crop-2600-1300-960x720.png
-  file_1x: assets/renders/mega-man-2-title-sony-pvm-14l2-composite-3840x2880-crop-2600-1300-960x720@1x.png
-  full: assets/images/showcase/4k/sony_pvm_14l2.png
-  crop: [2600, 1300, 960, 720]
+# Home page slider: Mario on the first hill of World 1-1, the first frame of
+# the switcher's clip, cut from the showcase stills.
+super-mario-bros-sony-pvm-14l2-hill:
+  file: assets/renders/super-mario-bros-sony-pvm-14l2-composite-3840x2880-crop-480-2160-960x720.png
+  file_1x: assets/renders/super-mario-bros-sony-pvm-14l2-composite-3840x2880-crop-480-2160-960x720@1x.png
+  full: assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-sdr.png
+  crop: [480, 2160, 960, 720]
   frame: [3840, 2880]
-  game: Mega Man 2
-  scene: rooftop title
+  game: Super Mario Bros.
+  scene: World 1-1 start
   preset: sony_pvm_14l2
   signal: composite
-  alt: Mega Man on the rooftop of the Mega Man 2 title screen, on the Sony PVM-14L2 preset.
+  alt: Mario on the first hill of World 1-1 in Super Mario Bros., on the Sony PVM-14L2 preset.
 
-mega-man-2-title-stass-favourite-rooftop:
-  file: assets/renders/mega-man-2-title-stass-favourite-rf-3840x2880-crop-2600-1300-960x720.png
-  file_1x: assets/renders/mega-man-2-title-stass-favourite-rf-3840x2880-crop-2600-1300-960x720@1x.png
-  full: assets/images/showcase/4k/stass_favourite.png
-  crop: [2600, 1300, 960, 720]
+super-mario-bros-stass-favourite-hill:
+  file: assets/renders/super-mario-bros-stass-favourite-rf-3840x2880-crop-480-2160-960x720.png
+  file_1x: assets/renders/super-mario-bros-stass-favourite-rf-3840x2880-crop-480-2160-960x720@1x.png
+  full: assets/hero/super-mario-bros/stass_favourite/3840x2880/still-sdr.png
+  crop: [480, 2160, 960, 720]
   frame: [3840, 2880]
-  game: Mega Man 2
-  scene: rooftop title
+  game: Super Mario Bros.
+  scene: World 1-1 start
   preset: stass_favourite
   signal: channel 3 RF
-  alt: Mega Man on the rooftop of the Mega Man 2 title screen, on the Stas's Favourite preset.
+  alt: Mario on the first hill of World 1-1 in Super Mario Bros., on the Stas's Favourite preset.
 
-mega-man-2-title-sony-pvm-14l2-lettering:
-  file: assets/renders/mega-man-2-title-sony-pvm-14l2-composite-3840x2880-crop-1680-426-1020x684.png
-  file_1x: assets/renders/mega-man-2-title-sony-pvm-14l2-composite-3840x2880-crop-1680-426-1020x684@1x.png
-  full: assets/images/showcase/4k/sony_pvm_14l2.png
-  crop: [1680, 426, 1020, 684]
-  frame: [3840, 2880]
-  game: Mega Man 2
-  scene: title lettering
-  preset: sony_pvm_14l2
-  signal: composite
-  alt: The Mega Man 2 title lettering on the Sony PVM-14L2 preset.
-
-# Close-ups page.
-castlevania-castle-hall-pvm:
-  file: assets/images/showcase/4k/castlevania-pvm-gameplay.png
-  frame: [3840, 2880]
-  x: 2000
-  y: 2144
-  game: Castlevania
-  scene: castle hall
-  preset: sony_pvm_14l2
-  signal: composite
-  alt: Simon in the Castlevania castle hall on the Sony PVM-14L2 preset, the full frame.
-  caption: Castlevania, castle hall, emulated frame 2500. Sony PVM-14L2 preset, composite. 3840×2880 frame, shown 1:1. SDR PNG.
-
-castlevania-castle-hall-pvm-detail:
-  file: assets/renders/castlevania-castle-hall-sony-pvm-14l2-composite-3840x2880-crop-1360-1584-1278x1116.png
-  file_1x: assets/renders/castlevania-castle-hall-sony-pvm-14l2-composite-3840x2880-crop-1360-1584-1278x1116@1x.png
-  full: assets/images/showcase/4k/castlevania-pvm-gameplay.png
-  crop: [1360, 1584, 1278, 1116]
-  frame: [3840, 2880]
-  game: Castlevania
-  scene: castle hall
-  preset: sony_pvm_14l2
-  signal: composite
-  alt: Simon, window tracery and masonry in the Castlevania castle hall, a crop on the Sony PVM-14L2 preset.
-
-darkwing-duck-bridge-pvm:
-  file: assets/images/showcase/4k/darkwing-pvm-gameplay.png
-  frame: [3840, 2880]
-  x: 2240
-  y: 1576
-  game: Darkwing Duck
-  scene: bridge gameplay
-  preset: sony_pvm_14l2
-  signal: composite
-  alt: Darkwing Duck on the bridge on the Sony PVM-14L2 preset, the full frame.
-  caption: Darkwing Duck, bridge gameplay. Sony PVM-14L2 preset, composite. 3840×2880 frame, shown 1:1. SDR PNG.
-
-darkwing-duck-bridge-pvm-detail:
-  file: assets/renders/darkwing-duck-bridge-sony-pvm-14l2-composite-3840x2880-crop-1600-1000-1278x1152.png
-  file_1x: assets/renders/darkwing-duck-bridge-sony-pvm-14l2-composite-3840x2880-crop-1600-1000-1278x1152@1x.png
-  full: assets/images/showcase/4k/darkwing-pvm-gameplay.png
-  crop: [1600, 1000, 1278, 1152]
-  frame: [3840, 2880]
-  game: Darkwing Duck
-  scene: bridge gameplay
-  preset: sony_pvm_14l2
-  signal: composite
-  alt: Darkwing, the blue sky, orange rails and a bright support on the bridge, a crop on the Sony PVM-14L2 preset.
-
-contra-boss-studio-aperture-grille-details:
-  file: assets/renders/contra-boss-studio-aperture-grille-details-1296x432.png
-  file_1x: assets/renders/contra-boss-studio-aperture-grille-details-1296x432@1x.png
-  full: assets/images/contra-gallery/studio-pvm-beam-detail.png
-  crop: [0, 0, 1296, 432]
-  alt: The Contra boss's face and a platform on the Studio aperture grille preset, two labeled crops.
-  caption: 'Contra, waterfall boss, frame 60. Studio aperture grille preset. 1296×432 image of 2 labeled native-pixel crops of a 3840×2880 frame (face left, platform right), <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.'
-
+# Close-ups page: the beam height fixture.
 beam-height-fixture-pvm:
   file: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-720x396.png
   file_1x: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-720x396@1x.png
-  full: assets/images/showcase/4k/pvm-beam-levels.png
+  full: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-levels.png
   crop: [0, 2, 720, 396]
   alt: Dark gray, mid gray and white patches and single-line strokes on the Sony PVM-14L2 preset.
   caption: 'Beam height fixture: PPU codes $00, $10 and $20 on $0F black, phase 0. Sony PVM-14L2 preset, composite. 720×396 image of labeled native-pixel crops, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.'
-
-mega-man-2-title-toshiba-14af43-lettering:
-  file: assets/renders/mega-man-2-title-toshiba-14af43-composite-3840x2880-crop-1680-426-1020x684.png
-  file_1x: assets/renders/mega-man-2-title-toshiba-14af43-composite-3840x2880-crop-1680-426-1020x684@1x.png
-  full: assets/images/showcase/4k/toshiba_14af43.png
-  crop: [1680, 426, 1020, 684]
-  frame: [3840, 2880]
-  game: Mega Man 2
-  scene: title lettering
-  preset: toshiba_14af43
-  signal: composite
-  alt: The Mega Man 2 title lettering on the Toshiba 14AF preset.

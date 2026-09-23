@@ -20,4 +20,3 @@ Some posts describe code of an earlier prototype. The [GPU pipeline reference]({
 {% endfor %}</ul>
 {% endfor %}
 
-Pages that newer pages replaced are in the [Archive]({{ '/archive/' | relative_url }}).

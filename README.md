@@ -21,18 +21,13 @@ GitHub allows: `jekyll-seo-tag`, `jekyll-sitemap`, `jekyll-feed`,
 | `notes/` | Technical notes (formerly `research/`): hardware research, PVM-14L2, GDM-FW900, measurements, receiver sharpening, HDR output |
 | `_posts/`, `blog/` | The 8-part blog series and the blog index |
 | `download.md`, `about.md` | Download and build; the About page |
-| `archive/` | Superseded gallery pages and reviews, at `/archive/<slug>/`, and their index |
 | `redirects/` | Redirects for old URLs that have no page of their own |
 | `_data/` | `hero.json` (a copy of the hero manifest), `renders.yml`, `presets.yml`, `facts.yml`, `release.yml` |
 | `_includes/crop.html`, `clip.html`, `pan.html`, `compare.html` | Renders at one source pixel per device pixel (see [Render includes](#render-includes)) |
 | `assets/renders/` | 1:1 crops cut from the 3840×2880 frames, and their `@1x` files |
-| `assets/images/` | Every image and video from the code repository's former `docs/images/` tree, with the original directory layout |
-| `assets/previews/` | WebP previews of rasters over 1 MB, used by the archived pages |
-| `assets/posters/` | Poster frames for the MP4 clips |
 | `assets/hero/` | Manifest, posters and 3840×2880 lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)) |
 | `assets/js/tv-switcher.js`, `assets/css/tv.css`, `_includes/tv-switcher.html` | The switcher's script, styles and markup |
 | `assets/js/render.js`, `viewer.js`, `compare.js` | Sizing of renders, the pan viewer and the comparison slider |
-| `assets/video/` | `showcase-reel-1280x960.mp4`, the reel re-encoded at 1280×960 (H.264, crf 30, about 2.4 MB), and its poster, used by an archived page |
 | `tools/check_site.py`, `tools/old-urls.txt` | Link and asset checker for a built `_site`; it also checks that every URL of the site before the restructure still answers |
 | `tools/gallery_pages.py` | Writes the stub page of each game and preset of `_data/hero.json`; `--check` finds missing ones |
 | `tools/make_crop.py` | Cuts a 1:1 crop from a frame and writes its `@1x` file |
@@ -52,21 +47,14 @@ page at the old URL with a meta refresh, a canonical link and a plain link
 before the restructure. `check_site.py` fails if one of them has no page, or
 redirects to a missing page or to another redirect.
 
-An archived page lives in `archive/` and has `archived: <date>`,
-`replaced_by: <URL>` and `sitemap: false` in its front matter. `/archive/`
-lists it. A page migrated from the code repository names its source document
-in `source:`, and the footer links that document at the last commit that had
-it.
-
 ## Where the images come from
 
 The images and clips are renders and captures from the MyNES GPU frontend.
-The older ones come from the review scripts in the code repository
-(`tools/review/`) and were under `docs/images/` there. The recording pipeline
-in the code repository's `tools/showcase/` writes `assets/hero/`. The
-originals, including the 3840×2880 PNG frames, are kept in this repository so
-the code repository stays small. The archived pages keep their reduced
-previews, and every other page shows renders only through the includes below.
+The recording pipeline in the code repository's `tools/showcase/` writes
+`assets/hero/`, and the crops under `assets/renders/` are cut from those
+frames with `tools/make_crop.py`. The beam height fixture is the one render
+from an earlier review script that remains. Every page shows renders only
+through the includes below.
 
 ## Render includes
 
@@ -99,14 +87,15 @@ ratios 1.5 and 3, and multiples of 10 at 1.25.
 
 ## Gallery data
 
-The gallery reads `_data/hero.json`, a copy of `assets/hero/manifest.json`.
-The copy is version 1 now, and becomes version 2 when the `tools/showcase/`
-pipeline installs its media. The Games and Televisions pages are stubs with a
-`game` or `preset` id. Their layouts (`_layouts/game.html`, `television.html`)
-and the gallery includes show only what the data lists, and a plain line when
-the data lists nothing. After installing media, copy the manifest to
-`_data/hero.json` and run `python3 tools/gallery_pages.py` (see
-`assets/hero/README.md`).
+The gallery reads `_data/hero.json`, a copy of `assets/hero/manifest.json`,
+which the `tools/showcase/` pipeline in the code repository writes (version
+2). The Games and Televisions pages are stubs with a `game` or `preset` id.
+Their layouts (`_layouts/game.html`, `television.html`) and the gallery
+includes show only what the data lists, and a plain line when the data lists
+nothing. A preset recorded for its still frame only has a `crop` entry and
+no clip: its Televisions page shows the crop, and the switcher leaves it
+out. After installing media, copy the manifest to `_data/hero.json` and run
+`python3 tools/gallery_pages.py` (see `assets/hero/README.md`).
 
 ## The television switcher (`assets/hero/`)
 
@@ -126,13 +115,13 @@ capture not rendered yet". Clicking the picture or pressing Space freezes the
 clip, and on a preset with a still and no clip it opens Inspect.
 
 `assets/hero/manifest.json` sets the game tabs, the preset chips and the
-media, and the script reads 2 versions of it. Version 1 is the seed data
-committed now: one SDR clip per preset, of unknown size, and 3840×2880 PNG
-stills. Version 2 is what the rebuilt `tools/showcase/` pipeline in the code
-repository writes: stage clips per size and range, lens clips, HDR and SDR
-stills, and posters per stage size. [`assets/hero/README.md`](assets/hero/README.md)
-gives the schema, the display rules, what Inspect does for each type of clip
-and the seed contents.
+media, and the script reads 2 versions of it. Version 2 is what the
+`tools/showcase/` pipeline in the code repository writes: stage clips per
+size and range, lens clips, HDR and SDR stills, detail crops and posters per
+stage size. Version 1 was the seed data of the first site, one SDR clip per
+preset of unknown size and 3840×2880 PNG stills, and the script still reads
+it. [`assets/hero/README.md`](assets/hero/README.md) gives the schema, the
+display rules and what Inspect does for each type of clip.
 
 The first page load fetches the manifest, `tv.css`, the script, one poster
 and one stage clip. The other clips of a game are prefetched one at a time

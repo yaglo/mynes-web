@@ -1,14 +1,22 @@
 {%- comment -%}
-Every detail crop of the hero data, by game and preset.
-Usage: {% include gallery-crops.html %}
+One detail crop per game of the hero data: on the game's default preset, or
+on the first preset that has a crop. The game's page shows the crop on
+every preset. Usage: {% include gallery-crops.html %}
 {%- endcomment -%}
 {%- assign gc_n = 0 -%}
-{%- for game in site.data.hero.games -%}{%- for preset in site.data.hero.presets -%}
+{%- for game in site.data.hero.games -%}
+{%- assign gc_preset = nil -%}
+{%- include hero-clip.html game=game.id preset=game.default_preset -%}
+{%- if hc_crop -%}{%- assign gc_preset = game.default_preset -%}{%- endif -%}
+{%- unless gc_preset -%}{%- for preset in site.data.hero.presets -%}{%- unless gc_preset -%}
 {%- include hero-clip.html game=game.id preset=preset.id -%}
-{%- if hc_crop -%}{%- assign gc_n = gc_n | plus: 1 %}
+{%- if hc_crop -%}{%- assign gc_preset = preset.id -%}{%- endif -%}
+{%- endunless -%}{%- endfor -%}{%- endunless -%}
+{%- if gc_preset -%}{%- assign gc_n = gc_n | plus: 1 -%}
+{%- include hero-clip.html game=game.id preset=gc_preset %}
 {% include hero-crop.html %}
 {%- endif -%}
-{%- endfor -%}{%- endfor -%}
+{%- endfor -%}
 {%- if gc_n == 0 %}
 <p>The showcase recordings have no detail crops on the site yet.</p>
 {%- endif %}

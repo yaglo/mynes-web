@@ -17,9 +17,9 @@ A single file of known size can be given as src, width, height (and type).
 Usage:
   {% include clip.html sources=clip.stage posters=clip.poster game=game.title
      scene=game.scene preset_name=preset.name %}
-  {% include clip.html src="assets/images/showcase/kirby-jvc_d_series_2000.mp4"
-     width=960 height=720 poster="assets/hero/kirby-title/jvc_d_series_2000.poster.webp"
-     game="Kirby's Adventure" scene="Animated title and opening" preset_name="JVC D-Series" %}
+  {% include clip.html src="assets/hero/super-mario-bros/sony_pvm_14l2/960x720/stage-sdr.mp4"
+     width=960 height=720 poster="assets/hero/super-mario-bros/sony_pvm_14l2/960x720/poster.webp"
+     game="Super Mario Bros." scene="World 1-1" preset_name="Sony PVM-14L2" %}
 
 posters is a list of {src, width, height}, or one path with poster_width
 (default: the smallest source width). seconds adds the duration to the

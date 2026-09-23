@@ -3,6 +3,8 @@ layout: page
 title: Gallery
 permalink: /gallery/
 section: gallery
+redirect_from:
+  - /archive/
 description: Clips, crops and full frames from the MyNES GPU frontend by game and by television preset, shown at one image pixel per device pixel.
 ---
 
@@ -23,5 +25,3 @@ description: Clips, crops and full frames from the MyNES GPU frontend by game an
 ## Motion
 
 <p><a href="{{ '/gallery/motion/' | relative_url }}">Motion</a>: one clip per game at {{ site.data.hero.fps }} fps, one emulator frame per video frame.</p>
-
-Earlier gallery pages and reviews are listed in the [Archive]({{ '/archive/' | relative_url }}).

@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "fps": 60.0988,
   "aspect": [
     4,
@@ -26,110 +27,1383 @@
       "blurb": "Worn slot-mask set over channel-3 RF, imperfect convergence, horizontal recovery"
     },
     {
+      "id": "vhs_sp_consumer",
+      "name": "VHS worn tape",
+      "blurb": "Well-used SP tape on a slot-mask consumer set: soft delayed color, luma grain, dropouts, line jitter"
+    },
+    {
       "id": "reference_composite",
       "name": "Reference composite",
       "blurb": "Neutral NTSC receiver and CRT in a dark room, no simulated wear"
     },
     {
-      "id": "vhs_sp_consumer",
-      "name": "VHS SP playback",
-      "blurb": "Slightly noisy SP tape on a slot-mask consumer set: soft delayed colour, luma grain, dropouts"
+      "id": "arcade_cabinet",
+      "name": "Arcade cabinet",
+      "blurb": "Coarse shadow mask, current-dependent spot, 2C03 RGB palette"
+    },
+    {
+      "id": "basement_tv",
+      "name": "Basement TV",
+      "blurb": "Worn RF set: gun imbalance, dim glass, reception noise, hum"
+    },
+    {
+      "id": "bedroom_rf_1990",
+      "name": "Bedroom RF 1990",
+      "blurb": "In-line slot mask over channel-3 RF, soft chroma, cool highlights"
+    },
+    {
+      "id": "commodore_1702",
+      "name": "Compact video monitor",
+      "blurb": "Compact Y/C monitor, shadow mask, focused raster"
+    },
+    {
+      "id": "dying_crt",
+      "name": "Dying CRT",
+      "blurb": "Weak blue gun, soft corners, poor DC restoration, hum"
+    },
+    {
+      "id": "famicom_kitchen",
+      "name": "Famicom kitchen",
+      "blurb": "Small cool RF set under a kitchen light, coarse shadow mask"
+    },
+    {
+      "id": "late_crt_wega",
+      "name": "Late consumer aperture grille",
+      "blurb": "Consumer aperture grille, firm detail, composite edge color"
+    },
+    {
+      "id": "living_room_1988",
+      "name": "Living room 1988",
+      "blurb": "Rounded shadow-mask set in warm lamp light, composite"
+    },
+    {
+      "id": "measured_glare_experiment",
+      "name": "Lab: measured glass scatter",
+      "blurb": "Reference composite with a measured veiling-glare fit"
+    },
+    {
+      "id": "nec_xm29_arcade",
+      "name": "Large RGB monitor",
+      "blurb": "Large RGB monitor, fine shadow mask, tight focus, 2C03 palette"
+    },
+    {
+      "id": "rca_colortrak_1986",
+      "name": "Large consumer shadow mask",
+      "blurb": "Large soft shadow-mask set, warm whites, rounded geometry"
+    },
+    {
+      "id": "retro_gaming_setup",
+      "name": "Clean consumer grille",
+      "blurb": "Clean consumer aperture grille on Y/C, quiet color"
+    },
+    {
+      "id": "sony_gdm_fw900",
+      "name": "Sony GDM-FW900 and scaler",
+      "blurb": "Measured FW900 response behind a 5x scaler, composite"
+    },
+    {
+      "id": "sony_pvm_20m4u",
+      "name": "Fine aperture grille",
+      "blurb": "1200-triad aperture grille on Y/C, tight spots"
+    },
+    {
+      "id": "studio_pvm",
+      "name": "Studio aperture grille",
+      "blurb": "900-triad studio aperture grille on Y/C, narrow spots"
+    },
+    {
+      "id": "vivid_living_room",
+      "name": "Vivid living room",
+      "blurb": "Vivid composite set, 9300 K white, rich color"
+    },
+    {
+      "id": "warm_desktop_monitor",
+      "name": "Warm desktop monitor",
+      "blurb": "13-inch dot-mask desktop monitor on Y/C, 6000 K, desk-lamp glare"
+    },
+    {
+      "id": "zenith_system_3",
+      "name": "Zenith System 3",
+      "blurb": "19-inch 1981 slot-mask set on channel-3 RF, no comb, 9000 K white"
     }
   ],
   "games": [
     {
-      "id": "mega-man-2-title",
-      "title": "Mega Man 2",
-      "scene": "Rooftop title",
+      "id": "super-mario-bros",
+      "title": "Super Mario Bros.",
+      "scene": "World 1-1, running right past the first blocks",
       "default_preset": "sony_pvm_14l2"
     },
     {
-      "id": "kirby-title",
-      "title": "Kirby's Adventure",
-      "scene": "Animated title and opening",
-      "default_preset": "jvc_d_series_2000"
-    },
-    {
-      "id": "little-samson-opening",
-      "title": "Little Samson",
-      "scene": "Mountain and palace opening",
-      "default_preset": "jvc_d_series_2000"
-    },
-    {
-      "id": "darkwing-bridge",
-      "title": "Darkwing Duck",
-      "scene": "Bridge gameplay",
-      "default_preset": "stass_favourite"
-    },
-    {
-      "id": "mario-3-title",
-      "title": "Super Mario Bros. 3",
-      "scene": "Animated theatrical title",
-      "default_preset": "toshiba_14af43"
+      "id": "metroid",
+      "title": "Metroid",
+      "scene": "Brinstar start, bright shots on black",
+      "default_preset": "sony_pvm_14l2"
     }
   ],
   "clips": {
-    "mega-man-2-title": {
+    "super-mario-bros": {
       "sony_pvm_14l2": {
-        "video": "assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4",
-        "poster": "assets/hero/mega-man-2-title/sony_pvm_14l2.poster.webp",
-        "still": "assets/hero/mega-man-2-title/sony_pvm_14l2.4k.webp",
-        "still_size": [
-          3840,
-          2880
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
         ],
-        "full": "assets/images/showcase/4k/sony_pvm_14l2.png"
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 7635427
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 7405409
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 13364875
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 3270810
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2630236
+          },
+          {
+            "src": "assets/hero/super-mario-bros/sony_pvm_14l2/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 4778457
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 729,
+          "max_fall": 350
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
       },
       "jvc_d_series_2000": {
-        "poster": "assets/hero/mega-man-2-title/jvc_d_series_2000.poster.webp",
-        "still": "assets/hero/mega-man-2-title/jvc_d_series_2000.4k.webp",
-        "still_size": [
-          3840,
-          2880
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
         ],
-        "full": "assets/images/showcase/4k/jvc_d_series_2000.png"
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2419694
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2320631
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 6040434
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1193683
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1069770
+          },
+          {
+            "src": "assets/hero/super-mario-bros/jvc_d_series_2000/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 2261220
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 759,
+          "max_fall": 497
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/jvc_d_series_2000/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
       },
       "toshiba_14af43": {
-        "poster": "assets/hero/mega-man-2-title/toshiba_14af43.poster.webp",
-        "still": "assets/hero/mega-man-2-title/toshiba_14af43.4k.webp",
-        "still_size": [
-          3840,
-          2880
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
         ],
-        "full": "assets/images/showcase/4k/toshiba_14af43.png"
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2438511
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2122587
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 5524588
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 918840
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 722951
+          },
+          {
+            "src": "assets/hero/super-mario-bros/toshiba_14af43/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 1628901
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 753,
+          "max_fall": 522
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/toshiba_14af43/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
       },
       "stass_favourite": {
-        "poster": "assets/hero/mega-man-2-title/stass_favourite.poster.webp",
-        "still": "assets/hero/mega-man-2-title/stass_favourite.4k.webp",
-        "still_size": [
-          3840,
-          2880
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
         ],
-        "full": "assets/images/showcase/4k/stass_favourite.png"
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 4793604
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 3410195
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 11670211
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1355688
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1233284
+          },
+          {
+            "src": "assets/hero/super-mario-bros/stass_favourite/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 3034223
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/stass_favourite/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/stass_favourite/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 736,
+          "max_fall": 392
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/stass_favourite/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/stass_favourite/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/stass_favourite/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/stass_favourite/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "vhs_sp_consumer": {
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 8652588
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 5238649
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 16879098
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2279678
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1581490
+          },
+          {
+            "src": "assets/hero/super-mario-bros/vhs_sp_consumer/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 4805477
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 797,
+          "max_fall": 553
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/vhs_sp_consumer/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "reference_composite": {
+        "poster": [
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 6055459
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 6064929
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 12537095
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2665644
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2319633
+          },
+          {
+            "src": "assets/hero/super-mario-bros/reference_composite/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 4998216
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/super-mario-bros/reference_composite/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/super-mario-bros/reference_composite/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 741,
+          "max_fall": 505
+        },
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/reference_composite/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/reference_composite/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/reference_composite/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/reference_composite/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "arcade_cabinet": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/arcade_cabinet/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/arcade_cabinet/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/arcade_cabinet/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/arcade_cabinet/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "basement_tv": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/basement_tv/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/basement_tv/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/basement_tv/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/basement_tv/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "bedroom_rf_1990": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/bedroom_rf_1990/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/bedroom_rf_1990/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/bedroom_rf_1990/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/bedroom_rf_1990/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "commodore_1702": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/commodore_1702/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/commodore_1702/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/commodore_1702/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/commodore_1702/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "dying_crt": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/dying_crt/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/dying_crt/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/dying_crt/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/dying_crt/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "famicom_kitchen": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/famicom_kitchen/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/famicom_kitchen/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/famicom_kitchen/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/famicom_kitchen/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "late_crt_wega": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/late_crt_wega/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/late_crt_wega/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/late_crt_wega/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/late_crt_wega/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "living_room_1988": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/living_room_1988/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/living_room_1988/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/living_room_1988/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/living_room_1988/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "measured_glare_experiment": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/measured_glare_experiment/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/measured_glare_experiment/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/measured_glare_experiment/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/measured_glare_experiment/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "nec_xm29_arcade": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/nec_xm29_arcade/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/nec_xm29_arcade/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/nec_xm29_arcade/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/nec_xm29_arcade/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "rca_colortrak_1986": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/rca_colortrak_1986/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/rca_colortrak_1986/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/rca_colortrak_1986/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/rca_colortrak_1986/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "retro_gaming_setup": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/retro_gaming_setup/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/retro_gaming_setup/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/retro_gaming_setup/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/retro_gaming_setup/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "sony_gdm_fw900": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/sony_gdm_fw900/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/sony_gdm_fw900/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/sony_gdm_fw900/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/sony_gdm_fw900/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "sony_pvm_20m4u": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/sony_pvm_20m4u/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/sony_pvm_20m4u/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/sony_pvm_20m4u/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/sony_pvm_20m4u/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "studio_pvm": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/studio_pvm/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/studio_pvm/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/studio_pvm/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/studio_pvm/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "vivid_living_room": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/vivid_living_room/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/vivid_living_room/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/vivid_living_room/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/vivid_living_room/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "warm_desktop_monitor": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/warm_desktop_monitor/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/warm_desktop_monitor/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/warm_desktop_monitor/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/warm_desktop_monitor/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "zenith_system_3": {
+        "crop": {
+          "sdr": "assets/hero/super-mario-bros/zenith_system_3/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/super-mario-bros/zenith_system_3/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/super-mario-bros/zenith_system_3/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/super-mario-bros/zenith_system_3/3840x2880/crop-hdr@1x.avif",
+          "x": 930,
+          "y": 1260,
+          "width": 1500,
+          "height": 1122
+        }
       }
     },
-    "kirby-title": {
+    "metroid": {
+      "sony_pvm_14l2": {
+        "poster": [
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 6865569
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 4320966
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 8249530
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 3286621
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2661448
+          },
+          {
+            "src": "assets/hero/metroid/sony_pvm_14l2/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 3247453
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/sony_pvm_14l2/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/sony_pvm_14l2/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 728,
+          "max_fall": 351
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/sony_pvm_14l2/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/sony_pvm_14l2/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/sony_pvm_14l2/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/sony_pvm_14l2/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
+      },
       "jvc_d_series_2000": {
-        "video": "assets/images/showcase/kirby-jvc_d_series_2000.mp4",
-        "poster": "assets/hero/kirby-title/jvc_d_series_2000.poster.webp"
-      }
-    },
-    "little-samson-opening": {
-      "jvc_d_series_2000": {
-        "video": "assets/images/showcase/little-samson-jvc_d_series_2000.mp4",
-        "poster": "assets/hero/little-samson-opening/jvc_d_series_2000.poster.webp"
-      }
-    },
-    "darkwing-bridge": {
-      "stass_favourite": {
-        "video": "assets/images/showcase/darkwing-stass_favourite.mp4",
-        "poster": "assets/hero/darkwing-bridge/stass_favourite.poster.webp"
-      }
-    },
-    "mario-3-title": {
+        "poster": [
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2630056
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 2090219
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 4224077
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1365192
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1305835
+          },
+          {
+            "src": "assets/hero/metroid/jvc_d_series_2000/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 2036398
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/jvc_d_series_2000/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/jvc_d_series_2000/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 744,
+          "max_fall": 483
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/jvc_d_series_2000/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/jvc_d_series_2000/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/jvc_d_series_2000/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/jvc_d_series_2000/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
+      },
       "toshiba_14af43": {
-        "video": "assets/images/showcase/mario-3-toshiba_14af43.mp4",
-        "poster": "assets/hero/mario-3-title/toshiba_14af43.poster.webp"
+        "poster": [
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 3486338
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 1776914
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 5685615
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 978732
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 773144
+          },
+          {
+            "src": "assets/hero/metroid/toshiba_14af43/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 1304946
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/toshiba_14af43/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/toshiba_14af43/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 737,
+          "max_fall": 522
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/toshiba_14af43/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/toshiba_14af43/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/toshiba_14af43/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/toshiba_14af43/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "stass_favourite": {
+        "poster": [
+          {
+            "src": "assets/hero/metroid/stass_favourite/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/stass_favourite/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 6264046
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 4489587
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 7944664
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1704339
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 1482413
+          },
+          {
+            "src": "assets/hero/metroid/stass_favourite/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 2244393
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/stass_favourite/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/stass_favourite/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 737,
+          "max_fall": 399
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/stass_favourite/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/stass_favourite/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/stass_favourite/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/stass_favourite/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "vhs_sp_consumer": {
+        "poster": [
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 18725741
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 17617776
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 23159467
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 7414153
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 6263443
+          },
+          {
+            "src": "assets/hero/metroid/vhs_sp_consumer/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 6155325
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/vhs_sp_consumer/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/vhs_sp_consumer/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 787,
+          "max_fall": 474
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/vhs_sp_consumer/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/vhs_sp_consumer/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/vhs_sp_consumer/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/vhs_sp_consumer/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
+      },
+      "reference_composite": {
+        "poster": [
+          {
+            "src": "assets/hero/metroid/reference_composite/1920x1440/poster.webp",
+            "width": 1920,
+            "height": 1440
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/960x720/poster.webp",
+            "width": 960,
+            "height": 720
+          }
+        ],
+        "stage": [
+          {
+            "src": "assets/hero/metroid/reference_composite/1920x1440/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L150.90\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 5229339
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/1920x1440/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.12M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 4055155
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/1920x1440/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640033\"",
+            "hdr": false,
+            "width": 1920,
+            "height": 1440,
+            "bytes": 5201275
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/960x720/stage-hdr-hevc.mp4",
+            "type": "video/mp4; codecs=\"hvc1.2.4.L120.90\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2925171
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/960x720/stage-hdr-av1.mp4",
+            "type": "video/mp4; codecs=\"av01.0.08M.10.0.110.09.16.09.0\"",
+            "hdr": true,
+            "width": 960,
+            "height": 720,
+            "bytes": 2814947
+          },
+          {
+            "src": "assets/hero/metroid/reference_composite/960x720/stage-sdr.mp4",
+            "type": "video/mp4; codecs=\"avc1.640020\"",
+            "hdr": false,
+            "width": 960,
+            "height": 720,
+            "bytes": 2979103
+          }
+        ],
+        "still": {
+          "hdr": "assets/hero/metroid/reference_composite/3840x2880/still-hdr.avif",
+          "sdr": "assets/hero/metroid/reference_composite/3840x2880/still-sdr.png",
+          "width": 3840,
+          "height": 2880,
+          "frame": 0
+        },
+        "hdr": {
+          "white_nits": 203,
+          "headroom": 4,
+          "max_cll": 742,
+          "max_fall": 507
+        },
+        "crop": {
+          "sdr": "assets/hero/metroid/reference_composite/3840x2880/crop-sdr.png",
+          "sdr_1x": "assets/hero/metroid/reference_composite/3840x2880/crop-sdr@1x.png",
+          "hdr": "assets/hero/metroid/reference_composite/3840x2880/crop-hdr.avif",
+          "hdr_1x": "assets/hero/metroid/reference_composite/3840x2880/crop-hdr@1x.avif",
+          "x": 1170,
+          "y": 1164,
+          "width": 1500,
+          "height": 1122
+        }
       }
     }
   }
