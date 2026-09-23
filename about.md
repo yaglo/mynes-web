@@ -18,7 +18,7 @@ The images and clips on this site were written offscreen by the MyNES GPU fronte
 
 The named presets are models built from published specifications and service manuals. No individual television was measured. The RF path is an equivalent baseband model with negative AM, channel noise, a generic IF filter and envelope detection, and it simulates no complete tuner. The [technical notes]({{ '/notes/' | relative_url }}) keep the evidence and the estimates apart.
 
-The [HDR output note]({{ '/notes/hdr/' | relative_url }}) lists the displays and browsers used to check the HDR files.
+The [HDR output note]({{ '/notes/hdr/' | relative_url }}) describes how the renderer uses the headroom of an HDR display and how the site offers HDR files.{% if site.data.hdr_checks and site.data.hdr_checks.size > 0 %} It lists the browsers and displays the site's HDR files were checked on.{% endif %}
 
 ## Components
 
