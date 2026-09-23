@@ -9,12 +9,11 @@ layout: default
   <a href="{{ '/gallery/motion/' | relative_url }}"{% if page.url == '/gallery/motion/' %} class="active"{% endif %}>Motion</a>
 </nav>
 {% elsif page.section == 'notes' %}
+{%- assign notes = site.pages | where: "section", "notes" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
 <nav class="subnav" aria-label="Technical notes">
-  <a href="{{ '/notes/hardware/' | relative_url }}"{% if page.url == '/notes/hardware/' %} class="active"{% endif %}>Hardware research</a>
-  <a href="{{ '/notes/pvm-14l2/' | relative_url }}"{% if page.url == '/notes/pvm-14l2/' %} class="active"{% endif %}>PVM-14L2</a>
-  <a href="{{ '/notes/fw900/' | relative_url }}"{% if page.url == '/notes/fw900/' %} class="active"{% endif %}>GDM-FW900</a>
-  <a href="{{ '/notes/measurements/' | relative_url }}"{% if page.url == '/notes/measurements/' %} class="active"{% endif %}>Measurements</a>
-  <a href="{{ '/notes/sharpening/' | relative_url }}"{% if page.url == '/notes/sharpening/' %} class="active"{% endif %}>Sharpening audit</a>
+{%- for note in notes %}
+  <a href="{{ note.url | relative_url }}"{% if page.url == note.url %} class="active"{% endif %}>{{ note.nav_title | default: note.title }}</a>
+{%- endfor %}
 </nav>
 {% endif %}
 <article class="page">

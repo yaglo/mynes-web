@@ -7,6 +7,8 @@ description: "Published evidence behind the named CRT profiles, stage-by-stage m
 source: "docs/gpu-hardware-research.md"
 redirect_from:
   - "/research/hardware/"
+nav_order: 1
+nav_title: "Hardware research"
 ---
 
 [Gameplay showcase]({{ '/archive/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/close-ups/' | relative_url }})

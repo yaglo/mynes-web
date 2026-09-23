@@ -7,6 +7,8 @@ description: "Implemented receiver stages, hardware evidence per model, all 23 l
 source: "docs/gpu-sharpening-audit.md"
 redirect_from:
   - "/research/sharpening/"
+nav_order: 5
+nav_title: "Sharpening audit"
 ---
 
 Reviewed 21 September 2026. **The library does not yet reproduce every named

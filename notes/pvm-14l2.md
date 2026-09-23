@@ -7,6 +7,8 @@ description: "What the PVM-14L2 service manual and specifications support in the
 source: "docs/pvm-14l2-model.md"
 redirect_from:
   - "/research/pvm-14l2/"
+nav_order: 2
+nav_title: "PVM-14L2"
 ---
 
 Audited 21 September 2026, without photographs or electrical measurements of

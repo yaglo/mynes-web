@@ -7,6 +7,8 @@ description: "Hitachi 751 veiling-glare fit, the GPU check against it, and the F
 source: "docs/crt-measurements.md"
 redirect_from:
   - "/research/measurements/"
+nav_order: 4
+nav_title: "Measurements"
 ---
 
 ## First implemented target: effective veiling glare
