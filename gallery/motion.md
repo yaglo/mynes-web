@@ -3,14 +3,13 @@ layout: page
 title: Motion
 permalink: /gallery/motion/
 section: gallery
-description: One clip per game on the MyNES television presets, at one emulator frame per video frame.
+description: One clip per game on the MyNES television presets, with one emulator frame per video frame.
 ---
 
-<!-- TODO(copy): first paragraph: the one statement that still images and 60 fps video cannot show beam scanning and phosphor decay at the rate of a CRT belongs here and nowhere else. -->
-<p>Each clip runs at {{ site.data.hero.fps }} fps with one emulator frame per video frame, shown at one source pixel per screen pixel.</p>
+<p>This page has one clip per game on one of the television presets. Each clip runs at {{ site.data.hero.fps }} fps with one emulator frame per video frame and is shown at one video pixel per device pixel. Still images and 60 fps video cannot show beam scanning and phosphor decay at the rate of a CRT.</p>
 
 ## Clips
 
 {% include gallery-motion.html %}
 
-The earlier [NTSC phase and motion review]({{ '/archive/motion-review/' | relative_url }}), with its phase measurements, is in the archive.
+The [NTSC phase and motion review]({{ '/archive/motion-review/' | relative_url }}) in the archive has 960×720 clips of the Contra boss with the NTSC phase changing between frames, and the frame-to-frame measurements made from them.

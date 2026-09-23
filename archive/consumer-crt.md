@@ -1,10 +1,11 @@
 ---
 layout: "page"
-title: "Consumer CRT review, 22 September 2026"
+title: "Consumer CRT review, 2026-09-22"
 permalink: "/archive/consumer-crt/"
 section: "archive"
-description: "Retuning of four generic consumer looks: raster profiles, mask resolution, brightness check and matched image checks."
+description: "Retuning of 4 generic consumer presets: raster profiles, mask resolution, a brightness check and matched image checks."
 source: "docs/consumer-crt-review.md"
+updated: 2026-09-23
 archived: 2026-09-23
 replaced_by: "/gallery/televisions/"
 sitemap: false
@@ -12,63 +13,40 @@ redirect_from:
   - "/gallery/consumer-crt/"
 ---
 
-The review identified over-broad raster profiles and overly cleanly resolved
-phosphor patterns in four generic looks. These changes are **tuning assumptions**,
-not new measurements of four specific tube/chassis combinations.
+This review retuned 4 generic consumer presets whose raster profiles were too broad and whose phosphor patterns resolved too cleanly. The changes are tuning assumptions, and no specific combination of tube and chassis was measured for them.
 
-| Profile | Changes |
+## Changes per preset
+
+| Preset | Changes |
 |---|---|
-| Bedroom RF 1990 | In-line slot mask; dark/white FWHM 0.40/0.95 source lines; less peripheral defocus; horizontal spot growth 0.30; light fine surface scatter; RF floor -52 dBm and a 0.6% short echo. Existing Y/C decoder retained. |
-| Basement TV | FWHM 0.48/1.10 lines, smaller horizontal spot with growth, less glass attenuation and gun imbalance. Voltage noise 0.025 → 0.003, RF floor -44 → -50 dBm. Reduced lifted black and broad halo. |
-| Compact video monitor (`commodore_1702.json`) | Smaller horizontal spot, FWHM 0.42/0.90 lines, less convergence error, modest horizontal growth. Separated Y/C path retained; still explicitly generic, not a measured 1702. |
-| Arcade Cabinet | Narrower dark spot, horizontal growth 0.45, modest fine surface scatter. RGB remains an explicit ideal voltage-derived source, not a stock NES output or a PlayChoice-10 palette model. |
+| Bedroom RF 1990 | In-line slot mask; dark and white FWHM 0.40 and 0.95 source lines; less peripheral defocus; horizontal spot growth 0.30; light fine surface scatter; RF noise floor -52 dBm and a 0.6% short echo. The existing Y/C decoder stays. |
+| Basement TV | FWHM 0.48 and 1.10 lines, a smaller horizontal spot with growth, less glass attenuation and less gun imbalance. Voltage noise lowered from 0.025 to 0.003 and the RF noise floor from -44 to -50 dBm. Less lifted black and a smaller broad halo. |
+| Compact video monitor (`commodore_1702.json`) | Smaller horizontal spot, FWHM 0.42 and 0.90 lines, less convergence error, modest horizontal growth. The separated Y/C path stays. The preset stays explicitly generic, and no 1702 was measured. |
+| Arcade Cabinet | Narrower dark spot, horizontal growth 0.45, modest fine surface scatter. RGB stays an explicitly ideal source derived from the voltages, and it models neither a stock NES output nor the PlayChoice-10 palette. |
 
-The echo is a generic reception-path impairment; its delay is not calculated
-from the preset's short cable length. Fine surface scatter uses the existing
-post-mask filter, whose coefficients are nominal. It does not enlarge the mask
-holes when the electron beam grows. Electron spot growth and optical spreading
-are separate mechanisms. No current-dependent mask erasure has been added.
+The echo is a generic impairment of the reception path, and its delay is not calculated from the preset's short cable. Fine surface scatter uses the existing post-mask filter, whose coefficients are nominal, and it leaves the mask holes the same size when the electron beam grows. Electron spot growth and optical spreading are separate mechanisms. No mask erasure that depends on beam current was added.
 
-A CRT has finite beam width in **both** axes. For example, the
-[AAPM TG18 report](https://www.aapm.org/pubs/reports/or_03.pdf) discusses beam-current
-dependence of spot size and the distinction between continuous and structured
-phosphor screens. Vertical bandwidth blur should not be introduced by treating
-RF luma filtering as a two-dimensional image blur. This implementation keeps
-receiver bandwidth filtering horizontal, before tube deposition. RF noise
-already enters the RF path; clean RF is possible, so noise is a preset reception
-condition rather than an unavoidable property of RF.
+A CRT beam has a finite width on both axes. The [AAPM TG18 report](https://www.aapm.org/pubs/reports/or_03.pdf), for example, discusses how spot size depends on beam current and how continuous and structured phosphor screens differ. Applying RF luma filtering as a 2D image blur would add a vertical bandwidth blur. MyNES keeps the receiver bandwidth filter horizontal, before the beam deposits light on the tube.
+
+RF noise already enters in the RF path. Clean RF reception is possible, so each preset sets its noise as a reception condition.
 
 ## Brightness check
 
-The current PVM Contra platform uses NES code `0x10`, not peak white. Its measured
-DAC rails in the emulator give `(840 - 312)/(1100 - 312) = 0.67005` voltage.
-With gamma 2.4 that is approximately 0.383 linear emitted light. The current
-1280 × 960 SDR capture's flat region (x 550–629, y 510–529) averages approximately
-0.371 after decoding sRGB. Its average encoded channels are about 157/255, not
-105/255. A different crop, old build, host output mode or image scaling can change
-these numbers; this check does not establish the conditions of the review image.
+The Contra platform on the Sony PVM-14L2 preset uses NES code `0x10`, which is below peak white. The measured DAC rails in the emulator give it a relative voltage of `(840 - 312)/(1100 - 312) = 0.67005`, which is about 0.383 in linear emitted light at gamma 2.4. In the 1280×960 SDR capture of this review, the flat region at x 550 to 629, y 510 to 529 averages about 0.371 after sRGB decoding. Its encoded channels average about 157/255, 52 levels above 105/255.
 
-Beam kernels already conserve linear energy, as do the normalized masks.
-Averaging encoded screenshot bytes is not a luminance measurement. No global
-compensating gain or PVM decoder retune was applied without evidence for it.
-SDR highlight compression can still lose energy when resolved phosphor peaks
-exceed host headroom; HDR and physical mask density affect that limitation.
+A different crop, an older build, another host output mode or scaling of the image can change these numbers. This check does not establish the conditions under which the review image was made.
+
+The beam kernels and the normalized masks conserve linear energy. An average of encoded screenshot bytes does not measure luminance. No global compensating gain and no retune of the PVM decoder were applied without evidence for them. SDR highlight compression can still lose energy where resolved phosphor peaks exceed the host's headroom, and HDR output and the physical mask density change how much.
 
 ## Matched image checks
 
-Same Contra PPU framebuffer, phase 4, 1280 × 960 SDR, integer mask periods,
-60 Hz hold, frame 60. Samples use linear-light luminance and are not calibrated
-photometer measurements. A small flat platform region (x 555–599, y 510–529)
-shows these changes in the row-average `(max-min)/(max+min)` modulation:
+All 4 presets render the same Contra PPU framebuffer at phase 4 in 1280×960 SDR, with integer mask periods, a 60 Hz hold and frame 60. The samples are linear-light luminance values from the images and are not calibrated photometer measurements. In a small flat platform region at x 555 to 599, y 510 to 529, the row-average modulation `(max-min)/(max+min)` changed as follows:
 
-| Look | Before | After | Mean linear Y before / after |
+| Preset | Modulation before | Modulation after | Mean linear Y before / after |
 |---|---:|---:|---:|
-| Bedroom RF | 0.121 | 0.284 | 0.430 / 0.427 |
-| Basement | 0.070 | 0.162 | 0.211 / 0.303 |
-| Compact Y/C | 0.121 | 0.222 | 0.368 / 0.368 |
-| Arcade RGB | 0.100 | 0.208 | 0.384 / 0.384 |
+| Bedroom RF 1990 | 0.121 | 0.284 | 0.430 / 0.427 |
+| Basement TV | 0.070 | 0.162 | 0.211 / 0.303 |
+| Compact video monitor (Y/C) | 0.121 | 0.222 | 0.368 / 0.368 |
+| Arcade Cabinet (RGB) | 0.100 | 0.208 | 0.384 / 0.384 |
 
-The raster is clearer without purchasing that contrast through a global loss
-of light. Basement becomes brighter by removing its excessive preset attenuation.
-Mask comparisons should be viewed at 1:1: scaling encoded screenshots can create
-colour moiré that is absent in six-column linear-light averages of the source.
+The raster is clearer, and the added contrast comes with no global loss of light. Basement TV is brighter because its excessive preset attenuation was removed. Compare masks at 1:1: scaling encoded screenshots can create color moiré that 6-column linear-light averages of the source do not show.

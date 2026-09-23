@@ -1,11 +1,12 @@
 ---
 layout: "page"
-title: "Showcase"
+title: "Game clips and full frames"
 permalink: "/archive/showcase/"
 section: "archive"
-description: "NES games rendered through the MyNES GPU signal and CRT pipeline: Castlevania on the PVM at 3840×2880, five 60.1 fps clips, native phase detail and VHS playback."
+description: "Castlevania at 3840×2880 on the Sony PVM-14L2 preset, 5 game clips at 60.1 fps, a lossless NTSC phase detail and a VHS SP playback frame."
 source: "docs/nes-visual-showcase.md"
 source_note: "The video table is shown as embedded players with poster frames"
+updated: 2026-09-23
 archived: 2026-09-23
 replaced_by: "/gallery/games/"
 sitemap: false
@@ -13,91 +14,44 @@ redirect_from:
   - "/gallery/showcase/"
 ---
 
-NES games rendered through MyNES's GPU signal and CRT pipeline.
+This page shows NES games rendered by the MyNES GPU signal and CRT pipeline. It has a Castlevania frame at 3840×2880, clips of 5 games at 60.0988 fps, a lossless phase detail and a VHS SP playback frame.
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/castlevania-pvm-gameplay.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/castlevania-pvm-gameplay.webp' | relative_url }}" alt="Castlevania on the Sony PVM-14L2, 3840×2880" width="1600" height="1200" loading="lazy"></a>
-<figcaption class="fig-note">Preview reduced to 1600×1200. Open the image for the original 3840×2880 PNG (11.9 MB).</figcaption>
-</figure>
+{% include pan.html src="assets/images/showcase/4k/castlevania-pvm-gameplay.png" width=3840 height=2880 x=2000 y=2144 alt="Simon in the Castlevania castle hall on the Sony PVM-14L2 preset, the full 3840×2880 frame." caption="Castlevania, castle hall, emulated frame 2500. Sony PVM-14L2 preset, composite. 3840×2880 frame, shown 1:1. SDR PNG, 11.9 MB." %}
 
-[Close-up of the same frame]({{ '/assets/images/showcase/4k/castlevania-pvm-detail.png' | relative_url }}) · [Current 23-preset audit]({{ '/archive/presets/' | relative_url }})
+A [1280×1120 crop of the same frame]({{ '/assets/images/showcase/4k/castlevania-pvm-detail.png' | relative_url }}) is a separate PNG file. The [23-preset audit]({{ '/archive/presets/' | relative_url }}) covers every preset.
 
+## Game clips
 
-## Watch
+{% include clip.html src="assets/images/showcase/showcase-reel.mp4" width=960 height=720 poster="assets/posters/showcase/showcase-reel.webp" game="Reel of 5 games" seconds=20 note="The MP4 file is 12.1 MB." %}
 
-<figure class="figure video">
-<video controls preload="metadata" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/showcase-reel.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/showcase-reel.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Five games in 20 seconds · 60.1 fps · the original 960×720 capture · <a href="{{ '/assets/images/showcase/showcase-reel.mp4' | relative_url }}">MP4, 12.1 MB</a></figcaption>
-</figure>
+{% include clip.html src="assets/images/showcase/kirby-jvc_d_series_2000.mp4" width=960 height=720 poster="assets/posters/showcase/kirby-jvc_d_series_2000.webp" game="Kirby's Adventure" scene="animated title and opening" preset_name="JVC D-Series" seconds=4 note="The MP4 file is 2.1 MB." %}
 
-<div class="video-grid">
-<figure class="figure video">
-<video controls preload="none" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/kirby-jvc_d_series_2000.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/kirby-jvc_d_series_2000.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Kirby's Adventure · Animated title and opening · JVC D-Series · <a href="{{ '/assets/images/showcase/kirby-jvc_d_series_2000.mp4' | relative_url }}">MP4, 2.1 MB</a></figcaption>
-</figure>
-<figure class="figure video">
-<video controls preload="none" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/little-samson-jvc_d_series_2000.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/little-samson-jvc_d_series_2000.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Little Samson · Mountain and palace opening · JVC D-Series · <a href="{{ '/assets/images/showcase/little-samson-jvc_d_series_2000.mp4' | relative_url }}">MP4, 4.2 MB</a></figcaption>
-</figure>
-<figure class="figure video">
-<video controls preload="none" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/darkwing-stass_favourite.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/darkwing-stass_favourite.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Darkwing Duck · Bridge gameplay · Stas's Favourite · RF · <a href="{{ '/assets/images/showcase/darkwing-stass_favourite.mp4' | relative_url }}">MP4, 3.4 MB</a></figcaption>
-</figure>
-<figure class="figure video">
-<video controls preload="none" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/mario-3-toshiba_14af43.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/mario-3-toshiba_14af43.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Super Mario Bros. 3 · Animated theatrical title · Toshiba 14AF · <a href="{{ '/assets/images/showcase/mario-3-toshiba_14af43.mp4' | relative_url }}">MP4, 1.3 MB</a></figcaption>
-</figure>
-<figure class="figure video">
-<video controls preload="none" playsinline width="960" height="720" poster="{{ '/assets/posters/showcase/mega-man-2-sony_pvm_14l2.webp' | relative_url }}">
-<source src="{{ '/assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4' | relative_url }}" type="video/mp4">
-</video>
-<figcaption>Mega Man 2 · Rooftop title · Sony PVM-14L2 · <a href="{{ '/assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4' | relative_url }}">MP4, 1.2 MB</a></figcaption>
-</figure>
-</div>
+{% include clip.html src="assets/images/showcase/little-samson-jvc_d_series_2000.mp4" width=960 height=720 poster="assets/posters/showcase/little-samson-jvc_d_series_2000.webp" game="Little Samson" scene="mountain and palace opening" preset_name="JVC D-Series" seconds=4 note="The MP4 file is 4.2 MB." %}
 
-All clips run at 60.0988 fps with alternating NTSC phases kept separate; nothing autoplays on this page. The [motion review]({{ '/archive/motion-review/' | relative_url }}) explains the capture method.
+{% include clip.html src="assets/images/showcase/darkwing-stass_favourite.mp4" width=960 height=720 poster="assets/posters/showcase/darkwing-stass_favourite.webp" game="Darkwing Duck" scene="bridge gameplay" preset_name="Stas's Favourite" seconds=4 note="RF input. The MP4 file is 3.4 MB." %}
 
-## Look closer
+{% include clip.html src="assets/images/showcase/mario-3-toshiba_14af43.mp4" width=960 height=720 poster="assets/posters/showcase/mario-3-toshiba_14af43.webp" game="Super Mario Bros. 3" scene="animated theatrical title" preset_name="Toshiba 14AF" seconds=4 note="The MP4 file is 1.3 MB." %}
 
+{% include clip.html src="assets/images/showcase/mega-man-2-sony_pvm_14l2.mp4" width=960 height=720 poster="assets/posters/showcase/mega-man-2-sony_pvm_14l2.webp" game="Mega Man 2" scene="rooftop title" preset_name="Sony PVM-14L2" seconds=4 note="The MP4 file is 1.2 MB." %}
 
-[Full-resolution gameplay and native close-ups]({{ '/gallery/close-ups/' | relative_url }}) show the beam, grille and brightness-dependent scanline width. Full game captures are 3840×2880; the four-preset title comparison also renders the complete 4:3 image at 3840×2880.
+All clips run at 60.0988 fps, and consecutive frames keep their own NTSC phases. No clip on this page plays automatically. The [NTSC phase and motion review]({{ '/archive/motion-review/' | relative_url }}) describes the capture method.
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/kirby-phase-detail.webp' | relative_url }}"><img src="{{ '/assets/images/showcase/kirby-phase-detail.webp' | relative_url }}" alt="Kirby title: native-pixel, unaveraged phase detail" width="384" height="256" loading="lazy"></a>
-</figure>
+## Close-ups and a phase detail
 
-This lossless animated detail retains the changing NTSC phases. The videos run at 60.0988 fps without frame blending. README GIF previews use 50 fps for compatibility; click through to the videos for the original cadence.
+The [Close-ups page]({{ '/gallery/close-ups/' | relative_url }}) has gameplay at full resolution and crops at native pixels that show the beam, the grille and the scanline width changing with brightness. The game captures are 3840×2880, and the title comparison on 4 presets also renders the whole 4:3 image at 3840×2880.
 
+{% include crop.html file="assets/images/showcase/kirby-phase-detail.webp" file_1x="assets/images/showcase/kirby-phase-detail@1x.webp" width=384 height=256 alt="The Kirby's Adventure title in a 24-frame phase detail on the JVC D-Series preset." caption='Kirby&#39;s Adventure, title screen. JVC D-Series preset, composite. 384×256 crop of a 960×720 frame, 24 consecutive frames with no phase averaging, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR lossless WebP</span>.' %}
 
-## VHS playback
+The lossless animated detail keeps the changing NTSC phases. The clips run at 60.0988 fps with no frame blending. The GIF previews in the README of the code repository run at 50 fps so that more players show them, and the clips above keep the original frame rate.
 
+## VHS SP playback
 
-The clips below predate the September 22 shadow-grain and chroma-delay tuning.
-See the [current feature tour]({{ '/archive/feature-tour/' | relative_url }}) for the updated noise comparison.
+The frame and the clip in this section were rendered before the shadow-grain and chroma-delay tuning of 2026-09-22. The [archived CRT feature comparisons]({{ '/archive/feature-tour/' | relative_url }}) have the updated noise comparison.
 
-<figure class="figure">
-<a href="{{ '/assets/images/showcase/4k/contra-vhs-sp.png' | relative_url }}"><img src="{{ '/assets/previews/showcase/4k/contra-vhs-sp.webp' | relative_url }}" alt="Contra boss through VHS SP recording and a consumer CRT, 3840×2880" width="1600" height="1200" loading="lazy"></a>
-<figcaption class="fig-note">Preview reduced to 1600×1200. Open the image for the original 3840×2880 PNG (9.4 MB).</figcaption>
-</figure>
+{% include pan.html src="assets/images/showcase/4k/contra-vhs-sp.png" width=3840 height=2880 alt="The Contra boss through VHS SP recording and playback on a consumer CRT, the full 3840×2880 frame." caption="Contra, waterfall boss, frame 60. VHS SP playback preset: composite recording and playback into a consumer CRT. 3840×2880 frame with no phase averaging, shown 1:1. SDR PNG, 9.4 MB." %}
 
-*Actual GPU output · one unaveraged frame · SDR · click for the full 3840×2880 image.*
+To use the preset, select VHS SP playback in OSD → Presets. The composite recording and playback stage softens horizontal detail and spreads color before the picture reaches the consumer CRT. Its settings are under Signal chain → VHS recording / playback.
 
-Select **VHS SP playback** in **OSD → Presets**.
-The composite recording/playback stage softens horizontal detail and spreads
-color before the picture reaches the consumer CRT. Adjust it under
-**Signal chain → VHS recording / playback**.
+The preset is a generic recovered VHS response, and no particular VCR was calibrated for it. The frame shows its bandwidth and color effects. The residual timing and phase behavior shows in motion, in [4 s of VHS playback with no averaging]({{ '/assets/images/motion/boss-vhs_sp_consumer.mp4' | relative_url }}). The preset file is [presets/vhs_sp_consumer.json](https://github.com/yaglo/mynes/blob/master/presets/vhs_sp_consumer.json) in the code repository.
 
-This is a generic recovered VHS response, not a calibrated VCR model.
-The still shows its bandwidth and color effects. [Watch four seconds of unaveraged VHS playback]({{ '/assets/images/motion/boss-vhs_sp_consumer.mp4' | relative_url }}) for the residual timing and phase behavior. [Preset file](https://github.com/yaglo/mynes/blob/master/presets/vhs_sp_consumer.json).
-
-[Capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) · [CRT presets]({{ '/archive/presets/' | relative_url }}) · [Beam measurements]({{ '/gallery/close-ups/' | relative_url }}#does-the-beam-actually-widen)
+The [capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) are in the code repository. The [CRT preset audit]({{ '/archive/presets/' | relative_url }}) covers the presets, and the [beam height measurements]({{ '/gallery/close-ups/' | relative_url }}#beam-height-vs-brightness-on-4-presets) are on the Close-ups page.
