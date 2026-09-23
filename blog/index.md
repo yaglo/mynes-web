@@ -1,12 +1,15 @@
 ---
 layout: page
-title: Building a NES Emulator That Thinks Like Hardware
+title: Blog
 permalink: /blog/
 section: blog
-description: An eight-part series on the ideas behind MyNES, from timing as data to the CRT beam.
+description: Posts about MyNES by year, among them the series on the CPU timing DSL, DMA timing, the composite signal, the GPU pipeline, comb filters, the beam, the presets and the 2 composite pipelines.
 ---
+{%- assign series_posts = site.posts | where_exp: "p", "p.series" -%}
 
-Eight posts, in series order. They cover the CPU timing DSL, the DMA behaviour derived from it, the composite signal, the fourteen-stage GPU pipeline, comb filtering, the electron beam, the presets and why the CPU and GPU pipelines both exist. Some posts describe an earlier prototype; where the current implementation differs, the post says so and links to the current documentation. There is an [RSS feed]({{ '/feed.xml' | relative_url }}).
+The blog lists posts by year and date, among them the {{ series_posts.size }} parts of the series <cite>{{ series_posts.first.series_title }}</cite>. The title of each part names its topic.
+
+Some posts describe an earlier prototype. Where the current implementation differs, the post says so and links to the current documentation. The [Atom feed]({{ '/feed.xml' | relative_url }}) lists new posts.
 
 {% assign years = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
 {% for year in years %}
@@ -17,4 +20,4 @@ Eight posts, in series order. They cover the CPU timing DSL, the DMA behaviour d
 {% endfor %}</ul>
 {% endfor %}
 
-Pages that newer pages replaced are in the [archive]({{ '/archive/' | relative_url }}).
+Pages that newer pages replaced are in the [Archive]({{ '/archive/' | relative_url }}).

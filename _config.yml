@@ -1,11 +1,11 @@
 # MyNES project site, built by GitHub Pages (Jekyll 3.10 via the github-pages gem).
 title: MyNES
-tagline: A NES emulator that follows the picture from the console's video signal to the glow of a CRT
+tagline: NES emulator with composite video and CRT simulation
 description: >-
-  MyNES is a NES emulator that generates the console's composite video
-  waveform, decodes it like a television, and models the beam, phosphor,
-  mask and glass of a CRT. Cycle-accurate 6502 core generated from a timing
-  DSL; 23 CRT presets.
+  MyNES is an NES emulator whose GPU frontend encodes the picture as
+  composite or RF video and draws the decoded signal on a simulated CRT.
+  Its 6502 core is generated from a timing DSL, and its CRT presets model
+  particular monitors and televisions.
 url: https://yaglo.github.io
 baseurl: /mynes-web
 lang: en
@@ -67,7 +67,7 @@ defaults:
       type: posts
     values:
       layout: post
-      series_title: Building a NES Emulator That Thinks Like Hardware
+      series_title: MyNES internals
   - scope:
       path: ""
     values:

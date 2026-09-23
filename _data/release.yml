@@ -3,8 +3,15 @@
 # (7 characters), notes (URL of the release notes) and platforms (list, for
 # the home page's download button) are set when the release is published on
 # GitHub; until then the footer and the home page name no release.
+# files lists the release assets for the download page, one entry per file:
+#   - platform: macOS      (macOS or Linux; the page has one section each)
+#     name: mynes-<version>-macos-arm64.tar.xz
+#     url: https://github.com/yaglo/mynes/releases/download/v<version>/<name>
+#     sha256: "<64 hex digits, quoted>"
+# A platform with no entry gets one line that points to the build steps.
 version: "0.3.0"
 date:
 commit:
 notes:
 platforms:
+files:

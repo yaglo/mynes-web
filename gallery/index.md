@@ -3,11 +3,10 @@ layout: page
 title: Gallery
 permalink: /gallery/
 section: gallery
-description: Clips, crops and full frames from MyNES, by game and by television preset, each shown at one source pixel per screen pixel.
+description: Clips, crops and full frames from the MyNES GPU frontend by game and by television preset, shown at one image pixel per device pixel.
 ---
 
-<!-- TODO(copy): first paragraph: what the gallery holds and how it is shown; the image caveats live on the About page. -->
-<p>Clips, crops and full frames from the MyNES GPU frontend, by game and by television preset, each shown at one source pixel per screen pixel.</p>
+<p>The gallery holds clips, crops and full frames written by the MyNES GPU frontend, sorted by game and by television preset. Each render is shown at one image pixel per device pixel, and each crop links to the full-size PNG frame it was cut from. A render wider than the window scrolls sideways. The About page says <a href="{{ '/about/#how-the-images-are-made' | relative_url }}">how the images are made</a>.</p>
 
 ## Games
 
@@ -19,12 +18,10 @@ description: Clips, crops and full frames from MyNES, by game and by television 
 
 ## Close-ups
 
-<!-- TODO(copy): one line on the close-ups page. -->
-<p><a href="{{ '/gallery/close-ups/' | relative_url }}">Close-ups</a>: native-pixel gameplay crops and measured brightness-dependent beam height on four presets.</p>
+<p><a href="{{ '/gallery/close-ups/' | relative_url }}">Close-ups</a>: 1:1 crops of gameplay frames, and the beam spot height measured at 3 brightness levels on 4 presets.</p>
 
 ## Motion
 
-<!-- TODO(copy): one line on the motion page. -->
 <p><a href="{{ '/gallery/motion/' | relative_url }}">Motion</a>: one clip per game at {{ site.data.hero.fps }} fps, one emulator frame per video frame.</p>
 
-Older galleries and reviews are in the [archive]({{ '/archive/' | relative_url }}).
+Earlier gallery pages and reviews are listed in the [Archive]({{ '/archive/' | relative_url }}).
