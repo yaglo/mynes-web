@@ -12,11 +12,11 @@ source: "docs/blog/06-beam-is-not-a-line.md"
 
 [Part 5]({{ '/blog/separating-colors/' | relative_url }}) covered stages 6 and 7 of the GPU pipeline, and this part covers stage 11, the electron beam. The beam shader models the spot profile, per-channel convergence error, Gaussian noise, mains hum and 5 smaller effects.
 
-Most CRT shaders darken every other row, and every pixel in the dark row gets the same factor, such as 0.3 or 0.5. The result is a uniform grid of dark horizontal bars over the image. A CRT shows a different pattern, because its electron beam has a Gaussian cross-section whose width depends on brightness.
+The electron beam of a CRT has a Gaussian cross-section whose width depends on brightness.
 
-A dark pixel produces a narrow beam, and the unlit phosphor between scanlines shows as a dark gap. A bright pixel produces a wide beam that blooms into the adjacent lines and fills the gap between them with light. For this reason, CRT photographs of bright scenes never show visible scanlines: the beam is wide enough to fill the gaps.
+A dark pixel produces a narrow beam, and the unlit phosphor between scanlines shows as a dark gap. A bright pixel produces a wide beam that blooms into the adjacent lines and fills the gap between them with light. In the [Close-ups measurement]({{ '/gallery/close-ups/#beam-height-vs-brightness-on-4-presets' | relative_url }}) at commit [80a69ac](https://github.com/yaglo/mynes/commit/80a69ac), where a scanline is nominally 9 output pixels tall, a dark gray stroke on the Sony PVM-14L2 preset measures 4.44 px at half maximum and a white stroke 9.13 px.
 
-Beam width that varies with brightness accounts for most of the difference between CRT footage and the output of CRT shaders. Stage 11 of the pipeline models it.
+Stage 11 of the pipeline models this beam width.
 
 ## Beam profile
 
@@ -72,7 +72,7 @@ A well-calibrated PVM has convergence offsets near zero, and the error shows onl
 
 ## Per-pixel Gaussian noise
 
-Electronic noise in a CRT signal path, such as thermal noise in resistors and shot noise in transistors, has a Gaussian distribution. Most shaders use uniform random noise, which has the wrong distribution. The difference on screen is small but visible: Gaussian noise has occasional larger excursions, which give the snow its texture.
+Electronic noise in a CRT signal path, such as thermal noise in resistors and shot noise in transistors, has a Gaussian distribution, and the shader draws Gaussian noise. Its occasional larger excursions give the snow its texture.
 
 The shader generates 6 independent hash streams per pixel with Murmur3, then converts the uniform random values to Gaussian ones with the Box-Muller transform:
 
@@ -122,7 +122,7 @@ With nonlinear deflection, the beam sweeps faster at the edges of the screen, an
 
 ### Geometry warp
 
-Pincushion distortion and S-correction are applied as horizontal position shifts modulated by vertical position. The Wega preset has `barrel = 0.0` for its flat tube. The Basement TV has `barrel = 0.05, barrel_v = 0.08`, much more vertical curvature from an aged deflection yoke.
+Pincushion distortion and S-correction are applied as horizontal position shifts modulated by vertical position. The Late consumer aperture grille preset has `barrel = 0.0` for its flat tube. The Basement TV has `barrel = 0.05, barrel_v = 0.08`, much more vertical curvature from an aged deflection yoke.
 
 ### RF interference
 
@@ -136,4 +136,4 @@ The beam shader writes packed `float16x4`: 2 `uint32` values per pixel, which ho
 
 Without the beam profile, a composite decode that produced exact RGB values would look like an LCD with a color filter. Every earlier stage (the DAC, the cable model, the comb filter and the chroma demodulator) feeds into this one. With the beam profile, dark areas show scanline structure, bright areas fill the gaps between scanlines, and edges have soft fringes from convergence error. The shadows also get a faint snow of Gaussian noise.
 
-The beam profile shader is about 200 lines of GLSL, and it has the largest visible effect of the 14 stages. It treats the beam spot as a probability distribution whose parameters depend on the signal.
+The beam profile shader is about 200 lines of GLSL. It treats the beam spot as a probability distribution whose parameters depend on the signal.
