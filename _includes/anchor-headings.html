@@ -1,0 +1,30 @@
+{%- comment -%}
+Links each <h2> and <h3> that has an id to itself, so every section of a
+page can be linked: <h2 id="x">Text</h2> becomes
+<h2 id="x"><a class="anchor" href="#x">Text</a></h2>. Headings that already
+hold a link are left as they are. Kramdown gives Markdown headings their
+ids; headings written in HTML need an id="..." as their first attribute.
+Usage: {% include anchor-headings.html html=content %}
+{%- endcomment -%}
+{%- assign anchored = include.html -%}
+{%- for level in (2..3) -%}
+{%- assign opening = '<h' | append: level | append: ' id="' -%}
+{%- assign closing = '</h' | append: level | append: '>' -%}
+{%- assign parts = anchored | split: opening -%}
+{%- capture anchored -%}
+{{- parts[0] -}}
+{%- for part in parts offset: 1 -%}
+{%- assign head = part | split: closing | first -%}
+{%- assign tail = part | remove_first: head -%}
+{%- assign heading_id = head | split: '"' | first -%}
+{%- assign attrs = head | split: '>' | first -%}
+{%- assign inner = head | remove_first: attrs | remove_first: '>' -%}
+{%- if inner contains '<a ' or tail == '' -%}
+{{- opening }}{{ part -}}
+{%- else -%}
+{{- opening }}{{ attrs }}><a class="anchor" href="#{{ heading_id }}">{{ inner }}</a>{{ tail -}}
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- endfor -%}
+{{- anchored -}}

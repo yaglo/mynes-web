@@ -20,6 +20,5 @@ layout: default
 {% if page.archived %}{% assign replacement = site.pages | where: "url", page.replaced_by | where_exp: "p", "p.layout != 'redirect'" | first %}
 <p class="archived-note">Archived {{ page.archived | date: "%Y-%m-%d" }}.{% if replacement %} Replaced by <a href="{{ replacement.url | relative_url }}">{{ replacement.title }}</a>.{% endif %}</p>
 {% endif %}{% if page.lede %}<p class="lede">{{ page.lede }}</p>{% endif %}
-{% if page.source %}<p class="source-note">Migrated from <a href="{{ site.project.source_blob }}/{{ page.source }}"><code>{{ page.source }}</code></a> in the code repository (at the commit before the move){% if page.source_note %}. {{ page.source_note }}{% endif %}. Captions and measurement caveats are kept as written there.</p>{% endif %}
-{{ content }}
+{% include anchor-headings.html html=content %}
 </article>

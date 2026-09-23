@@ -21,6 +21,8 @@ body {
   overflow-wrap: anywhere;
 }
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+/* Gallery pages hold 960 CSS px renders and clips (1920 px files on 2x displays). */
+.wrap.wide { max-width: calc(960px + 2 * var(--gutter)); }
 a { color: var(--accent); }
 a:hover { color: var(--accent-hover); }
 h1, h2, h3, h4 { line-height: 1.25; letter-spacing: -0.01em; font-weight: 650; }
@@ -28,6 +30,8 @@ h1 { font-size: 2rem; margin: 1.4rem 0 0.6rem; }
 h2 { font-size: 1.4rem; margin: 2.4rem 0 0.7rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 h3 { font-size: 1.15rem; margin: 1.8rem 0 0.5rem; }
 h4 { font-size: 1rem; margin: 1.4rem 0 0.4rem; }
+h2 a.anchor, h3 a.anchor { color: inherit; text-decoration: none; }
+h2 a.anchor:hover, h3 a.anchor:hover, h2 a.anchor:focus-visible, h3 a.anchor:focus-visible { text-decoration: underline; text-decoration-color: var(--accent); }
 p, ul, ol { margin: 0 0 1rem; }
 li { margin: 0.2rem 0; }
 img, video { max-width: 100%; height: auto; display: block; }
@@ -90,18 +94,16 @@ strong { font-weight: 650; }
 
 /* Page furniture */
 .lede { font-size: 1.1rem; color: var(--fg); }
-.source-note { color: var(--muted); font-size: 0.88rem; border-left: 3px solid var(--line); padding-left: 0.8rem; margin: 0 0 1.6rem; }
+.archived-note { color: var(--muted); font-size: 0.95rem; border-left: 3px solid var(--line); padding-left: 0.8rem; margin: 0 0 1.6rem; }
+.page-source { font-size: 0.85rem; }
+.page-source code { background: none; padding: 0; }
+.archive-list, .post-list { list-style: none; padding: 0; }
+.archive-list li, .post-list li { margin: 0.35rem 0; }
+.archive-list time, .post-list time { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 0.5rem; }
 .post-meta { color: var(--muted); font-size: 0.95rem; margin: 1.6rem 0 0; }
 .post-meta a { color: var(--muted); }
 .post h1 { margin-top: 0.3rem; }
 .post-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.95rem; }
-.post-list { list-style: none; padding: 0; margin: 0; }
-.post-list li { padding: 1rem 0; border-bottom: 1px solid var(--line); margin: 0; }
-.post-list .num { color: var(--accent); font-weight: 650; margin-right: 0.5rem; }
-.post-list .title { font-size: 1.1rem; font-weight: 650; text-decoration: none; color: var(--fg); }
-.post-list .title:hover { color: var(--accent); }
-.post-list .teaser { margin: 0.3rem 0 0; color: var(--muted); }
-.post-list .date { color: var(--muted); font-size: 0.85rem; }
 
 /* Landing page */
 .hero { margin-top: 1.2rem; }

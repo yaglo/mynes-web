@@ -14,28 +14,47 @@
   <div class="wrap">
     <a class="brand" href="{{ '/' | relative_url }}">MyNES</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="{{ '/gallery/' | relative_url }}"{% if page.section == 'gallery' and page.url != '/archive/presets/' %} class="active"{% endif %}>Gallery</a>
-      <a href="{{ '/archive/presets/' | relative_url }}"{% if page.url == '/archive/presets/' %} class="active"{% endif %}>Presets</a>
-      <a href="{{ '/blog/' | relative_url }}"{% if page.section == 'blog' or page.layout == 'post' %} class="active"{% endif %}>Blog</a>
+      <a href="{{ '/gallery/' | relative_url }}"{% if page.section == 'gallery' %} class="active"{% endif %}>Gallery</a>
       <a href="{{ '/notes/' | relative_url }}"{% if page.section == 'notes' %} class="active"{% endif %}>Technical notes</a>
+      <a href="{{ '/blog/' | relative_url }}"{% if page.section == 'blog' or page.layout == 'post' %} class="active"{% endif %}>Blog</a>
       <a href="{{ '/download/' | relative_url }}"{% if page.url == '/download/' %} class="active"{% endif %}>Download</a>
+      <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} class="active"{% endif %}>About</a>
       <a href="{{ site.project.code_repo }}">GitHub</a>
     </nav>
   </div>
 </header>
-<main class="wrap" id="main">
+<main class="wrap{% if page.wide %} wide{% endif %}" id="main">
 {{ content }}
 </main>
 <footer class="site-footer">
   <div class="wrap">
+{%- comment -%}
+The page's source: the document in the code repository it was migrated from
+(front matter `source`, at the last commit that had it), its last update
+(front matter `updated`) and the file in this repository.
+{%- endcomment -%}
+{%- if page.path and page.layout != 'redirect' %}
+    <p class="page-source">
+{%- if page.source %}{% assign source_commit = site.project.source_blob | split: "/" | last | slice: 0, 7 %}Source: <a href="{{ site.project.source_blob }}/{{ page.source }}"><code>{{ page.source }}</code> at {{ source_commit }}</a>.{% if page.source_note %} {{ page.source_note }}.{% endif %} {% endif -%}
+{%- if page.updated %}Updated <time datetime="{{ page.updated | date: '%Y-%m-%d' }}">{{ page.updated | date: "%Y-%m-%d" }}</time>. {% endif -%}
+<a href="{{ site.project.site_repo }}/edit/main/{{ page.path }}">Edit on GitHub</a></p>
+{%- endif %}
     <nav aria-label="Footer">
       <a href="{{ site.project.code_repo }}">GitHub</a>
       <a href="{{ site.project.releases }}">Releases</a>
-      <a href="{{ '/blog/' | relative_url }}">Blog</a>
       <a href="{{ '/gallery/' | relative_url }}">Gallery</a>
       <a href="{{ '/notes/' | relative_url }}">Technical notes</a>
+      <a href="{{ '/blog/' | relative_url }}">Blog</a>
+      <a href="{{ '/archive/' | relative_url }}">Archive</a>
       <a href="{{ site.project.license }}">License</a>
     </nav>
+{%- assign release = site.data.release %}
+{%- if release.date %}
+    <p class="release">MyNES {{ release.version }}, released <time datetime="{{ release.date | date: '%Y-%m-%d' }}">{{ release.date | date: "%Y-%m-%d" }}</time>{% if release.commit %}, commit <a href="{{ site.project.code_repo }}/commit/{{ release.commit }}">{{ release.commit | slice: 0, 7 }}</a>{% endif %}.</p>
+{%- endif %}
+{%- if site.data.facts.renderer.commit %}
+    <p class="renderer">Renders on this site: renderer commit <a href="{{ site.project.code_repo }}/commit/{{ site.data.facts.renderer.commit }}">{{ site.data.facts.renderer.commit | slice: 0, 7 }}</a>.</p>
+{%- endif %}
     <p>MyNES by {{ site.author.name }}. The emulator is released under the Apache License 2.0. This site holds the project's images and videos so the code repository stays small; <a href="{{ site.project.site_repo }}">site source</a>.</p>
     <p>No commercial ROMs are distributed here or with the emulator.</p>
   </div>

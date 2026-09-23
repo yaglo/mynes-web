@@ -1,11 +1,11 @@
 ---
 layout: default
 ---
+{%- assign series_posts = site.posts | where_exp: "p", "p.series" -%}
 <article class="post">
-<p class="post-meta"><a href="{{ '/blog/' | relative_url }}">{{ page.series_title }}</a> · Part {{ page.series }} of 8 · <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+<p class="post-meta"><a href="{{ '/blog/' | relative_url }}">{{ page.series_title }}</a> · Part {{ page.series }} of {{ series_posts.size }} · By {{ site.author.name }} · <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%Y-%m-%d" }}</time>{% if page.updated %} · Updated <time datetime="{{ page.updated | date: '%Y-%m-%d' }}">{{ page.updated | date: "%Y-%m-%d" }}</time>{% endif %}</p>
 <h1>{{ page.title }}</h1>
-{% if page.source %}<p class="source-note">Text from <a href="{{ site.project.source_blob }}/{{ page.source }}"><code>{{ page.source }}</code></a> in the code repository (at the commit before the move), unchanged apart from links.</p>{% endif %}
-{{ content }}
+{% include anchor-headings.html html=content %}
 <nav class="post-nav" aria-label="Series navigation">
   {% if page.previous %}<a href="{{ page.previous.url | relative_url }}" rel="prev">&larr; Part {{ page.previous.series }}: {{ page.previous.title }}</a>{% else %}<span></span>{% endif %}
   {% if page.next %}<a href="{{ page.next.url | relative_url }}" rel="next">Part {{ page.next.series }}: {{ page.next.title }} &rarr;</a>{% else %}<span></span>{% endif %}
