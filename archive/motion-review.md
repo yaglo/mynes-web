@@ -13,7 +13,7 @@ sitemap: false
 
 This review shows the NTSC color phase changing between frames on a frozen Contra boss frame, in 960×720 clips at 60.0988 fps and in lossless animated details. It also measures the change between frames.
 
-The alternation between frames is part of the picture MyNES presents. An average of 2 frames helps compare color, but it hides the chroma structure that changes between frames. It can also broaden beams that sit on different rows in the 2 frames. The README of the code repository shows animations with no averaging next to single-frame close-ups at native pixels.
+The alternation between frames is part of the picture MyNES presents. An average of 2 frames helps compare color, but it hides the chroma structure that changes between frames. It can also broaden beams that sit on different rows in the 2 frames. The [README of the code repository at af99543]({{ site.project.source_blob }}/README.md) showed animations with no averaging next to single-frame close-ups at native pixels.
 
 ## Contra boss phase clips
 

@@ -13,7 +13,7 @@ redirect_from:
   - "/gallery/feature-tour/"
 ---
 
-This page has 5 comparisons rendered by MyNES: beam current, phosphor structure, deflection and edge focus, room light, and RF and tape noise. The panels are the ones in the [README of the code repository](https://github.com/yaglo/mynes#inside-the-glow), and this page adds their capture notes.
+This page has 5 comparisons rendered by MyNES: beam current, phosphor structure, deflection and edge focus, room light, and RF and tape noise. The panels appeared in the Inside the glow section of the [README of the code repository at af99543]({{ site.project.source_blob }}/README.md#inside-the-glow), and this page adds their capture notes.
 
 ## Beam current
 
@@ -27,7 +27,7 @@ Each crop is 120×40 pixels of the 3840×2160 render, enlarged 4× by nearest-ne
 
 {% include crop.html file="assets/images/feature-tour/masks.png" file_1x="assets/images/feature-tour/masks@1x.png" width=1600 height=740 alt="A $10 gray field on presets with shadow, slot and aperture-grille masks, enlarged 3 times." caption='NES gray code $10 as a field. 3 shipped presets with shadow, slot and aperture-grille masks. 1600×740 image of 3× nearest-neighbor enlargements, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.' %}
 
-The panel shows the same `$10` gray field on 3 shipped presets. The dot lattice, the vertical slots and the continuous grille differ at native resolution, and the 3× enlargement makes the differences legible on a README page.
+The panel shows the same `$10` gray field on 3 shipped presets. The dot lattice, the vertical slots and the continuous grille differ at native resolution, and the 3× enlargement makes the differences visible in the panel.
 
 The crops keep each preset's whole color, beam and mask response, so the comparison covers more than the mask kernel. A 4:3 picture inside a UHD frame is 2880 pixels wide. Even at 4K, a grille of 1200 triads then gets 2.4 host pixels per triad, too few to resolve every RGB stripe, and the renderer filters that structure on purpose.
 

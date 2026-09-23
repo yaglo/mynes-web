@@ -42,7 +42,7 @@ The [Close-ups page]({{ '/gallery/close-ups/' | relative_url }}) has gameplay at
 
 {% include crop.html file="assets/images/showcase/kirby-phase-detail.webp" file_1x="assets/images/showcase/kirby-phase-detail@1x.webp" width=384 height=256 alt="The Kirby's Adventure title in a 24-frame phase detail on the JVC D-Series preset." caption='Kirby&#39;s Adventure, title screen. JVC D-Series preset, composite. 384×256 crop of a 960×720 frame, 24 consecutive frames with no phase averaging, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR lossless WebP</span>.' %}
 
-The lossless animated detail keeps the changing NTSC phases. The clips run at 60.0988 fps with no frame blending. The GIF previews in the README of the code repository run at 50 fps so that more players show them, and the clips above keep the original frame rate.
+The lossless animated detail keeps the changing NTSC phases, and each frame of the clips above is one emulator frame at 60.0988 fps. The GIF previews in the [README of the code repository at af99543]({{ site.project.source_blob }}/README.md) ran at 50 fps, with 20 ms frames, because some players clamp 10 ms GIF frames.
 
 ## VHS SP playback
 
