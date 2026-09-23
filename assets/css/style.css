@@ -182,6 +182,10 @@ strong { font-weight: 650; }
    sampling keeps every file pixel on its own device pixel; at an exact 1:1
    size it changes nothing. */
 img.render, video.render { max-width: none; image-rendering: pixelated; }
+/* A clip with one source size is half that size in its attributes (1:1 at
+   2 dppx); at 1 dppx it takes the full size, so it is 1:1 there without
+   JavaScript and render.js does not change its layout. */
+@media (max-resolution: 1dppx) { video.render[style*="--clip-w"] { width: var(--clip-w); height: var(--clip-h); } }
 figure.render figcaption, .pan-figure figcaption, .compare-figure figcaption { max-width: 60rem; }
 .flicker-warning { border-left: 3px solid var(--accent); padding-left: 0.8rem; }
 

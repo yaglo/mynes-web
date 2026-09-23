@@ -4,10 +4,13 @@ A clip at one source pixel per device pixel.
 sources is a list of {src, type, hdr, width, height} (a stage list of the
 hero manifest, version 2). HDR sources come first, offered only to
 (dynamic-range: high) displays, then SDR; within each, a source twice the
-smallest width is offered to displays of 2 dppx and more. The video's width
-and height are half the largest source's pixel size (the smallest size when
-there are two), so a 1920x1440 source on a 2x display and a 960x720 source on
-a 1x display are both 1:1 without JavaScript; assets/js/render.js sizes the
+smallest width is offered to displays of 2 dppx and more. With 2 sizes, the
+video's width and height are the smaller size, so a 1920x1440 source on a 2x
+display and a 960x720 source on a 1x display are both 1:1 without
+JavaScript. With one size (every version 1 clip is a single 960x720 file),
+width and height are half the pixel size, which is 1:1 on a 2x display, and
+style.css gives a 1x display the full pixel size from --clip-w and --clip-h,
+so that one is 1:1 without JavaScript too. assets/js/render.js sizes the
 video for other pixel ratios and keeps a poster only at its own pixel size.
 A single file of known size can be given as src, width, height (and type).
 
@@ -47,6 +50,7 @@ data-flicker. anchor sets the figure's id.
 {%- else -%}
 {%- assign v_w = v_max_w | divided_by: 2 -%}{%- assign v_h = v_max_h | divided_by: 2 -%}
 {%- endif -%}
+{%- assign v_one_size = false -%}{%- if v_min_w == v_max_w -%}{%- assign v_one_size = true -%}{%- endif -%}
 {%- comment -%} Posters: data-posters for the script, the largest source's size as the default. {%- endcomment -%}
 {%- assign v_poster = "" -%}{%- assign v_posters = "" -%}
 {%- if include.posters.first -%}
@@ -71,7 +75,7 @@ data-flicker. anchor sets the figure's id.
 {%- endif %}
 <figure class="render clip"{% if include.anchor %} id="{{ include.anchor }}"{% endif %}>
 <div class="render-scroll">
-<video class="render" controls preload="none" playsinline width="{{ v_w }}" height="{{ v_h }}"{% if v_poster != "" %} poster="{{ v_poster }}"{% endif %}{% if v_posters != "" %} data-posters="{{ v_posters }}"{% endif %}{% if include.flicker %} data-flicker{% endif %} aria-label="{{ v_label | escape }}">
+<video class="render" controls preload="none" playsinline width="{{ v_w }}" height="{{ v_h }}"{% if v_one_size %} style="--clip-w: {{ v_max_w }}px; --clip-h: {{ v_max_h }}px"{% endif %}{% if v_poster != "" %} poster="{{ v_poster }}"{% endif %}{% if v_posters != "" %} data-posters="{{ v_posters }}"{% endif %}{% if include.flicker %} data-flicker{% endif %} aria-label="{{ v_label | escape }}">
 {%- if include.sources -%}
 {%- for v_pass in (1..4) -%}
 {%- for s in include.sources -%}
