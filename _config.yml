@@ -34,6 +34,12 @@ plugins:
   - jekyll-sitemap
   - jekyll-feed
   - jekyll-relative-links
+  - jekyll-redirect-from
+
+# Moved pages list their old URLs under redirect_from; the plugin writes a
+# redirect page (_layouts/redirect.html) at each. No redirects.json.
+redirect_from:
+  json: false
 
 relative_links:
   enabled: true
@@ -46,6 +52,7 @@ timezone: UTC
 exclude:
   - README.md
   - STYLE.md
+  - assets/hero/README.md
   - Gemfile
   - Gemfile.lock
   - tools

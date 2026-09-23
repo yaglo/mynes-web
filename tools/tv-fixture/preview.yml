@@ -5,6 +5,7 @@
 exclude:
   - README.md
   - STYLE.md
+  - assets/hero/README.md
   - Gemfile
   - Gemfile.lock
   - vendor
