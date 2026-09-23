@@ -43,7 +43,7 @@ The NEON inner loop from `comp_fir_symmetric`:
     }
 ```
 
-The loop keeps 4 independent accumulators (`a0` to `a3`), each advancing through the taps by 4, so no dependency chain is carried across iterations. On an M1, the CPU can dispatch 4 FMAs per cycle through this loop. On the same machine the whole pipeline (waveform emission, luma FIR, chroma FIR, demodulation, color matrix and scanline assembly) runs in well under a millisecond per frame. The AVX2 path processes 8 pixels per iteration with the same 4-way ILP pattern.
+The loop keeps 4 independent accumulators (`a0` to `a3`), each advancing through the taps by 4, so no dependency chain is carried across iterations. On an M1, the CPU can dispatch 4 FMAs per cycle through this loop. The AVX2 path processes 8 pixels per iteration with the same 4-way ILP pattern.
 
 The SDL2 frontend, the headless renderer and the test runner use the CPU path, as does anything else that needs composite output and has no GPU.
 
@@ -84,7 +84,7 @@ The CPU path runs anywhere with a C compiler, with no GPU and no graphics API. I
 
 ### Correctness verification
 
-With 2 independent implementations of the same signal processing, each one catches bugs in the other. The waveform generation, FIR coefficients and demodulation math should produce identical Y, I and Q values at the decode stage. If the GPU path produces different cross-color patterns from the CPU path on the same input, one of them is wrong.
+With 2 implementations of the same signal processing, a difference between them points to a bug in one. The waveform generation, FIR coefficients and demodulation math should produce identical Y, I and Q values at the decode stage. If the GPU path produces different cross-color patterns from the CPU path on the same input, one of them is wrong.
 
 The CPU path was written first and verified against known-good reference output. The GPU path was then verified against the CPU path. With both in place, a regression in the GPU shader chain can be caught by comparing its output with the CPU reference.
 
@@ -117,10 +117,6 @@ The paths diverge in everything after the decode. The CPU path runs waveform, FI
 
 The CPU path handles scanline darkening and a few post-processing effects: barrel distortion, ghosting, snow and hum bars. These are simple screen-space operations without the component values of a physical model.
 
-## Reference and production implementations
+## How the 2 paths are compared
 
-The pattern is to maintain 2 implementations of the same specification at different levels of fidelity. The simple one validates the complex one, and the complex one handles the cases the simple one cannot. Neither is redundant.
-
-The pattern applies outside emulation too: any signal processing pipeline benefits from having a reference implementation beside the production one. The reference is slow and simple enough to check by reading. The production code is fast and complex, and it is meant to be equivalent. When the 2 disagree, the reference shows where to look, and when they agree, that is evidence that neither is wrong.
-
-In MyNES the CPU path is the reference and the GPU path is the production code, and both process the same signal. Both exist because a single complex pipeline, trusted to be correct, can ship bugs that look like "the colors are slightly off" and never get caught.
+The test `gpu_pipeline_test` ([`frontends/gpu/tests/test_pipeline.c`](https://github.com/yaglo/mynes/blob/master/frontends/gpu/tests/test_pipeline.c)) runs a known composite waveform through the GPU stages and decodes the same waveform on the CPU inside the test, with the same FIR taps. For the luma, I and Q buffers it prints the largest and the mean absolute difference and the number of samples that differ by more than 0.01 and by more than 0.1. It sets no pass threshold, and it does not call `composite.h`, so no test compares the 2 production paths directly.
