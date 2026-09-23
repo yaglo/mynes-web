@@ -194,7 +194,9 @@ node tools/check_render_pixels.js _site   # headless Chrome, a few minutes
   `_data/hero.json` and run `python3 tools/gallery_pages.py`. When the home
   page's first clip changes, update the seed values in
   `_includes/tv-switcher.html` (`poster`, `poster_2x` and the texts), which
-  `index.md` uses unchanged.
+  `index.md` uses unchanged. A new preset also needs a `caption` (the short
+  line after its name in the switcher) and a `summary` in
+  `_data/presets.yml`; the site shows these in place of the manifest's blurb.
 - At most one `<video>` per page autoplays: the switcher's first clip on the
   home page. Other clips use `preload="none"` with a poster.
 

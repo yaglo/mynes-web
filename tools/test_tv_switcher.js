@@ -209,6 +209,21 @@ test('normalize: bad input', () => {
     [{ src: 'a.webp', width: null, height: null }, { src: 'b.webp', width: 1920, height: null }]);
 });
 
+test('applyCaptions: the site caption replaces the manifest blurb', () => {
+  const m = TV.normalize({ presets: [{ id: 'a', name: 'A', blurb: 'pipeline a' }, { id: 'b', name: 'B', blurb: 'pipeline b' }] });
+  assert.strictEqual(TV.applyCaptions(m, null), m);
+  TV.applyCaptions(m, { a: 'site a', b: '', c: 'unused' });
+  assert.deepStrictEqual(m.presets.map((p) => p.blurb), ['site a', 'pipeline b']);
+  // Every preset of the live manifest has a caption in _data/presets.yml.
+  const yml = read('_data/presets.yml');
+  for (const p of live.presets) {
+    const entry = new RegExp('^' + p.id + ':\\n((?:  .*\\n)+)', 'm').exec(yml);
+    assert.ok(entry && /^  caption: "[^"]+"$/m.test(entry[1]), 'caption for ' + p.id);
+  }
+  // The include hands the captions to the script as JSON.
+  assert.ok(/<script type="application\/json" class="tv-captions">/.test(read('_includes/tv-switcher.html')), 'include: captions block');
+});
+
 /* ---- selection helpers ---- */
 test('available: manifest order, disabled presets, broken videos', () => {
   assert.deepStrictEqual(TV.available(live, 'mega-man-2-title'),

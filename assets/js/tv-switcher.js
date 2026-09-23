@@ -127,6 +127,16 @@
     return m;
   };
 
+  /**
+   * The site's own caption for each preset ({id: text}, from _data/presets.yml)
+   * replaces the manifest's blurb, which the recording pipeline writes.
+   */
+  TV.applyCaptions = function (m, captions) {
+    if (!captions || typeof captions !== 'object') return m;
+    m.presets.forEach(function (p) { var c = str(captions[p.id]); if (c) p.blurb = c; });
+    return m;
+  };
+
   /** Clip entry for a game/preset pair, or null. */
   TV.clipFor = function (m, gameId, presetId) {
     var g = m.clips && m.clips[gameId];
@@ -646,12 +656,17 @@
       if (!r.ok) throw new Error('manifest ' + r.status);
       return r.json();
     }).then(function (raw) {
-      var m = TV.normalize(raw);
+      var m = TV.applyCaptions(TV.normalize(raw), siteCaptions());
       return probe(m).then(function () { build(m); });
     }).catch(function (e) {
       notice('problem', 'The clip list could not be loaded; showing the first frame.');
       if (global.console) console.warn('tv-switcher:', e);
     });
+
+    function siteCaptions() {
+      var s = q('script.tv-captions');
+      try { return s ? JSON.parse(s.textContent) : null; } catch (e) { return null; }
+    }
 
     /* ---- Capabilities ---------------------------------------------- */
     /** Fill st.caps for every clip file and st.avif; settles within 1.5 s whatever the browser does. */

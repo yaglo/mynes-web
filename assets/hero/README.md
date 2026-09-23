@@ -95,7 +95,7 @@ pipeline's choice; the script only reads the fields.
 | `version` | `2`. |
 | `fps` | Frame rate of every clip (NTSC NES: 60.0988). The lens sync measures drift in frames of this rate. |
 | `aspect` | Stage aspect as `[w, h]`; the television image is 4:3. |
-| `presets[]` | Every preset the switcher may offer, in chip order; number keys 1 to 9 pick them. A preset without a clip for the current game is a disabled chip ("not rendered yet"). |
+| `presets[]` | Every preset the switcher may offer, in chip order; number keys 1 to 9 pick them. A preset without a clip for the current game is a disabled chip ("not rendered yet"). The caption shows `blurb` after the preset name only where `_data/presets.yml` gives the preset no `caption`. |
 | `games[]` | Game tabs, in order. `default_preset` is used when the current preset has no clip for that game. |
 | `clips[game][preset]` | Media for one game on one preset. Every key is optional; an entry with no stage clip, poster or still is ignored. |
 | `poster` | Frame 0 of the stage render. A path, an object `{"src", "width", "height"}`, or a list of those when there is one poster per stage size. A poster is shown only when its pixel size equals the stage clip's size, so it is never scaled. |

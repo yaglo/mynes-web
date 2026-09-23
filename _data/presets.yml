@@ -5,7 +5,9 @@
 # spellings of the name that pages must not use; signal is the connection
 # the preset's renders use, as the preset's description gives it.
 # summary is what the preset models, from the preset file's description; the
-# gallery shows it in place of the manifest's short blurb. specs are the
+# gallery shows it in place of the manifest's short blurb. caption is the
+# short line the television switcher shows after the preset name, in place of
+# the manifest's blurb, which the recording pipeline writes. specs are the
 # rows of the specifications table on the preset's Televisions page, each
 # with its value and its source (text and link).
 sony_pvm_14l2:
@@ -14,6 +16,7 @@ sony_pvm_14l2:
   note: /notes/pvm-14l2/
   variants: ["PVM 14L2", "PVM14L2", "Sony PVM 14L2"]
   summary: "A Sony PVM-14L2 monitor on composite video, with its aperture grille, a D65 white point and an adaptive comb filter. Its horizontal AFC has a 1 ms time constant, and its RGB bandwidth is 10 MHz at -3 dB."
+  caption: "Aperture grille, D65 white, adaptive comb, composite"
   specs:
     - name: Mask
       value: "Aperture grille, 1070 triads across the picture"
@@ -39,6 +42,7 @@ jvc_d_series_2000:
   name: JVC D-Series
   signal: composite
   summary: "A consumer JVC D-Series television modeled on the AV-27D201, on composite video: a curved slot-mask tube, a 2-line comb filter and a cool white with a red push."
+  caption: "Curved slot mask, 9300 K white, 2-line comb, composite"
   specs:
     - name: Mask
       value: "Slot mask, 661 triads across the picture"
@@ -60,6 +64,7 @@ toshiba_14af43:
   name: Toshiba 14AF
   signal: composite
   summary: "A small Toshiba television modeled on the 14AF43, on composite video: a flat slot-mask tube, a 3-line comb filter and a broad bright beam spot."
+  caption: "Flat slot mask, 8000 K white, 3-line comb, composite"
   specs:
     - name: Mask
       value: "Slot mask, 480 triads across the picture"
@@ -81,6 +86,7 @@ stass_favourite:
   name: Stas's Favourite
   signal: channel 3 RF
   summary: "A worn consumer slot-mask television on channel 3 RF, with a cool white, a mild red push, imperfect gray tracking and convergence, and broad bright spots."
+  caption: "Worn slot-mask set, 7800 K white, channel 3 RF"
   specs:
     - name: Mask
       value: "Slot mask, 440 triads across the picture"
@@ -102,6 +108,7 @@ vhs_sp_consumer:
   name: VHS SP playback
   signal: composite
   summary: "An NTSC VHS recording at SP speed, played back on a Toshiba-style slot-mask television: delayed soft color, horizontal luma grain, slow transport drift and occasional dropouts. Raised gun bias shows tape grain in dark areas, and lowered gain holds back highlights."
+  caption: "VHS SP tape played on a slot-mask set, 8000 K white"
   specs:
     - name: Mask
       value: "Slot mask, 480 triads across the picture"
@@ -123,6 +130,7 @@ reference_composite:
   name: Reference composite
   signal: composite
   summary: "A neutral NTSC composite receiver and CRT in a dark room, with no simulated wear. It is the baseline for the signal, grayscale, mask and motion checks."
+  caption: "Aperture grille, D65 white, composite, dark room"
   specs:
     - name: Mask
       value: "Aperture grille, 650 triads across the picture"
