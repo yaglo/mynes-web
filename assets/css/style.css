@@ -215,6 +215,7 @@ figure.render figcaption, .pan-figure figcaption, .compare-figure figcaption { m
    upper render sits in an overflow: hidden wrapper as wide as --split. */
 .compare-label { font-size: 0.9rem; color: var(--muted); margin: 0.9rem 0 0.35rem; }
 .compare.is-live { display: grid; cursor: ew-resize; touch-action: pan-y; }
+.compare.is-live.is-pannable { touch-action: pan-x pan-y; }
 .compare.is-live > .compare-layer, .compare.is-live > .compare-divider { grid-area: 1 / 1; }
 .compare.is-live .compare-label { display: none; }
 .compare.is-live > .compare-over { z-index: 1; width: var(--split, 50%); overflow: hidden; }

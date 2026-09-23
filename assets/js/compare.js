@@ -13,8 +13,12 @@
  * browser picked that), and the CSS length is that count divided by
  * devicePixelRatio. The range works with the arrow keys (1 device pixel,
  * 10 with Shift), Page Up and Page Down (a tenth of the width), Home and End.
- * Dragging on the picture moves the divider; "Hold to compare" shows the
- * left render over the whole area while it is held (pointer, Space or Enter).
+ * Dragging on the picture with a mouse or pen moves the divider; "Hold to
+ * compare" shows the left render over the whole area while it is held
+ * (pointer, Space or Enter). On touch screens a tap moves the divider, and a
+ * swipe pans: the page vertically, and the render box sideways when the crop
+ * is wider than the window (.is-pannable). Only when the box cannot pan does
+ * a sideways swipe move the divider.
  *
  * The pure helpers in `Compare` are exported for tools/test_media.js.
  */
@@ -86,6 +90,9 @@
   }
 
   Slider.prototype.measure = function () {
+    var scroller = this.box.closest('.render-scroll');
+    this.pannable = !!scroller && scroller.scrollWidth > scroller.clientWidth + 1;
+    this.box.classList.toggle('is-pannable', this.pannable);
     var w = +this.img.getAttribute('data-w');
     var max = Compare.deviceWidth(w, this.img.currentSrc || this.img.getAttribute('src'));
     if (max !== this.max) {
@@ -124,9 +131,16 @@
       self.set(v);
     });
 
-    var dragging = null;
+    var dragging = null, lastType = '';
     this.box.addEventListener('pointerdown', function (e) {
+      lastType = e.pointerType;
       if (e.button !== 0) return;
+      if (e.pointerType === 'touch') {
+        // No capture and no preventDefault: the browser pans (touch-action in
+        // style.css), and a vertical swipe leaves the divider where it was.
+        if (!self.pannable) dragging = e.pointerId;
+        return;
+      }
       dragging = e.pointerId;
       self.box.setPointerCapture(e.pointerId);
       self.set(Compare.fromPointer(e.clientX, self.box.getBoundingClientRect().left, dpr(), self.max));
@@ -140,7 +154,10 @@
     this.box.addEventListener('pointerup', stop);
     this.box.addEventListener('pointercancel', stop);
     // The renders link to their PNG files; in the slider a click moves the divider instead.
-    this.box.addEventListener('click', function (e) { e.preventDefault(); });
+    this.box.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (lastType === 'touch') self.set(Compare.fromPointer(e.clientX, self.box.getBoundingClientRect().left, dpr(), self.max));
+    });
     Array.prototype.forEach.call(this.box.querySelectorAll('img'), function (img) {
       img.addEventListener('dragstart', function (e) { e.preventDefault(); });
       img.addEventListener('load', function () { self.measure(); });
@@ -156,6 +173,7 @@
     hold.addEventListener('keyup', function (e) { if (e.key === ' ' || e.key === 'Enter') self.setHeld(false); });
     hold.addEventListener('blur', function () { if (self.held) self.setHeld(false); });
     this.figure.addEventListener('render:fit', function () { self.measure(); });
+    global.addEventListener('resize', function () { self.measure(); });   // the box may start or stop overflowing
 
     this.measure();
     this.watchRatio();
