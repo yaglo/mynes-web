@@ -298,7 +298,7 @@ async function main() {
               report('K64', where, pg.url, `shown at ${Math.round(r.full * dpr)}x${dh} device px, file is ${file.width}x${file.height}`);
               continue;
             }
-            const screen = await page.shot();
+            let screen = await page.shot();
             // The browser paints the image at its layout position snapped to device
             // pixels; its rounding may differ from Math.round by one pixel, so the
             // nearest exact match within one pixel counts.
@@ -314,6 +314,19 @@ async function main() {
               const [bad, first] = compare(file, sx, sy, shot);
               if (!best || bad < best.bad) best = { bad, first, w: vis.width, h: vis.height, ox, oy };
               if (!bad) break;
+            }
+            if (best && best.bad && !it.retried) {
+              // A large image can still be rastering; look once more before failing.
+              it.retried = true;
+              await sleep(1500);
+              screen = await page.shot();
+              const x0 = Math.round(dx) + best.ox, y0 = Math.round(dy) + best.oy;
+              const shot = { width: best.w, height: best.h, rgb: Buffer.alloc(best.w * best.h * 3) };
+              for (let y = 0; y < best.h; y++) {
+                screen.rgb.copy(shot.rgb, y * best.w * 3, ((y0 + y) * screen.width + x0) * 3, ((y0 + y) * screen.width + x0 + best.w) * 3);
+              }
+              const [bad2, first2] = compare(file, sx, sy, shot);
+              if (bad2 < best.bad) Object.assign(best, { bad: bad2, first: first2 });
             }
             if (process.env.DUMP_DIR && best && best.bad) {
               const x0 = Math.round(dx) + best.ox, y0 = Math.round(dy) + best.oy;
