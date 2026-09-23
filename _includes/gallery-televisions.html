@@ -1,6 +1,8 @@
 {%- comment -%}
-The presets of the hero data with at least one recording, each linked to
-its page with its description and the games recorded on it.
+The presets of the hero data, each linked to its page with the first
+sentence of its summary in _data/presets.yml (or the manifest's blurb) and
+the games recorded on it. tools/gallery_pages.py writes a page for every
+preset of the hero data, so each one is listed, with or without recordings.
 Usage: {% include gallery-televisions.html %}
 {%- endcomment -%}
 {%- assign gt_n = 0 -%}
@@ -14,14 +16,15 @@ Usage: {% include gallery-televisions.html %}
 {%- assign gt_games = gt_games | append: game.title -%}{%- assign gt_count = gt_count | plus: 1 -%}
 {%- endif -%}
 {%- endfor -%}
-{%- if gt_count > 0 -%}{%- assign gt_n = gt_n | plus: 1 -%}{%- assign gt_url = preset.id | slugify | prepend: '/gallery/televisions/' | append: '/' %}
-<li><a href="{{ gt_url | relative_url }}">{{ preset.name }}</a>{% if preset.blurb %}: {{ preset.blurb }}{% endif %}. Recordings: {{ gt_games }}.</li>
-{%- endif -%}
+{%- assign gt_n = gt_n | plus: 1 -%}{%- assign gt_url = preset.id | slugify | prepend: '/gallery/televisions/' | append: '/' -%}
+{%- assign gt_summary = site.data.presets[preset.id].summary | split: ". " | first | remove: "." -%}
+{%- unless gt_summary -%}{%- assign gt_summary = preset.blurb -%}{%- endunless %}
+<li><a href="{{ gt_url | relative_url }}">{{ preset.name }}</a>{% if gt_summary %}: {{ gt_summary }}{% endif %}. {% if gt_count > 0 %}Recordings: {{ gt_games }}.{% else %}No recordings yet.{% endif %}</li>
 {%- endfor -%}
 {%- endcapture -%}
 {%- if gt_n > 0 %}
 <ul class="gallery-list">{{ gt_items }}
 </ul>
 {%- else %}
-<p>No preset has recordings on the site yet.</p>
+<p>The hero data lists no presets.</p>
 {%- endif %}
