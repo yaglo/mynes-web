@@ -20,7 +20,7 @@ Out of scope: the other aperture-grille presets. They keep their own settings an
 
 - Audit: 2026-09-21, against the documents listed under References. I used no photograph or electrical measurement of my own PVM-14L2.
 - Preset: `presets/sony_pvm_14l2.json`.
-- Tests: the Metal backend on the development Mac. The source document names no commit or display for the test run.
+- Tests: the Metal backend on the development Mac. Commit and display: not recorded.
 - Reproduction:
 
 ```sh

@@ -19,7 +19,7 @@ This note lists the receiver stages MyNES implements for sharpening and interfer
 - Review: 2026-09-21.
 - Sharpness check: a synthetic grayscale-edge capture of 1024×960 on the GPU at Sharpness 0 and 1, on the Basement TV and Reference composite presets.
 - Regression tests: the GPU tests in the code repository named in the sections below.
-- The source document names no machine, display or commit for these runs.
+- Machine, display and commit: not recorded.
 
 ## Selectable receiver stages
 

@@ -18,7 +18,7 @@ This note covers 2 published sets of CRT measurements that MyNES uses: the veili
 
 - GPU check: 2026-09-22, `test_display_fidelity.c` at output sizes of 512×512 and 1024×1024.
 - Visual check: unaveraged 1280×960 captures of Contra at the same phase.
-- The source document names no machine, display or commit for these runs.
+- Machine, display and commit: not recorded.
 - Reproduction of the fit:
 
 ```sh

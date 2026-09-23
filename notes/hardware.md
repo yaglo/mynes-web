@@ -23,7 +23,7 @@ The [Receiver sharpening and interference]({{ '/notes/sharpening/' | relative_ur
 - Captures: unaveraged frames and phase pairs at 1280×960 and 3840×2880.
 - Presets: the 4 above, plus Bedroom RF 1990 and Dying CRT where a section names them.
 - Tests: GPU regression tests in the code repository, named in each section below.
-- The source document names no machine, display or commit for these runs.
+- Machine, display and commit: not recorded.
 
 ## Documented and estimated values per target
 
