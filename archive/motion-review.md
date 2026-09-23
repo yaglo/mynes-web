@@ -31,7 +31,7 @@ These clips play at the emulator's frame rate:
 - [Reel of 5 games, 20 s]({{ '/assets/images/showcase/showcase-reel.mp4' | relative_url }}).
 - Contra boss phase clips: [Sony PVM-14L2, 4 s]({{ '/assets/images/motion/boss-sony_pvm_14l2.mp4' | relative_url }}), [Stas's Favourite RF, 4 s]({{ '/assets/images/motion/boss-stass_favourite.mp4' | relative_url }}), [JVC D-Series, 2 s]({{ '/assets/images/motion/boss-jvc_d_series_2000.mp4' | relative_url }}) and [Toshiba 14AF, 2 s]({{ '/assets/images/motion/boss-toshiba_14af43.mp4' | relative_url }}). All run at 60.0988 fps.
 
-The MP4 files are H.264 at CRF 16 with 4:2:0 chroma, so common players decode them, and the 4:2:0 conversion can soften fine chroma. The details below are lossless animated RGB WebP files and skip that conversion. Their frame durations alternate between 16 and 17 ms, so the running time stays close to the emulator's frame rate.
+The MP4 files are H.264 at CRF 16 with 4:2:0 chroma, so common players decode them, and the 4:2:0 conversion can soften fine chroma. The details below are lossless animated RGB WebP files and skip that conversion. Each frame lasts 16 or 17 ms, rounded so that the running time tracks 60.0988 fps.
 
 {% include crop.html file="assets/images/motion/boss-sony_pvm_14l2-detail.webp" file_1x="assets/images/motion/boss-sony_pvm_14l2-detail@1x.webp" width=384 height=256 alt="Contra waterfall boss in a 24-frame phase detail on the Sony PVM-14L2 preset." caption='Contra, waterfall boss. Sony PVM-14L2 preset, composite. 384×256 crop of a 960×720 frame, 24 consecutive frames, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR lossless WebP</span>.' %}
 
