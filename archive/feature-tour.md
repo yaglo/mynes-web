@@ -29,7 +29,7 @@ Each crop is 120×40 pixels of the 3840×2160 render, enlarged 4× by nearest-ne
 
 The panel shows the same `$10` gray field on 3 shipped presets. The dot lattice, the vertical slots and the continuous grille differ at native resolution, and the 3× enlargement makes the differences visible in the panel.
 
-The crops keep each preset's whole color, beam and mask response, so the comparison covers more than the mask kernel. A 4:3 picture inside a UHD frame is 2880 pixels wide. Even at 4K, a grille of 1200 triads then gets 2.4 host pixels per triad, too few to resolve every RGB stripe, and the renderer filters that structure on purpose.
+The crops keep each preset's whole color, beam and mask response, so the comparison covers more than the mask kernel. A 4:3 picture inside a UHD frame is 2880 pixels wide. Even at 3840×2160, a grille of 1200 triads then gets 2.4 host pixels per triad, too few to resolve every RGB stripe, and the renderer filters that structure on purpose.
 
 ## Deflection and edge focus
 
@@ -57,9 +57,9 @@ The upper row includes the whole UHD canvas. The lower row crops the gameplay to
 
 ## RF and tape noise
 
-{% include crop.html file="assets/images/feature-tour/noise.webp" file_1x="assets/images/feature-tour/noise@1x.webp" width=1600 height=880 alt="48 frames of RF and VHS noise on uniform gray and normal black, enlarged 2 times." caption='RF and VHS noise on uniform gray and normal black. 1600×880 image of 2× nearest-neighbor enlargements of crops of a 4K render, 48 consecutive frames at 67 ms each, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR lossless WebP</span>.' %}
+{% include crop.html file="assets/images/feature-tour/noise.webp" file_1x="assets/images/feature-tour/noise@1x.webp" width=1600 height=880 alt="48 frames of RF and VHS noise on uniform gray and normal black, enlarged 2 times." caption='RF and VHS noise on uniform gray and normal black. 1600×880 image of 2× nearest-neighbor enlargements of crops of a 3840×2160 render, 48 consecutive frames at 67 ms each, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR lossless WebP</span>.' %}
 
-Each side holds 48 consecutive frames of a 4K render of uniform gray and normal black. The top patches cover the output rectangle (2380, 170) to (2660, 270), and the bottom patches cover (600, 170) to (880, 270). The crops are doubled by nearest-neighbor replication, with no exposure lift, denoising, temporal averaging or added grain.
+Each side holds 48 consecutive frames of a 3840×2160 render of uniform gray and normal black. The top patches cover the output rectangle (2380, 170) to (2660, 270), and the bottom patches cover (600, 170) to (880, 270). The crops are doubled by nearest-neighbor replication, and each of the 48 frames is one rendered frame at the renderer's exposure.
 
 Playback is 67 ms per frame, about 4 times the frame time of the 60.1 Hz source. The loop jumps back after frame 77. It is a sequence for inspection and does not test host presentation or long transport motion.
 

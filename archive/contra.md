@@ -13,7 +13,7 @@ redirect_from:
   - "/gallery/contra/"
 ---
 
-This page compares 21 presets on the same Contra boss frame at 3840×2880. Bedroom RF 1990, Basement TV, Compact video monitor and Arcade Cabinet were retuned afterwards, and the FW900 and optics lab presets brought the count to 23. The later assessment at 4K is the [23-preset audit]({{ '/archive/presets/' | relative_url }}).
+This page compares 21 presets on the same Contra boss frame at 3840×2880. Bedroom RF 1990, Basement TV, Compact video monitor and Arcade Cabinet were retuned afterwards, and the FW900 and optics lab presets brought the count to 23. The later assessment at 3840×2160 is the [23-preset audit]({{ '/archive/presets/' | relative_url }}).
 
 Gameplay clips are on the archived [game clips page]({{ '/archive/showcase/' | relative_url }}), and gameplay at full resolution and beam close-ups are on the [Close-ups page]({{ '/gallery/close-ups/' | relative_url }}). This page keeps controlled diagnostic comparisons at the capture resolutions stated with each.
 
