@@ -70,7 +70,7 @@ All clips run at 60.0988 fps with alternating NTSC phases kept separate; nothing
 ## Look closer
 
 
-[Full-resolution gameplay and native close-ups]({{ '/gallery/closeups/' | relative_url }}) show the beam, grille and brightness-dependent scanline width. Full game captures are 3840×2880; the four-preset title comparison also renders the complete 4:3 image at 3840×2880.
+[Full-resolution gameplay and native close-ups]({{ '/gallery/close-ups/' | relative_url }}) show the beam, grille and brightness-dependent scanline width. Full game captures are 3840×2880; the four-preset title comparison also renders the complete 4:3 image at 3840×2880.
 
 <figure class="figure">
 <a href="{{ '/assets/images/showcase/kirby-phase-detail.webp' | relative_url }}"><img src="{{ '/assets/images/showcase/kirby-phase-detail.webp' | relative_url }}" alt="Kirby title: native-pixel, unaveraged phase detail" width="384" height="256" loading="lazy"></a>
@@ -100,4 +100,4 @@ color before the picture reaches the consumer CRT. Adjust it under
 This is a generic recovered VHS response, not a calibrated VCR model.
 The still shows its bandwidth and color effects. [Watch four seconds of unaveraged VHS playback]({{ '/assets/images/motion/boss-vhs_sp_consumer.mp4' | relative_url }}) for the residual timing and phase behavior. [Preset file](https://github.com/yaglo/mynes/blob/master/presets/vhs_sp_consumer.json).
 
-[Capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) · [CRT presets]({{ '/archive/presets/' | relative_url }}) · [Beam measurements]({{ '/gallery/closeups/' | relative_url }}#does-the-beam-actually-widen)
+[Capture details](https://github.com/yaglo/mynes/blob/master/docs/showcase-captures.json) · [CRT presets]({{ '/archive/presets/' | relative_url }}) · [Beam measurements]({{ '/gallery/close-ups/' | relative_url }}#does-the-beam-actually-widen)

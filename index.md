@@ -36,7 +36,7 @@ The four main tuning targets, on the Mega Man 2 title at 3840×2880. Commercial 
 <li><a class="tile" href="{{ '/archive/presets/' | relative_url }}#stass_favourite"><img src="{{ '/assets/images/site/tile-stass_favourite.webp' | relative_url }}" alt="Mega Man 2 title on the Stas's Favourite RF preset" width="300" height="225"><span>Stas's Favourite · RF reception, imperfect convergence, recovery</span></a></li>
 </ul>
 
-[All 23 presets, reviewed at 4K]({{ '/archive/presets/' | relative_url }}) · [Beam close-ups]({{ '/gallery/closeups/' | relative_url }}) · [Feature tour]({{ '/archive/feature-tour/' | relative_url }})
+[All 23 presets, reviewed at 4K]({{ '/archive/presets/' | relative_url }}) · [Beam close-ups]({{ '/gallery/close-ups/' | relative_url }}) · [Feature tour]({{ '/archive/feature-tour/' | relative_url }})
 
 ## How it works
 

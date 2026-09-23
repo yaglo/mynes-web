@@ -12,7 +12,7 @@ redirect_from:
   - "/gallery/visual-review/"
 ---
 
-For the current presentation, see the [game showcase]({{ '/archive/showcase/' | relative_url }}) and [full-resolution gameplay / beam close-ups]({{ '/gallery/closeups/' | relative_url }}). This page retains controlled diagnostic comparisons at their stated capture resolutions.
+For the current presentation, see the [game showcase]({{ '/archive/showcase/' | relative_url }}) and [full-resolution gameplay / beam close-ups]({{ '/gallery/close-ups/' | relative_url }}). This page retains controlled diagnostic comparisons at their stated capture resolutions.
 
 Current Contra images come from the actual SDL3 GPU pipeline at **3840×2880**, offscreen, with fixed **1.6×** output headroom. Stills show frame 60 without averaging; frame 61 is captured separately for phase checks. The SDR previews use a common 0.6 linear exposure to retain bright phosphor detail; they do not establish actual screen luminance. Native crops are not resized.
 

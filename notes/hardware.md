@@ -9,7 +9,7 @@ redirect_from:
   - "/research/hardware/"
 ---
 
-[Gameplay showcase]({{ '/archive/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/closeups/' | relative_url }})
+[Gameplay showcase]({{ '/archive/showcase/' | relative_url }}) · [4K gameplay and beam-height measurements]({{ '/gallery/close-ups/' | relative_url }})
 
 Reviewed 21 September 2026. The curated targets are Sony PVM-14L2, JVC AV-27D201, Toshiba 14AF43, and the generic worn set **Stas's Favourite**. These are nominal behavioural profiles. A manufacturer's bandwidth specification, an owner's photograph and a measurement of a particular tube are different kinds of evidence.
 

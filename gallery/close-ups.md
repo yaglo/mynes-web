@@ -1,10 +1,12 @@
 ---
 layout: "page"
 title: "Gameplay and beam height at native 4K pixels"
-permalink: "/gallery/closeups/"
+permalink: "/gallery/close-ups/"
 section: "gallery"
 description: "Full-resolution gameplay captures, native-pixel close-ups and measured brightness-dependent beam height on four CRT presets."
 source: "docs/gpu-beam-closeups.md"
+redirect_from:
+  - "/gallery/closeups/"
 ---
 
 The Castlevania and Darkwing gameplay captures are 3840×2880: the complete 4:3 game image is 3840 pixels wide, without side bars. The four-set title comparison also uses 3840×2880. Only the controlled measurement fixture below uses a 3840×2160 canvas with a 2880×2160 game viewport. Close-ups are cropped **without resizing**. Open the PNG at 100% to inspect the mask; fitting the image to a browser window can change its apparent pattern. They show one NTSC phase, not a blended exposure.
