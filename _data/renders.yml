@@ -41,7 +41,7 @@ mega-man-2-title-stass-favourite-rooftop:
   game: Mega Man 2
   scene: rooftop title
   preset: stass_favourite
-  signal: RF
+  signal: channel 3 RF
   alt: Mega Man on the rooftop of the Mega Man 2 title screen, on the Stas's Favourite preset.
 
 mega-man-2-title-sony-pvm-14l2-lettering:

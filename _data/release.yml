@@ -1,8 +1,10 @@
 # The published release of MyNES, for the footer and the download page.
 # version is the code's CMake project version. date (YYYY-MM-DD), commit
-# (7 characters) and notes (URL of the release notes) are set when the
-# release is published on GitHub; until then the footer names no release.
+# (7 characters), notes (URL of the release notes) and platforms (list, for
+# the home page's download button) are set when the release is published on
+# GitHub; until then the footer and the home page name no release.
 version: "0.3.0"
 date:
 commit:
 notes:
+platforms:

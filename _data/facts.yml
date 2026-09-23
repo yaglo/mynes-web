@@ -1,0 +1,22 @@
+# Numbers that appear on more than one page. Pages read them through Liquid,
+# for example {{ site.data.facts.tests.passed }}, so a change is made here
+# once. A page source that spells out a `literal` string instead of reading
+# it from here is flagged by the site checks.
+tests:
+  passed: 144
+  total: 144
+  suite: AccuracyCoin
+  literal: "144 of 144"
+presets:
+  count: 23
+frame:
+  width: 3840
+  height: 2880
+clip:
+  fps: 60.0988
+  fps_short: "60.1"
+# The renderer commit of the site's renders (7 characters). The seed media
+# come from several commits; set this when the showcase pipeline installs
+# one set of media, and the footer names it.
+renderer:
+  commit:
