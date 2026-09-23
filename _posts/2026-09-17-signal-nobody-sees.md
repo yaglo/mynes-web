@@ -15,7 +15,7 @@ source: "docs/blog/03-signal-nobody-sees.md"
 
 The NES has no RGB output. Its 2C02 PPU outputs a composite waveform: one analog signal on one wire that encodes brightness and color at the same time through phase modulation. The signal varies between about 0.35 V and 1.55 V and changes shape 3.58 million times per second.
 
-An emulator that decodes the 2C02's 64-entry palette to RGB through a lookup table never generates this signal. MyNES generates the waveform first, and dot crawl, chroma bleed and rainbow shimmer on sharp edges come from decoding it.
+MyNES generates this waveform from the PPU's palette indices before any decoding, and dot crawl, chroma bleed and rainbow shimmer on sharp edges come from decoding it.
 
 ## Composite video
 
