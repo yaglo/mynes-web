@@ -1,28 +1,26 @@
 ---
 layout: "post"
-title: "The Electron Beam Is Not a Line"
+title: "Part 6: Beam spot size"
 date: "2026-09-20"
+updated: "2026-09-23"
 series: 6
 slug: "beam-is-not-a-line"
 permalink: "/blog/beam-is-not-a-line/"
-teaser: "Most CRT shaders darken every other row. Every pixel in the dark row gets the same treatment. It looks nothing like a real CRT, and the reason is simple: the electron beam is not a line."
-description: "Most CRT shaders darken every other row. Every pixel in the dark row gets the same treatment. It looks nothing like a real CRT, and the reason is simple: the electron beam is not a line."
+description: "Stage 11 of the MyNES GPU pipeline: a Gaussian beam profile whose width depends on brightness, convergence error, Gaussian noise, mains hum and other beam effects."
 source: "docs/blog/06-beam-is-not-a-line.md"
 ---
 
-*Brightness-dependent bloom, convergence error, and CRT physics*
+[Part 5]({{ '/blog/separating-colors/' | relative_url }}) covered stages 6 and 7 of the GPU pipeline, and this part covers stage 11, the electron beam. The beam shader models the spot profile, per-channel convergence error, Gaussian noise, mains hum and 5 smaller effects.
 
----
+Most CRT shaders darken every other row, and every pixel in the dark row gets the same factor, such as 0.3 or 0.5. The result is a uniform grid of dark horizontal bars over the image. A CRT shows a different pattern, because its electron beam has a Gaussian cross-section whose width depends on brightness.
 
-Most CRT shaders darken every other row. Every pixel in the dark row gets the same treatment -- multiply by 0.3, maybe 0.5. The result is a uniform grid of dark horizontal bars over the image. It looks nothing like a real CRT, and the reason is simple: the electron beam is not a line.
+A dark pixel produces a narrow beam, and the unlit phosphor between scanlines shows as a dark gap. A bright pixel produces a wide beam that blooms into the adjacent lines and fills the gap between them with light. For this reason, CRT photographs of bright scenes never show visible scanlines: the beam is wide enough to fill the gaps.
 
-The beam has a Gaussian cross-section. Its width depends on brightness. A dark pixel produces a narrow beam -- the gap between scanlines is visible, dark, empty phosphor. A bright pixel produces a wide beam that blooms into adjacent lines, filling the inter-scanline gap with light. This is why CRT photographs of bright scenes never show visible scanlines. The beam is too wide. The gaps are filled.
+Beam width that varies with brightness accounts for most of the difference between CRT footage and the output of CRT shaders. Stage 11 of the pipeline models it.
 
-This single physical fact -- that beam width varies with brightness -- accounts for most of what makes real CRT footage look different from CRT shader output. Stage 11 of the pipeline models it.
+## Beam profile
 
-## The beam profile algorithm
-
-Each output pixel composites contributions from three adjacent NES scanlines: the current line and its two neighbors. For each scanline, the shader computes a brightness-dependent Gaussian weight.
+Each output pixel sums the contributions of 3 adjacent NES scanlines: the current line and its 2 neighbors. For each scanline, the shader computes a Gaussian weight whose width depends on brightness.
 
 The core of `beam_profile.comp.glsl`:
 
@@ -46,17 +44,19 @@ for (int soff = -1; soff <= 1; soff++) {
 }
 ```
 
-The `bloom_gamma` parameter controls the nonlinearity of the bloom curve. At `bloom_gamma = 1.0`, the relationship is linear -- beam width scales directly with brightness. At `bloom_gamma = 1.5` (the default), moderate brightness values produce relatively narrow beams, and the bloom effect is concentrated in the upper brightness range. This matches real CRT behavior: the beam broadening accelerates as current increases.
+The `bloom_gamma` parameter sets the curve of the bloom. At `bloom_gamma = 1.0` the relationship is linear, and beam width scales directly with brightness. At the default of `bloom_gamma = 1.5`, moderate brightness gives narrower beams, and most of the bloom happens in the upper range of brightness. A CRT beam behaves the same way: it broadens faster as the beam current increases.
 
-The two sigma values define the range. `sigma_narrow = 0.20` for dark pixels: a tight Gaussian that barely extends beyond the scanline center. `sigma_wide = 0.70` for full-brightness pixels: wide enough that adjacent scanlines overlap significantly. The interpolation `sigma = sigma_narrow + (sigma_wide - sigma_narrow) * bloom_t` maps the full brightness range onto this sigma range.
+`sigma_narrow` and `sigma_wide` set the range. Dark pixels use `sigma_narrow = 0.20`, a tight Gaussian that barely extends beyond the scanline center. Full-brightness pixels use `sigma_wide = 0.70`, wide enough for adjacent scanlines to overlap considerably. The interpolation `sigma = sigma_narrow + (sigma_wide - sigma_narrow) * bloom_t` maps the full brightness range onto this range of sigma.
 
-The Gaussian `exp(-d^2 / 2*sigma^2)` computes the beam intensity at vertical distance `d` from the scanline center. When sigma is small (dark pixel), the falloff is steep -- almost no energy reaches the adjacent line. When sigma is large (bright pixel), the falloff is gentle -- significant energy bleeds up and down, filling the inter-scanline gap.
+The Gaussian `exp(-d^2 / 2*sigma^2)` gives the beam intensity at vertical distance `d` from the scanline center. With a small sigma (a dark pixel) the falloff is steep, and almost no energy reaches the adjacent line. With a large sigma (a bright pixel) the falloff is gradual, and a large part of the energy spreads up and down into the gap between scanlines.
+
+The close-ups gallery shows both cases in a [1:1 crop of the Mega Man 2 title lettering]({{ '/gallery/close-ups/#mega-man-2-title-screen-on-4-presets' | relative_url }}) on the Sony PVM-14L2 preset. It also measures the [beam height at 3 brightness levels on 4 presets]({{ '/gallery/close-ups/#beam-height-vs-brightness-on-4-presets' | relative_url }}).
 
 ## Per-channel convergence error
 
-A color CRT has three electron guns -- red, green, blue -- physically separated in the tube neck. Each gun fires its beam through the shadow mask (or aperture grille) to hit its corresponding phosphor dots. The guns must be aligned so all three beams converge on the same triad at every screen position.
+A color CRT has 3 electron guns, for red, green and blue, set apart in the tube neck. Each gun's beam passes through the shadow mask or aperture grille and lands on the phosphor dots of its color. The guns are aligned so that the 3 beams converge on the same triad at every position on the screen.
 
-Perfect convergence across the entire screen is impossible. The deflection geometry means that alignment achieved at the center drifts at the edges. The beam shader models this as per-channel offsets that scale with distance from the center:
+Exact convergence over the whole screen is impossible, because the deflection geometry makes an alignment set at the center drift at the edges. The beam shader models this as per-channel offsets that grow with distance from the center:
 
 ```glsl
 float edge_factor = cx * cx + cy * cy;
@@ -66,15 +66,15 @@ float b_cx_off = conv_b_x * edge_factor;
 float b_cy_off = conv_b_y * edge_factor;
 ```
 
-Green is the reference channel -- it reads from the unshifted sample position. Red and blue read from offset positions, both horizontally (in signal samples) and vertically (in output rows). The offset is zero at screen center (`edge_factor = 0`) and maximum at the corners.
+Green is the reference channel and reads from the unshifted sample position. Red and blue read from offset positions, horizontally in signal samples and vertically in output rows. The offset is zero at the screen center (`edge_factor = 0`) and largest at the corners.
 
-A well-calibrated PVM has convergence offsets near zero -- you would need a test pattern to see the error. The Basement TV preset sets `conv_r_x = 6.0, conv_b_x = -5.0`. That is 6 signal samples of red shift and 5 samples of blue shift in the opposite direction, increasing toward the corners. Every sharp edge has visible red-blue color fringing. White text on black gains colored halos. It is immediately, viscerally recognizable as "that old TV."
+A well-calibrated PVM has convergence offsets near zero, and the error shows only on a test pattern. The Basement TV preset sets `conv_r_x = 6.0, conv_b_x = -5.0`: red shifts by 6 signal samples and blue by 5 samples in the opposite direction, and the shift grows toward the corners. Every sharp edge gets visible red and blue fringes, and white text on black gets colored halos.
 
 ## Per-pixel Gaussian noise
 
-Electronic noise in a CRT signal path is Gaussian-distributed -- thermal noise in resistors, shot noise in transistors. Uniform random noise (what most shaders use) has the wrong distribution. The visual difference is subtle but real: Gaussian noise has occasional larger excursions that give the "snow" its characteristic texture.
+Electronic noise in a CRT signal path, such as thermal noise in resistors and shot noise in transistors, has a Gaussian distribution. Most shaders use uniform random noise, which has the wrong distribution. The difference on screen is small but visible: Gaussian noise has occasional larger excursions, which give the snow its texture.
 
-The shader generates six independent hash streams per pixel using Murmur3, then applies the Box-Muller transform to convert uniform random values to Gaussian:
+The shader generates 6 independent hash streams per pixel with Murmur3, then converts the uniform random values to Gaussian ones with the Box-Muller transform:
 
 ```glsl
 float nr = sqrt(-2.0 * log(u1)) * cos(u2);
@@ -82,19 +82,19 @@ float ng = sqrt(-2.0 * log(u3)) * cos(u4);
 float nb = sqrt(-2.0 * log(u5)) * cos(u6);
 ```
 
-Three independent Gaussian samples -- one per channel. The noise amplitude is modulated by local luminance:
+That gives 3 independent Gaussian samples, one per channel. Local luminance modulates the noise amplitude:
 
 ```glsl
 float noise_scale = noise_level * (1.0 - 0.8 * clamp(luma, 0.0, 1.0));
 ```
 
-More noise in shadows, less in highlights. This models the signal-to-noise ratio: the noise floor is constant, but bright areas have more signal, so the noise is proportionally less visible. Dark areas, where the signal is weakest, show the most snow.
+Shadows get more noise than highlights. This models the signal-to-noise ratio: the noise floor is constant, and bright areas have more signal, so the noise is proportionally less visible there. Dark areas, where the signal is weakest, show the most snow.
 
 ## Mains hum
 
-The power supply's 60 Hz ripple modulates the beam brightness. A cheap TV with poor power supply filtering shows a slowly rolling brightness bar -- a horizontal band of slightly different brightness that drifts up through the frame over several seconds.
+The power supply's 60 Hz ripple modulates the beam brightness. A cheap TV with poor power supply filtering shows a slowly rolling hum bar: a horizontal band of slightly different brightness that drifts up through the frame over several seconds.
 
-Real rectifier-derived hum is not a pure sine wave. It has harmonics:
+Hum from a rectifier has harmonics above its fundamental:
 
 ```glsl
 float hum_wave = sin(hum_phase)
@@ -102,28 +102,38 @@ float hum_wave = sin(hum_phase)
                + 0.15 * sin(3.0 * hum_phase + 1.5);
 ```
 
-The fundamental at 60 Hz, a 120 Hz second harmonic at 40% amplitude, and a 180 Hz third harmonic at 15%. The phase offsets (0.8, 1.5 radians) model the non-ideal phase relationships in a real full-wave rectifier. The bar rolls slowly because `frame_counter * 0.006` advances the phase by a fraction of a radian per frame.
+The wave has the fundamental at 60 Hz, a second harmonic at 120 Hz with 40% amplitude and a third harmonic at 180 Hz with 15%. The phase offsets of 0.8 and 1.5 radians model the non-ideal phase relationships in a full-wave rectifier. The bar rolls slowly because `frame_counter * 0.006` advances the phase by a fraction of a radian per frame.
 
-## Other beam physics
+## Other beam effects
 
-The shader handles several more physical effects, each a few lines of GLSL:
+The shader models 5 more physical effects, each in a few lines of GLSL.
 
-**Horizontal timebase jitter.** Two incommensurate sine waves produce a slow, irregular horizontal sway of the entire image -- like a CRT whose horizontal oscillator caps are drifting. The amplitude is controlled by `h_jitter`. PVMs have rock-solid timebase (`h_jitter = 0.0`). A cheap TV has visible wobble.
+### Horizontal timebase jitter
 
-**Edge focus degradation.** The beam defocuses at screen edges -- longer throw distance, yoke astigmatism. `edge_focus` widens the beam sigma by `(1 + edge_factor * edge_focus)`. A value of 0.3 makes corner text noticeably softer than center text.
+The sum of 2 incommensurate sine waves moves the whole image sideways in a slow, irregular sway, as on a CRT whose horizontal oscillator capacitors are drifting. `h_jitter` sets the amplitude. PVMs have a stable timebase (`h_jitter = 0.0`), and a cheap TV has visible wobble.
 
-**Velocity dimming.** The beam sweeps faster at the edges of the screen (nonlinear deflection). Faster sweep means less energy deposited per pixel. The attenuation is `1.0 - edge_factor * velocity_dim`. This is separate from vignette, which models the optical cos^4 illumination falloff.
+### Edge focus
 
-**Geometry warp.** Pincushion distortion plus S-correction, applied as horizontal position shifts modulated by vertical position. The Wega preset has `barrel = 0.0` (flat tube). The Basement TV has `barrel = 0.05, barrel_v = 0.08` -- significantly more vertical curvature from an aged deflection yoke.
+The beam defocuses at the screen edges because of the longer throw distance and the astigmatism of the yoke. `edge_focus` widens the beam sigma by a factor of `(1 + edge_factor * edge_focus)`. A value of 0.3 makes text in the corners visibly softer than text in the center.
 
-**RF interference.** Electromagnetic interference from nearby electronics produces a stepped vertical zigzag: `floor(sin(sy * 0.45) * rf_interference + 0.5)`. The `floor` is important -- real RF interference produces discrete pixel shifts, not smooth undulation.
+### Velocity dimming
+
+With nonlinear deflection, the beam sweeps faster at the edges of the screen, and a faster sweep deposits less energy per pixel. The attenuation is `1.0 - edge_factor * velocity_dim`. Vignette is a separate effect that models the optical `cos^4` falloff of illumination.
+
+### Geometry warp
+
+Pincushion distortion and S-correction are applied as horizontal position shifts modulated by vertical position. The Wega preset has `barrel = 0.0` for its flat tube. The Basement TV has `barrel = 0.05, barrel_v = 0.08`, much more vertical curvature from an aged deflection yoke.
+
+### RF interference
+
+Electromagnetic interference from nearby electronics produces a stepped vertical zigzag, `floor(sin(sy * 0.45) * rf_interference + 0.5)`. The `floor` keeps each shift a whole number of pixels, which is how RF interference displaces the picture on a CRT.
 
 ## Output format
 
-The beam shader writes packed float16x4: two uint32 values per pixel, encoding RGBA as half-precision floats via `packHalf2x16`. Values above 1.0 are preserved -- the phosphor can overshoot SDR white during bloom, and subsequent stages (glass halation, tone mapping) need the full dynamic range. Soft-clamping at 4.0 prevents numerical fireflies.
+The beam shader writes packed `float16x4`: 2 `uint32` values per pixel, which hold RGBA as half-precision floats packed with `packHalf2x16`. Values above 1.0 are kept, because the phosphor can overshoot SDR white during bloom. The later stages (glass halation, tone mapping) need that full dynamic range. A soft clamp at 4.0 prevents numerical fireflies.
 
-## Why this stage matters most
+## Decoded RGB with and without the beam profile
 
-The beam profile shader is roughly 200 lines of GLSL. It is the most visually impactful stage in the pipeline. Every preceding stage -- the DAC, the cable model, the comb filter, the chroma demodulator -- feeds into this one. The composite decode could be mathematically perfect, producing flawless RGB values. Without the beam profile, the result looks like an LCD with a color filter. With it, the image has the depth and texture of a real display: dark areas with visible scanline structure giving way to bright areas where the beam fills the gaps, edges softly fringed with convergence error, a faint snow of Gaussian noise in the shadows.
+Without the beam profile, a composite decode that produced exact RGB values would look like an LCD with a color filter. Every earlier stage (the DAC, the cable model, the comb filter and the chroma demodulator) feeds into this one. With the beam profile, dark areas show scanline structure, bright areas fill the gaps between scanlines, and edges have soft fringes from convergence error. The shadows also get a faint snow of Gaussian noise.
 
-The beam is not a line. It is a probability distribution whose parameters depend on the signal. Everything else follows from that.
+The beam profile shader is about 200 lines of GLSL, and it has the largest visible effect of the 14 stages. It treats the beam spot as a probability distribution whose parameters depend on the signal.

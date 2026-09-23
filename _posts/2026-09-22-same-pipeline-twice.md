@@ -1,30 +1,24 @@
 ---
 layout: "post"
-title: "The Same Pipeline Twice"
+title: "Part 8: The CPU and GPU composite pipelines"
 date: "2026-09-22"
+updated: "2026-09-23"
 series: 8
 slug: "same-pipeline-twice"
 permalink: "/blog/same-pipeline-twice/"
-teaser: "This emulator has two complete composite video pipelines. Why build the same signal processing chain twice?"
-description: "This emulator has two complete composite video pipelines. Why build the same signal processing chain twice?"
+description: "MyNES has a CPU composite pipeline in composite.h and a 14-stage GPU pipeline; what each models, the signal math they share, and why both are kept."
 source: "docs/blog/08-same-pipeline-twice.md"
 ---
 
-*CPU composite vs GPU composite -- why both exist*
+The presets in [part 7]({{ '/blog/living-room-1988/' | relative_url }}) configure the GPU pipeline, and MyNES has a second complete composite video pipeline that runs on the CPU. The CPU path is in `src/nes/composite.h`, and the GPU path is in `frontends/gpu/`. Both take the same indexed framebuffer as input. Both produce NTSC composite artifacts: dot crawl, chroma bleed and rainbow shimmer on high-contrast edges. This part describes each path and the reasons to build the same signal processing chain twice.
 
-*Part 8 of "Building a NES Emulator That Thinks Like Hardware"*
+## CPU path
 
----
+The CPU composite pipeline is a single header file, `composite.h`, of about 2,500 lines including all SIMD paths. It has no external dependencies beyond `math.h`. It runs a single-pass pipeline per scanline: waveform generation from the 2C02's palette index, FIR bandwidth limiting, Y/I/Q demodulation, matrix decode to RGB and scanline darkening. The output is RGB888, written directly to the framebuffer.
 
-This emulator has two complete composite video pipelines. The CPU path lives in `src/nes/composite.h`. The GPU path lives in `frontends/gpu/`. Both take the same indexed framebuffer as input. Both produce NTSC composite artifacts -- dot crawl, chroma bleed, rainbow shimmer on high-contrast edges. Why build the same signal processing chain twice?
+The hot path is the FIR filter, a Hamming-windowed sinc lowpass. It is applied symmetrically, which halves the multiplies, since `taps[k] == taps[n-1-k]`. The CPU path has explicit SIMD for it: NEON on ARM, AVX2 with FMA on x86, and a scalar fallback everywhere else.
 
-## The CPU path
-
-The CPU composite pipeline is a single header file: `composite.h`, about 2,500 lines including all SIMD paths. No external dependencies beyond `math.h`. It runs a single-pass pipeline per scanline: waveform generation from the 2C02's palette index, FIR bandwidth limiting, Y/I/Q demodulation, matrix decode to RGB, scanline darkening. Output is RGB888 written directly to the framebuffer.
-
-The hot path is the FIR filter. A Hamming-windowed sinc lowpass, applied symmetrically -- which means half the multiplies, since `taps[k] == taps[n-1-k]`. The CPU path has explicit SIMD for this: NEON on ARM, AVX2+FMA on x86, scalar fallback everywhere else.
-
-Here's the NEON inner loop from `comp_fir_symmetric`:
+The NEON inner loop from `comp_fir_symmetric`:
 
 ```c
 #if defined(__ARM_NEON)
@@ -49,46 +43,64 @@ Here's the NEON inner loop from `comp_fir_symmetric`:
     }
 ```
 
-Four independent accumulators (`a0` through `a3`), each advancing through the taps by four. No loop-carried dependency chain. On an M1, the CPU can dispatch four FMAs per cycle through this, and the whole pipeline -- waveform emission, luma FIR, chroma FIR, demodulation, color matrix, scanline assembly -- runs in well under a millisecond per frame. The AVX2 path processes eight pixels per iteration with the same four-way ILP pattern.
+The loop keeps 4 independent accumulators (`a0` to `a3`), each advancing through the taps by 4, so no dependency chain is carried across iterations. On an M1, the CPU can dispatch 4 FMAs per cycle through this loop. On the same machine the whole pipeline (waveform emission, luma FIR, chroma FIR, demodulation, color matrix and scanline assembly) runs in well under a millisecond per frame. The AVX2 path processes 8 pixels per iteration with the same 4-way ILP pattern.
 
-The CPU path is used by the SDL2 frontend, the headless renderer, and the test runner. Anything that needs composite output and doesn't have a GPU.
+The SDL2 frontend, the headless renderer and the test runner use the CPU path, as does anything else that needs composite output and has no GPU.
 
-## The GPU path
+## GPU path
 
-The GPU pipeline is a different animal. Instead of a single-pass scanline loop, it's a chain of discrete compute shader stages, each modeling a physical component in the analog signal path. The full chain for an RF connection runs 14 stages:
+The GPU pipeline is a chain of separate compute shader stages, and each stage models one physical component in the analog signal path. The full chain for an RF connection has 14 stages:
 
-1. **2C02 DAC** -- palette index to composite waveform (same Bisqwit model)
-2. **Console output** -- coupling capacitor, amplifier bandwidth
-3. **Cable** -- RC low-pass from distributed capacitance (80 pF/m for cheap RCA)
-4. **RF modulator/demodulator** -- vestigial sideband modulation, AGC, thermal noise
-5. **TV input** -- coupling, automatic gain control
-6. **Comb filter** -- Y/C separation (none, 1-line, 2-line, or bypass for S-Video)
-7. **Chroma demodulator** -- QAM decode of I and Q, with FIR on each channel
-8. **Luma processing** -- bandwidth limiting, FIR filtering
-9. **Matrix decode** -- YIQ to RGB with color temperature and gun drive controls
-10. **Video amplifier** -- per-channel bandwidth limiting
-11. **Electron beam** -- spot profile, convergence, bloom
-12. **Phosphor screen** -- shadow mask / aperture grille, persistence
-13. **CRT glass** -- halation, barrel distortion, glass tint
-14. **Environment** -- vignette, ambient light, black floor
+1. 2C02 DAC: palette index to composite waveform (same Bisqwit model)
+2. Console output: coupling capacitor, amplifier bandwidth
+3. Cable: RC low-pass from distributed capacitance (80 pF/m for cheap RCA)
+4. RF modulator and demodulator: vestigial sideband modulation, AGC, thermal noise
+5. TV input: coupling, automatic gain control
+6. Comb filter: Y/C separation (none, 1-line, 2-line, or bypass for S-Video)
+7. Chroma demodulator: QAM decode of I and Q, with FIR on each channel
+8. Luma processing: bandwidth limiting, FIR filtering
+9. Matrix decode: YIQ to RGB with color temperature and gun drive controls
+10. Video amplifier: per-channel bandwidth limiting
+11. Electron beam: spot profile, convergence, bloom
+12. Phosphor screen: shadow mask or aperture grille, persistence
+13. CRT glass: halation, barrel distortion, glass tint
+14. Environment: vignette, ambient light, black floor
 
-Each stage is a compute dispatch. Connection type determines which stages are active -- S-Video skips the comb filter (Y/C is already separated), RGB skips comb, chroma demod, and matrix decode, and Direct mode skips everything between the DAC and the display domain. The chain queries `video_chain_stage_active()` for each stage and skips the dispatch if it returns false.
+Each stage is one compute dispatch. The connection type determines which stages are active:
 
-The GPU path requires SDL3 GPU, which means Vulkan, Metal, or D3D12. It's used by the GPU frontend and the SwiftUI app.
+- S-Video skips the comb filter, because Y and C arrive already separated.
+- RGB skips the comb filter, chroma demodulation and matrix decode.
+- Direct mode skips everything between the DAC and the display domain.
 
-## Why both exist
+The chain queries `video_chain_stage_active()` for each stage and skips the dispatch when it returns false.
 
-**Portability vs fidelity.** The CPU path runs anywhere with a C compiler. No GPU required, no graphics API required. It compiles on ARM, x86, and whatever else has a C99 toolchain. For headless testing, CI runners, or embedded targets, the CPU path is the only option. The GPU path needs modern graphics hardware and a specific backend.
+The GPU path requires SDL3 GPU, which means Vulkan, Metal or D3D12. The GPU frontend and the SwiftUI app use it.
 
-**Correctness verification.** Two independent implementations of the same signal processing catch bugs in either. The waveform generation, FIR coefficients, and demodulation math should produce identical Y, I, and Q values at the decode stage. If the GPU path produces different cross-color patterns than the CPU path on the same input, one of them is wrong. The CPU path was written first and verified against known-good reference output. The GPU path was then verified against the CPU path. Having both means regressions in the GPU shader chain can be caught by comparing against the CPU reference.
+## Reasons for keeping both paths
 
-**Different tradeoffs.** The CPU path is single-pass and fast, but it can't model multi-stage interactions. There's no cable RC filter between the console output and the TV input -- it goes straight from waveform to FIR. No comb filter modes (the CPU path only does simple bandpass Y/C separation). No RF simulation. No temporal phosphor persistence. No beam bloom or convergence error. The GPU path models all of these because each stage is a separate dispatch with its own physical parameters. But that costs 14 compute dispatches plus render passes per frame, and it requires a GPU.
+### Portability vs fidelity
 
-**Shared signal math.** Both paths use the same underlying signal model. The GPU path's `signal_precompute.h` was extracted from `composite.h`'s precomputation functions so the GPU frontend has zero dependency on the CPU composite pipeline, but the math is the same. Both build a 512-entry signal table (64 palette colors times 8 emphasis states, 24 phase slots each) using Bisqwit's 2C02 voltage model. Both design their FIR taps as Hamming-windowed sinc functions normalized to unit DC gain. The core signal math is identical -- the GPU path just runs each step as a separate compute dispatch with physically-modeled stages between them.
+The CPU path runs anywhere with a C compiler, with no GPU and no graphics API. It compiles on ARM, x86 and any other target with a C99 toolchain. For headless testing, CI runners and embedded targets, the CPU path is the only option. The GPU path needs modern graphics hardware and a specific backend.
 
-## Where they converge, where they diverge
+### Correctness verification
 
-The convergence point is the signal table and the FIR design. Both use 12-phase composite waveforms, both use the same normalized sinc formula:
+With 2 independent implementations of the same signal processing, each one catches bugs in the other. The waveform generation, FIR coefficients and demodulation math should produce identical Y, I and Q values at the decode stage. If the GPU path produces different cross-color patterns from the CPU path on the same input, one of them is wrong.
+
+The CPU path was written first and verified against known-good reference output. The GPU path was then verified against the CPU path. With both in place, a regression in the GPU shader chain can be caught by comparing its output with the CPU reference.
+
+### Stages the CPU path leaves out
+
+The CPU path is single-pass and fast, and it cannot model interactions between stages. It feeds the waveform straight into the FIR, with no cable RC filter between the console output and the TV input. It has no comb filter modes, because it only does simple bandpass Y/C separation. It also has no RF simulation, temporal phosphor persistence, beam bloom or convergence error.
+
+The GPU path models all of these, because each stage is a separate dispatch with its own physical parameters. That costs 14 compute dispatches plus render passes per frame, and it requires a GPU.
+
+### Shared signal math
+
+Both paths use the same underlying signal model. The GPU path's `signal_precompute.h` was extracted from the precomputation functions in `composite.h`, so that the GPU frontend has no dependency on the CPU composite pipeline, and the math is the same. Both build a 512-entry signal table (64 palette colors times 8 emphasis states, 24 phase slots each) using Bisqwit's 2C02 voltage model. Both design their FIR taps as Hamming-windowed sinc functions normalized to unit DC gain. The GPU path runs each step of that math as a separate compute dispatch, with physically modeled stages between them.
+
+## Where the 2 paths match and differ
+
+The paths meet at the signal table and the FIR design. Both use 12-phase composite waveforms and the same normalized sinc formula:
 
 ```c
 float sinc = (m == 0)
@@ -99,14 +111,16 @@ float w = 0.54f - 0.46f * cosf(2.0f * M_PI * (float)k / (float)(n - 1));
 taps[k] = sinc * w;
 ```
 
-Same cutoff frequencies, same window function, same normalization. A frame decoded by the CPU path and a frame decoded by the GPU path (with cable, RF, and display effects disabled) should produce visually identical output.
+The cutoff frequencies, the window function and the normalization are the same. With cable, RF and display effects disabled, a frame decoded by the CPU path and the same frame decoded by the GPU path should produce visually identical output.
 
-The divergence is everything after decode. The CPU path does waveform, FIR, demod, matrix in a tight scanline loop and writes RGB. The GPU path separates these into individual dispatches with cable RC filtering, comb filter Y/C separation, RF modulation, and AGC between them. Then the GPU path continues with five more stages -- video amplifier, electron beam, phosphor screen, CRT glass, and environment -- that the CPU path doesn't model at all. The CPU path handles scanline darkening and a few post-processing effects (barrel distortion, ghosting, snow, hum bars), but these are simple screen-space operations, not physical models with component values.
+The paths diverge in everything after the decode. The CPU path runs waveform, FIR, demodulation and matrix in a tight scanline loop and writes RGB. The GPU path splits these into individual dispatches, with cable RC filtering, comb filter Y/C separation, RF modulation and AGC between them. It then continues with 5 more stages that the CPU path does not model: video amplifier, electron beam, phosphor screen, CRT glass and environment.
 
-## The engineering pattern
+The CPU path handles scanline darkening and a few post-processing effects: barrel distortion, ghosting, snow and hum bars. These are simple screen-space operations without the component values of a physical model.
 
-Maintain two implementations of the same specification at different fidelity levels. The simple one validates the complex one. The complex one handles the cases the simple one can't. Neither is redundant.
+## Reference and production implementations
 
-This isn't unique to emulation. Any signal processing pipeline benefits from having a reference implementation alongside the production one. The reference is slow, simple, and obviously correct. The production code is fast, complex, and -- you hope -- equivalent. When they disagree, the reference tells you where to look. When they agree, you have confidence that neither is wrong.
+The pattern is to maintain 2 implementations of the same specification at different levels of fidelity. The simple one validates the complex one, and the complex one handles the cases the simple one cannot. Neither is redundant.
 
-The CPU path is the reference. The GPU path is the production code. Both process the same signal. Both exist because the alternative -- trusting a single complex pipeline to be correct -- is how you ship bugs that look like "the colors are slightly off" and never get caught.
+The pattern applies outside emulation too: any signal processing pipeline benefits from having a reference implementation beside the production one. The reference is slow and simple enough to check by reading. The production code is fast and complex, and it is meant to be equivalent. When the 2 disagree, the reference shows where to look, and when they agree, that is evidence that neither is wrong.
+
+In MyNES the CPU path is the reference and the GPU path is the production code, and both process the same signal. Both exist because a single complex pipeline, trusted to be correct, can ship bugs that look like "the colors are slightly off" and never get caught.
