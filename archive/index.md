@@ -6,7 +6,7 @@ section: archive
 description: Gallery pages and reviews of MyNES that newer pages replaced, with the date each was archived.
 ---
 
-<p>This page lists the gallery pages and reviews that newer pages replaced, by year, with the date each was archived and its replacement. Archived pages keep their images as first published, including reduced previews and images scaled to the column.</p>
+<p>This page lists the gallery pages and reviews that newer pages replaced, by year, with the date each was archived and its replacement. Archived pages show their native crops and clips at 1:1. Their overview sheets and panels stay as first published: reduced files, fitted to the column.</p>
 
 {% assign archived = site.pages | where_exp: "p", "p.archived" | sort: "title" | sort: "archived" | reverse %}
 {% assign years = archived | group_by_exp: "p", "p.archived | date: '%Y'" %}
