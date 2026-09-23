@@ -4,3 +4,8 @@ _site
 .jekyll-metadata
 Gemfile.lock
 __pycache__/
+# Writing rules and their checker are kept outside the repository.
+STYLE.md
+tools/check_style.py
+tools/test_check_style.py
+tools/stylelib/

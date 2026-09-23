@@ -4,7 +4,6 @@
 #     --destination "$TMPDIR/mynes-web-preview" --port 4011
 exclude:
   - README.md
-  - STYLE.md
   - assets/hero/README.md
   - Gemfile
   - Gemfile.lock
@@ -15,6 +14,5 @@ exclude:
   - tools/*.py
   - tools/*.js
   - tools/*.txt
-  - tools/stylelib
   - tools/tv-fixture/make_fixture.py
   - tools/tv-fixture/preview.yml

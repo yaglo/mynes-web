@@ -11,7 +11,7 @@ try:
     import make_crop
 except ImportError:  # Pillow missing
     Image = None
-from stylelib import media  # noqa: E402
+import imagefiles as media  # noqa: E402
 
 
 @unittest.skipUnless(Image, "Pillow not installed")

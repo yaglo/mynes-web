@@ -1,7 +1,7 @@
 # Every page URL of the site before the restructure (the main branch build of
 # 2026-09-23), relative to the site root, without the baseurl.
 # tools/check_site.py checks that each one still answers with a page or a
-# redirect to a page (STYLE.md S10, check K74). Never remove a line.
+# redirect to a page. Never remove a line.
 /404.html
 /about/index.html
 /assets/hero/index.html
