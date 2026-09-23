@@ -31,7 +31,7 @@ key is version 1.
   (for example "Playing the 1920×1440 SDR clip: this display does not
   report HDR.").
 - Before the script runs, the include's poster is the stage picture. It
-  takes `poster` (960x720) and `poster_2x` (the same frame at 1920x1440);
+  takes `poster` (960×720) and `poster_2x` (the same frame at 1920×1440);
   a `<source>` media query shows the 2x poster where it fits at one pixel
   per device pixel, and `assets/css/tv.css` sizes the stage with the same
   query, so the stage keeps its size when the clip starts. Without
@@ -42,7 +42,7 @@ key is version 1.
 
 | The clip has | Inspect |
 |---|---|
-| `lens` clips (version 2) | Loads the 3840x2880 lens clip, showing its size and progress, and keeps it on the stage clip's frame with `requestVideoFrameCallback`: a seek above 1.5 frames of drift, otherwise `playbackRate` within 3 % of 1. Freeze pauses both clips at once. |
+| `lens` clips (version 2) | Loads the 3840×2880 lens clip, showing its size and progress, and keeps it on the stage clip's frame with `requestVideoFrameCallback`: a seek above 1.5 frames of drift, otherwise `playbackRate` within 3% of 1. Freeze pauses both clips at once. |
 | a `still` only | Freezes the stage on the still's frame and shows the still at 1:1: the HDR AVIF on an HDR display, else the lossless PNG. |
 | neither | Disabled, with "Full-resolution capture not rendered yet". |
 
@@ -100,7 +100,7 @@ pipeline's choice; the script only reads the fields.
 | `clips[game][preset]` | Media for one game on one preset. Every key is optional; an entry with no stage clip, poster or still is ignored. |
 | `poster` | Frame 0 of the stage render. A path, an object `{"src", "width", "height"}`, or a list of those when there is one poster per stage size. A poster is shown only when its pixel size equals the stage clip's size, so it is never scaled. |
 | `stage[]` | Stage clips, one per size and range: `src`, `type` (MIME type with the `codecs` parameter from ffprobe), `hdr` (PQ, BT.2020), `width`, `height`, `bytes`. The script picks the size first, then HDR over SDR, then a decoder the browser reports as power-efficient and smooth, then manifest order. |
-| `lens[]` | 3840x2880 clips in the same shape, with the same frame count and start as the stage clips. |
+| `lens[]` | 3840×2880 clips in the same shape, with the same frame count and start as the stage clips. |
 | `still` | One frame at full size: `hdr` (AVIF, CICP 9/16/9, 10-bit 4:4:4), `sdr` (lossless PNG), `width`, `height`, and `frame`, the index of that frame in the stage clips. |
 | `hdr` | Mastering data of the HDR files: `white_nits` (SDR white), `headroom`, `max_cll`, `max_fall`. Shown in the line under the switcher. |
 | `crop` | Optional. The 1:1 detail crop of the still, for the gallery: `sdr` (PNG), `sdr_1x` (its `Image.reduce(2)` variant), `hdr` and `hdr_1x` (PQ AVIF), and `x`, `y`, `width`, `height` of the crop in the still, all even. The switcher ignores it. |
@@ -176,9 +176,9 @@ and the landing page in headless Chrome (see the site README).
 
 ## Seed contents (version 1)
 
-| Game | Presets with a clip | Presets with a 3840x2880 still |
+| Game | Presets with a clip | Presets with a 3840×2880 still |
 |---|---|---|
-| `mega-man-2-title` | `sony_pvm_14l2` (960x720) | `sony_pvm_14l2`, `jvc_d_series_2000`, `toshiba_14af43`, `stass_favourite` (one shared title frame, from `assets/images/showcase/4k/`) |
+| `mega-man-2-title` | `sony_pvm_14l2` (960×720) | `sony_pvm_14l2`, `jvc_d_series_2000`, `toshiba_14af43`, `stass_favourite` (one shared title frame, from `assets/images/showcase/4k/`) |
 | `kirby-title` | `jvc_d_series_2000` | none |
 | `little-samson-opening` | `jvc_d_series_2000` | none |
 | `darkwing-bridge` | `stass_favourite` | none (the existing Darkwing 4K frame is a PVM render, a different preset) |
@@ -188,7 +188,7 @@ and the landing page in headless Chrome (see the site README).
 clips so the switcher shows what is still to be rendered.
 
 The posters were written by ffmpeg (frame 0 to PNG) and Pillow (WebP,
-quality 85). The `.4k.webp` stills come from the 3840x2880 PNGs at quality
-90. Posters for presets without a clip are the 4K frame reduced 4x by area
+quality 85). The `.4k.webp` stills come from the 3840×2880 PNGs at quality
+90. Posters for presets without a clip are the 3840×2880 frame reduced 4× by area
 averaging, which breaks the no-scaling rule; the version 2 pipeline replaces
-them with native 960x720 and 1920x1440 renders.
+them with native 960×720 and 1920×1440 renders.
