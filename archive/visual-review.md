@@ -28,14 +28,14 @@ The Contra images come from the SDL3 GPU pipeline, rendered offscreen at 3840×2
 
 {% include crop.html file="assets/images/crt-contra-native.png" file_1x="assets/images/crt-contra-native@1x.png" width=1296 height=1728 alt="Face and platform crops of the Contra boss on the Sony PVM-14L2, JVC D-Series, Toshiba 14AF and Stas's Favourite presets." caption='Contra, waterfall boss, frame 60. Sony PVM-14L2, JVC D-Series, Toshiba 14AF and Stas&#39;s Favourite presets. 1296×1728 image of 8 labeled native-pixel crops of 3840×2880 frames (face left, platform right), <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.' %}
 
-The fixture holds PPU codes captured from the user's Contra ROM at the Waterfall boss. The CRT photograph the user supplied is the reference for the scene, and its player and projectile states differ. The source was not reconstructed from that photograph.
+The fixture holds PPU codes captured from a Contra ROM at the Waterfall boss. A CRT photograph of the same boss is the reference for the scene, and its player and projectile states differ. The source was not reconstructed from that photograph.
 
-- Sony PVM-14L2: fine aperture grille, neutral D65 white, adaptive composite separation and narrower midtone spots. Bright lines widen per gun, and the nominal vertical response measures 0.388 to 0.900 source lines across the tested drive range. The high-contrast mask stays conspicuous in a native close-up. The preset interprets the nominal 14L2, and the user's tube was not measured.
+- Sony PVM-14L2: fine aperture grille, neutral D65 white, adaptive composite separation and narrower midtone spots. Bright lines widen per gun, and the nominal vertical response measures 0.388 to 0.900 source lines across the tested drive range. The high-contrast mask stays conspicuous in a native close-up. The preset interprets the nominal PVM-14L2.
 - JVC D-Series: 2-line separation, cool white, a mild red push in the decoder, a curved consumer raster and an inline slot mask. The white point and the decoder values are estimates based on the hardware and owner references.
 - Toshiba 14AF: near-flat face, 3-line separator and broader bright spots. Its slot pitch is an estimate. The target is the look of a small consumer set, with less resolution than a PVM.
 - Stas's Favourite: RF, modest noise, imperfect convergence and gray tracking, broad highlights and causal recovery. The coarse delta-dot weave of the earlier version hid detail, and a finer inline mask keeps the vertical RGB structure. Recovery after bright and dark patches and contraction under load stay active.
 
-All 4 presets give the boss a yellow-green face and magenta-red eyes. The user's photograph has brighter, cooler platform whites and redder eyes. In the photograph, exposure, camera white balance, console revision, decoder adjustment and connection are confounded. RF is plausible, but the photograph cannot identify it conclusively. The presets are not forced to reproduce one uncalibrated camera image.
+All 4 presets give the boss a yellow-green face and magenta-red eyes. The photograph has brighter, cooler platform whites and redder eyes. In the photograph, exposure, camera white balance, console revision, decoder adjustment and connection are confounded. RF is plausible, but the photograph cannot identify it conclusively. No preset was tuned to match the photograph.
 
 ## Mask resolution at the drawable size
 
@@ -47,7 +47,7 @@ Separate GPU regression tests check the neutral mask mean, nonnegative coverage,
 
 The complex-IF GPU regression test found a maximum absolute correlation of 0.00632 in decoded gray noise at lags 1 to 12. Before the IF update, a separate 36-frame gray-field test on the final render found no repeating peak, with a maximum absolute correlation of 0.034. That test removes the fixed image and mask by subtracting the temporal mean, which introduces a small negative bias. The [final-render metrics](https://github.com/yaglo/mynes/blob/master/docs/gpu-rf-temporal-results.json) hold the numbers.
 
-Replaying the last saved legacy RF profile with all its controls also produced no cycle of several frames. The correlation between adjacent frames decayed and did not return at a periodic lag. These tests do not identify the exact texture the user reported. Deterministic composite crawl and mask structure have to stay separate from random snow.
+Replaying the last saved legacy RF profile with all its controls also produced no cycle of several frames. The correlation between adjacent frames decayed and did not return at a periodic lag. These tests do not identify the exact texture reported during the review. Deterministic composite crawl and mask structure have to stay separate from random snow.
 
 ## Drawable size and connection checks
 
@@ -88,4 +88,4 @@ This pass checked the RF behavior of the final image over time, component color,
 
 ## Limitations
 
-The full renders were inspected next to photographs of the named displays, and the [Hardware evidence note]({{ '/notes/hardware/' | relative_url }}) records the evidence and the assumptions separately. The beam and decoder parameters are still nominal. Exact phosphor spectra, non-Gaussian spot tails, individual convergence maps and chip-specific ABL are not calibrated. The hold interval of an ordinary LCD also differs from a moving CRT beam. Paired stills verify spatial and phase behavior and leave motion equivalence unverified.
+The full renders were inspected next to photographs of the named displays, and the [Hardware evidence note]({{ '/notes/hardware/' | relative_url }}) records the evidence and the assumptions separately. The beam and decoder parameters are still nominal. Exact phosphor spectra, non-Gaussian spot tails, individual convergence maps and chip-specific ABL are not calibrated. Paired stills check spatial and phase behavior, and [Motion]({{ '/gallery/motion/' | relative_url }}) says what still images and 60 fps video show of a moving beam.
