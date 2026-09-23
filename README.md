@@ -94,8 +94,8 @@ images to the column. Renders keep their pixel size and scroll sideways in
 moves each render box onto whole device pixels, and writes the caption fields
 that depend on the file the browser chose.
 `tools/make_crop.py FRAME.png X Y W H OUT.png` cuts a crop and its `@1x`
-file. The width and height must be even, and multiples of 6 make ratio 3
-exact as well.
+file. The width and height must be even. Multiples of 6 are also exact at
+ratios 1.5 and 3, and multiples of 10 at 1.25.
 
 ## Gallery data
 

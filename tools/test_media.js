@@ -54,15 +54,34 @@ test('cssLength rounds up to the 1/64 px layout step, never down', () => {
   }
 });
 
-test('gridNudge moves a box onto the next whole device pixel', () => {
+test('gridNudge moves a box exactly onto a whole device pixel', () => {
   assert.strictEqual(Render.gridNudge(10, 2), 0);
   assert.strictEqual(Render.gridNudge(10.25, 2), 0.25);
-  assert.strictEqual(Render.gridNudge(8.1, 3), 0.234375);   // (1 - 0.3) / 3 = 0.2333, up to 15/64
+  assert.strictEqual(Render.gridNudge(8.1, 3), 0.90625);          // 8.09375 CSS px to 9 CSS px = 27 device px
+  assert.strictEqual(Render.gridNudge(1572.671875, 1.5), 1.328125); // the next multiple of 2 CSS px: 1574 = 2361 device px
+  assert.strictEqual(Render.gridNudge(1573.25, 1.25), 2.75);       // multiples of 4 CSS px at 1.25
   for (const r of RATIOS) for (const pos of [0, 3.3, 17.84, 409.28, 409.296875]) {
-    const n = Render.gridNudge(pos, r), end = (pos + n) * r;
+    const n = Render.gridNudge(Math.round(pos * 64) / 64, r), p = Math.round(pos * 64) / 64, end = (p + n) * r;
     assert.ok(Number.isInteger(n * 64), `${pos} at ${r}: not a layout step`);
-    assert.ok(end - Math.round(end) >= -1e-9 && end - Math.round(end) < r / 64 + 1e-9, `${pos} at ${r} lands at ${end}`);
-    assert.ok(n * r < 1 + r / 64, 'about one device pixel at most');
+    assert.ok(Number.isInteger((p + n) * 4), `${pos} at ${r}: not a 1/4 CSS px step`);
+    assert.ok(Math.abs(end - Math.round(end)) < 1e-9, `${pos} at ${r} lands at ${end}`);
+    assert.ok(n < 4, 'less than 4 CSS px');
+  }
+  // A ratio with no exact position within 10 CSS px falls back to the next 1/64 step past a device pixel.
+  const n = Render.gridNudge(3.3, 1.07), end = (Math.round(3.3 * 64) / 64 + n) * 1.07;
+  assert.ok(end - Math.floor(end) < 1.07 / 64 + 1e-9 && n * 1.07 < 1 + 1.07 / 64, 'fallback');
+});
+
+test('endPad makes the last scroll offset a whole number of device pixels', () => {
+  assert.strictEqual(Render.endPad(2495.1875, 1200, 1.5), 0.8125);   // 2496 - 1200 = 1296 CSS = 1944 device px
+  assert.strictEqual(Render.endPad(2496, 1200, 1.5), 0);
+  assert.strictEqual(Render.endPad(2497, 1200, 1.5), 1);
+  assert.strictEqual(Render.endPad(800, 1200, 1.5), 0);               // no scrolling
+  for (const r of RATIOS.concat([1.25, 1.1])) for (const h of [2000, 2495.1875, 3001.5, 4444.015625]) {
+    const pad = Render.endPad(h, 900, r), m = (Math.round(h + pad) - 900) * r;
+    assert.ok(Number.isInteger(pad * 64), `${h} at ${r}: not a layout step`);
+    assert.ok(Math.abs(m - Math.round(m)) < 1e-6, `${h} at ${r} ends at ${m} device px`);
+    assert.ok(pad < 24, 'less than 24 CSS px');
   }
 });
 

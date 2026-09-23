@@ -118,12 +118,41 @@
     return -1;
   };
 
-  /** CSS px to add before a box at CSS position pos so that it starts on a
-   *  whole device pixel: less than one device pixel, rounded up to the 1/64
-   *  CSS px steps of layout, so the box lands on the pixel or just past it. */
+  /** CSS px to add before a box at CSS position pos so that it starts exactly
+   *  on a whole device pixel. Layout positions are whole 1/64 CSS px steps
+   *  (WebKit, Chrome) or 1/60 steps (Firefox), and at a ratio such as 1.5 or
+   *  1.25 most device pixels fall between those steps. A box that lands just
+   *  past a device pixel is painted with its first row or column cut or
+   *  doubled, and at 1.5 Chrome samples the whole image half a pixel off. So
+   *  the box moves to the next position that is both a 1/4 CSS px step
+   *  (exact in both kinds of layout unit) and a whole device pixel: every
+   *  2 CSS px at 1.5, every 4 at 1.25, every 0.5 at 2. When no such position is within 10 CSS px (unusual zoom
+   *  factors), it lands on the next 1/64 step at or just past a device pixel. */
   Render.gridNudge = function (pos, dpr) {
-    var r = dpr > 0 ? dpr : 1, d = pos * r, f = d - Math.floor(d + 1e-4);
+    var r = dpr > 0 ? dpr : 1, p = Math.round(pos * 64);
+    for (var k = 0; k <= 640; k++) {
+      var q = p + k, d = q * r / 64;
+      if (q % 16 === 0 && Math.abs(d - Math.round(d)) < 1e-6) return k / 64;
+    }
+    var dd = pos * r, f = dd - Math.floor(dd + 1e-4);
     return f < 1e-4 ? 0 : Math.ceil((1 - f) / r * 64 - 1e-6) / 64;
+  };
+
+  /** CSS px to add below a page of layout height `height` in a viewport of
+   *  `view` CSS px, so that the largest scroll offset is a whole number of
+   *  device pixels. Browsers clamp that offset to the page height (rounded to
+   *  a whole CSS px) minus the viewport height; at ratio 1.5 an odd number of
+   *  CSS px ends half a device pixel off, and every render in view at the end
+   *  of the page is then painted between device pixels. 0 when no page height
+   *  within 24 CSS px works (unusual zoom factors) or the page does not scroll. */
+  Render.endPad = function (height, view, dpr) {
+    var r = dpr > 0 ? dpr : 1, n = Math.ceil(height - 1e-6);
+    if (n <= view) return 0;
+    for (var k = 0; k < 24; k++, n++) {
+      var m = (n - view) * r;
+      if (Math.abs(m - Math.round(m)) < 1e-6) return Math.max(0, n - height);
+    }
+    return 0;
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = Render;
@@ -215,7 +244,18 @@
       b.style.top = dy ? dy + 'px' : '';
       b.style.left = dx ? dx + 'px' : '';
     });
+    padEnd();
     aligning = false;
+  }
+
+  /* The last scroll offset of the page must land on a whole device pixel too
+     (Render.endPad); a few CSS px of padding under the footer do that. */
+  function padEnd() {
+    var root = document.documentElement;
+    if (!document.querySelector('.render-scroll, .pan')) return;
+    root.style.paddingBottom = '';
+    var pad = Render.endPad(root.getBoundingClientRect().height, root.clientHeight, dpr());
+    if (pad) root.style.paddingBottom = pad + 'px';
   }
   var alignTimer = 0;
   function alignSoon() { clearTimeout(alignTimer); alignTimer = setTimeout(alignAll, 50); }
