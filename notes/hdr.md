@@ -46,8 +46,6 @@ This image should look dimmer than the HDR images below it.
 {% include crop.html file=hc_crop.sdr file_1x=hc_crop.sdr_1x width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=sdr_alt anchor="sdr-control" %}
 {% capture hdr_alt %}{{ hc_game.title }}, {{ hc_game.scene }}, on the {{ hc_preset.name }} preset, HDR file{% endcapture %}
 {% include crop.html file=hc_crop.sdr file_1x=hc_crop.sdr_1x hdr=hc_crop.hdr hdr_1x=hc_crop.hdr_1x width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=hdr_alt anchor="hdr-image" %}
-
-If the second image looks no brighter than the first, the browser or the display shows it as SDR.
 {% endif %}
 ## Test conditions
 
@@ -58,7 +56,9 @@ If the second image looks no brighter than the first, the browser or the display
 {% endfor %}{% else %}- Browsers and displays checked with the site's HDR files: none yet.
 {% endif %}
 ## Display settings
-
+{% if hdr_crop_game %}
+If the [HDR file](#hdr-image) looks no brighter than the [SDR control image](#sdr-control), the browser or the display shows it as SDR.
+{% endif %}
 On a television or monitor with HDR picture modes, turn off dynamic contrast and dynamic tone mapping before comparing files. Both change the luminance of a highlight according to the rest of the picture.
 
 ## Reference white and peak luminance
