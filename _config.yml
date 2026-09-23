@@ -4,8 +4,9 @@ tagline: NES emulator with composite video and CRT simulation
 description: >-
   MyNES is an NES emulator whose GPU frontend encodes the picture as
   composite or RF video and draws the decoded signal on a simulated CRT.
-  Its 6502 core is generated from a timing DSL, and its CRT presets model
-  particular monitors and televisions.
+  Its cycle-accurate 6502 core is generated from a timing DSL and passes
+  144 of 144 AccuracyCoin tests, and its CRT presets model particular
+  monitors and televisions.
 url: https://yaglo.github.io
 baseurl: /mynes-web
 lang: en

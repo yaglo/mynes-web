@@ -16,7 +16,7 @@ description: MyNES is an NES emulator whose GPU frontend encodes the picture as 
 <p class="release-line">MyNES {{ release.version }}, released <time datetime="{{ release.date | date: '%Y-%m-%d' }}">{{ release.date | date: "%Y-%m-%d" }}</time>{% if release.commit %}, commit <a href="{{ site.project.code_repo }}/commit/{{ release.commit }}">{{ release.commit | slice: 0, 7 }}</a>{% endif %}.</p>
 {% endif %}
 <ul class="facts">
-<li>The 6502 core is generated from a <a href="{{ '/blog/timing-is-data/' | relative_url }}">timing DSL</a> and passes {{ facts.tests.passed }} of {{ facts.tests.total }} {{ facts.tests.suite }} tests.</li>
+<li>The cycle-accurate 6502 core is generated from a <a href="{{ '/blog/timing-is-data/' | relative_url }}">timing DSL</a> and passes {{ facts.tests.passed }} of {{ facts.tests.total }} {{ facts.tests.suite }} tests.</li>
 <li>The {{ facts.presets.count }} CRT presets include the Sony PVM-14L2, JVC D-Series, Toshiba 14AF and sets fed by RF.</li>
 <li>Gallery frames are {{ facts.frame.width }}×{{ facts.frame.height }}, and clips run at {{ facts.clip.fps_short }} fps with one emulator frame per video frame.</li>
 </ul>
