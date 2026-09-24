@@ -9,3 +9,8 @@ STYLE.md
 tools/check_style.py
 tools/test_check_style.py
 tools/stylelib/
+
+# Render media live on the media branch (tools/publish_media.sh).
+/assets/hero/*
+!/assets/hero/README.md
+/assets/renders/

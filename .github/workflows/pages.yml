@@ -1,0 +1,69 @@
+# Builds the site with the render media from the media branch and deploys it
+# to GitHub Pages.
+#
+# main holds the pages, templates and tools; the media branch holds the
+# renders (assets/hero, assets/renders) as a single commit that
+# tools/publish_media.sh replaces on every install, so the renders never
+# accumulate in history. Publishing media starts this workflow on main.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the pages
+        uses: actions/checkout@v4
+      - name: Check out the media
+        uses: actions/checkout@v4
+        with:
+          ref: media
+          path: _media
+      - name: Put the media in place
+        run: |
+          cp -R _media/assets/. assets/
+          rm -rf _media
+          du -sh assets
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Install the site's gems
+        run: bundle install --jobs 4
+      - name: Set up Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+          JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_REPO_NWO: ${{ github.repository }}
+      - name: Check the built site
+        run: python3 tools/check_site.py _site "${{ steps.pages.outputs.base_path }}"
+      - name: Upload
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

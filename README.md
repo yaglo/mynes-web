@@ -5,8 +5,9 @@ Source of <https://yaglo.github.io/mynes-web/>, the website of
 frontend encodes the picture as composite or RF video and draws the decoded
 signal on a simulated CRT.
 
-The site is a plain [Jekyll](https://jekyllrb.com) site built by GitHub Pages
-(Jekyll 3.10 through the `github-pages` gem). It has no remote theme. The
+The site is a plain [Jekyll](https://jekyllrb.com) site (Jekyll 3.10 through
+the `github-pages` gem), built and deployed by the workflow in
+`.github/workflows/pages.yml`. It has no remote theme. The
 layouts are in `_layouts/`, and the stylesheets are `assets/css/style.css` and
 `assets/css/tv.css` (the television switcher only). The plugins are the ones
 GitHub allows: `jekyll-seo-tag`, `jekyll-sitemap`, `jekyll-feed`,
@@ -24,8 +25,10 @@ GitHub allows: `jekyll-seo-tag`, `jekyll-sitemap`, `jekyll-feed`,
 | `redirects/` | Redirects for old URLs that have no page of their own |
 | `_data/` | `hero.json` (a copy of the hero manifest), `renders.yml`, `presets.yml`, `facts.yml`, `release.yml` |
 | `_includes/crop.html`, `clip.html`, `pan.html`, `compare.html` | Renders at one source pixel per device pixel (see [Render includes](#render-includes)) |
-| `assets/renders/` | 1:1 crops cut from the 3840×2880 frames |
-| `assets/hero/` | Manifest, posters and 3840×2880 lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)) |
+| `assets/renders/` | 1:1 crops cut from the 3840×2880 frames; on the `media` branch, not on `main` (see [Where the images come from](#where-the-images-come-from)) |
+| `assets/hero/` | Manifest, posters and 3840×2880 lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)); on the `media` branch |
+| `tools/publish_media.sh`, `tools/fetch_media.sh` | Publish `assets/hero/` and `assets/renders/` as the `media` branch and deploy; fetch them into a checkout |
+| `.github/workflows/pages.yml` | Builds the pages of `main` with the media of `media` and deploys to GitHub Pages |
 | `assets/js/tv-switcher.js`, `assets/css/tv.css`, `_includes/tv-switcher.html` | The switcher's script, styles and markup |
 | `assets/js/render.js`, `viewer.js`, `compare.js` | Sizing of renders, the pan viewer and the comparison slider |
 | `tools/check_site.py`, `tools/old-urls.txt` | Link and asset checker for a built `_site`; it also checks that every URL of the site before the restructure still answers |
@@ -55,6 +58,17 @@ The recording pipeline in the code repository's `tools/showcase/` writes
 frames with `tools/make_crop.py`. The beam height fixture is the one render
 from an earlier review script that remains. Every page shows renders only
 through the includes below.
+
+The renders are not in `main`'s history. `main` ignores `assets/hero/` and
+`assets/renders/`, and the `media` branch holds them as a single commit with
+no parent. After installing new renders, `tools/publish_media.sh` replaces
+that commit, force-pushes the branch and starts the Pages workflow, which
+checks out `media` beside `main` and deploys both. A set of renders is about
+600 MB; in history every set would stay in the repository for good, and
+GitHub Pages refuses a site over 1 GB, so the script refuses media over
+900 MB. `--no-push` writes the local branch only. In a fresh clone,
+`tools/fetch_media.sh` puts the published media into `assets/` for a local
+build.
 
 ## Render includes
 
@@ -153,6 +167,7 @@ bundle exec jekyll serve --config _config.yml,tools/tv-fixture/preview.yml \
 ```sh
 gem install bundler
 bundle install            # installs the github-pages gem
+tools/fetch_media.sh      # the renders, from the media branch
 bundle exec jekyll serve  # http://127.0.0.1:4000/mynes-web/
 ```
 
