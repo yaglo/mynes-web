@@ -16,7 +16,7 @@ import imagefiles as media  # noqa: E402
 
 @unittest.skipUnless(Image, "Pillow not installed")
 class MakeCrop(unittest.TestCase):
-    def test_crop_is_a_copy_and_1x_is_reduce2(self):
+    def test_crop_is_a_copy_and_alone(self):
         with tempfile.TemporaryDirectory() as tmp:
             frame = os.path.join(tmp, "frame.png")
             src = Image.frombytes("RGB", (40, 30), bytes((x * 7 + y * 3 + c * 50) % 256
@@ -26,14 +26,12 @@ class MakeCrop(unittest.TestCase):
             out = os.path.join(tmp, "crop.png")
             size, crop_size = make_crop.make_crop(frame, 4, 6, 20, 10, out)
             self.assertEqual((size, crop_size), ((40, 30), (20, 10)))
-            with Image.open(out) as c, Image.open(os.path.join(tmp, "crop@1x.png")) as one:
+            with Image.open(out) as c:
                 self.assertEqual(c.convert("RGB").tobytes(), src.crop((4, 6, 24, 16)).tobytes())
-                self.assertEqual(one.size, (10, 5))
-                self.assertEqual(one.convert("RGB").tobytes(), src.crop((4, 6, 24, 16)).reduce(2).tobytes())
-            for f in (out, os.path.join(tmp, "crop@1x.png")):
-                kinds = [k for k, _d in media.png_chunks(f)]
-                self.assertIn("sRGB", kinds)
-                self.assertNotIn("iCCP", kinds)
+            self.assertEqual(sorted(os.listdir(tmp)), ["crop.png", "frame.png"])  # no smaller copy
+            kinds = [k for k, _d in media.png_chunks(out)]
+            self.assertIn("sRGB", kinds)
+            self.assertNotIn("iCCP", kinds)
 
     def test_odd_or_outside_crops_are_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -89,15 +89,15 @@ class OldUrls(SiteCase):
 
 class Links(SiteCase):
     def test_links_srcset_and_fragments(self):
-        self.write("a/index.html", '<a href="/mynes-web/b/#x">b</a><picture><source srcset="/mynes-web/i@1x.png 1x, '
-                                   '/mynes-web/i.png 2x"><img src="../i@1x.png" alt=""></picture>'
+        self.write("a/index.html", '<a href="/mynes-web/b/#x">b</a><picture><source srcset="/mynes-web/i-hdr.avif 1x, '
+                                   '/mynes-web/i.png 2x"><img src="../i-hdr.avif" alt=""></picture>'
                                    '<a href="/mynes-web/b/#missing">b</a><a href="/b/">no base</a>')
         self.write("b/index.html", '<h2 id="x">x</h2>')
         self.write("i.png", "")
         errors, stats = check_site.check_links(self.site, BASE)
         self.assertEqual(stats["pages"], 2)
         self.assertEqual(len(errors), 4, errors)
-        self.assertEqual(sum("i@1x.png" in e and "does not resolve" in e for e in errors), 2)
+        self.assertEqual(sum("i-hdr.avif" in e and "does not resolve" in e for e in errors), 2)
         self.assertTrue(any("#missing not found" in e for e in errors))
         self.assertTrue(any("without the baseurl" in e for e in errors))
 

@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-"""Cut a 1:1 crop from a render and write its @1x variant.
+"""Cut a 1:1 crop from a render.
 
   python3 tools/make_crop.py FRAME.png X Y W H OUT.png
 
 writes OUT.png, the W x H pixels at (X, Y) of FRAME.png copied without
-resampling, and OUT@1x.png, the exact 2x2 box average of the crop
-(Pillow's Image.reduce(2)). Both are 8-bit RGB PNGs with an sRGB chunk and
-no ICC profile. X, Y, W and H must be even, so the @1x file and the half-size
-display of the crop fall on whole pixels. The script prints the entry for
-_data/renders.yml; fill in game, scene, preset, signal and alt.
+resampling, as an 8-bit RGB PNG with an sRGB chunk and no ICC profile. The
+site shows it 1:1 at every pixel ratio and makes no smaller copy. X, Y, W and
+H must be even (the site's crop rule), so the half-size layout of the crop
+falls on whole CSS pixels. The script prints the entry for _data/renders.yml;
+fill in game, scene, preset, signal and alt.
 
 Needs Pillow.
 """
-import os
 import sys
 
 from PIL import Image
@@ -25,13 +24,8 @@ def srgb_info():
     return info
 
 
-def one_x_path(path):
-    base, ext = os.path.splitext(path)
-    return base + "@1x" + ext
-
-
 def make_crop(frame, x, y, w, h, out):
-    """Write the crop and its @1x file; returns (frame size, crop size)."""
+    """Write the crop; returns (frame size, crop size)."""
     for name, v in (("x", x), ("y", y), ("width", w), ("height", h)):
         if v < 0 or v % 2:
             raise ValueError(f"{name} {v} must be even and not negative")
@@ -42,7 +36,6 @@ def make_crop(frame, x, y, w, h, out):
         rgb = im.convert("RGB").crop((x, y, x + w, y + h))
     crop = Image.frombytes("RGB", rgb.size, rgb.tobytes())  # no metadata from the source
     crop.save(out, pnginfo=srgb_info(), optimize=True)
-    crop.reduce(2).save(one_x_path(out), pnginfo=srgb_info(), optimize=True)
     return size, crop.size
 
 
@@ -54,7 +47,6 @@ def main(argv):
     size, _ = make_crop(frame, x, y, w, h, out)
     print(f"""some-id:
   file: {out}
-  file_1x: {one_x_path(out)}
   full: {frame}
   crop: [{x}, {y}, {w}, {h}]
   frame: [{size[0]}, {size[1]}]

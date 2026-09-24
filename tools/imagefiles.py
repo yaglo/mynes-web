@@ -1,5 +1,5 @@
-"""File facts the media checks need, without dependencies: PNG chunks and
-size, AVIF size and colour (CICP), and the 2x2 box average of a PNG.
+"""File facts the media checks need, without dependencies: PNG chunks, size
+and pixels, and AVIF size and colour (CICP).
 """
 from __future__ import annotations
 
@@ -124,43 +124,3 @@ def read_rgb(path):
     if bpp == 4:
         px = bytes(b for i, b in enumerate(px) if i % 4 != 3)
     return w, h, bytes(px)
-
-
-def reduce2(w, h, rgb):
-    """The exact 2x2 box average of Image.reduce(2): (a + b + c + d + 2) // 4 per channel."""
-    if w % 2 or h % 2:
-        raise ValueError(f"the 2x2 average needs even dimensions, got {w}x{h}")
-    ow, oh = w // 2, h // 2
-    out = bytearray(ow * oh * 3)
-    row = w * 3
-    for y in range(oh):
-        r0 = 2 * y * row
-        r1 = r0 + row
-        o = y * ow * 3
-        for x in range(ow):
-            i = x * 6
-            for c in range(3):
-                s = rgb[r0 + i + c] + rgb[r0 + i + 3 + c] + rgb[r1 + i + c] + rgb[r1 + i + 3 + c]
-                out[o + x * 3 + c] = (s + 2) // 4
-    return ow, oh, bytes(out)
-
-
-def max_difference(a: bytes, b: bytes) -> int:
-    if len(a) != len(b):
-        raise ValueError("different sizes")
-    try:
-        import numpy as np
-        return int(np.abs(np.frombuffer(a, np.uint8).astype(np.int16) - np.frombuffer(b, np.uint8)).max(initial=0))
-    except ImportError:
-        return max((abs(x - y) for x, y in zip(a, b)), default=0)
-
-
-def reduce2_file(path):
-    """(width, height, rgb) of Image.reduce(2) of a PNG file."""
-    try:
-        from PIL import Image
-        with Image.open(path) as im:
-            small = im.convert("RGB").reduce(2)
-            return small.width, small.height, small.tobytes()
-    except ImportError:
-        return reduce2(*read_rgb(path))
