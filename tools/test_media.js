@@ -23,14 +23,6 @@ const isWhole = (v) => Math.abs(v - Math.round(v)) < 1e-9;
 const RATIOS = [1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
 /* ---- render.js ---- */
-test('fileScale tells the @1x file from the crop', () => {
-  assert.strictEqual(Render.fileScale('/a/crop-1440-1080-960x720@1x.png'), 2);
-  assert.strictEqual(Render.fileScale('/a/crop-hdr@1x.avif?v=2'), 2);
-  assert.strictEqual(Render.fileScale('/a/crop-1440-1080-960x720.png'), 1);
-  assert.strictEqual(Render.fileScale('/a/x@1x.png/other.png'), 1);
-  assert.strictEqual(Render.fileScale(''), 1);
-});
-
 test('cssSize puts one file pixel on one device pixel', () => {
   assert.deepStrictEqual(Render.cssSize(960, 720, 2), { width: 480, height: 360 });
   assert.deepStrictEqual(Render.cssSize(960, 720, 1), { width: 960, height: 720 });
@@ -85,22 +77,18 @@ test('endPad makes the last scroll offset a whole number of device pixels', () =
   }
 });
 
-test('chosenSize halves data-w and data-h for the @1x file', () => {
-  assert.deepStrictEqual(Render.chosenSize(960, 720, 'c@1x.png'), { width: 480, height: 360 });
-  assert.deepStrictEqual(Render.chosenSize(960, 720, 'c.png'), { width: 960, height: 720 });
-  // At ratio 1 the browser picks the @1x file: CSS size = attributes (half the crop).
-  const one = Render.chosenSize(960, 720, 'c@1x.png');
-  assert.deepStrictEqual(Render.cssSize(one.width, one.height, 1), { width: 480, height: 360 });
-  // At ratio 2 the crop itself: the same CSS size.
-  const two = Render.chosenSize(960, 720, 'c.png');
-  assert.deepStrictEqual(Render.cssSize(two.width, two.height, 2), { width: 480, height: 360 });
+test('a crop is one file, 1:1 at ratios 1 and 2', () => {
+  assert.strictEqual(Render.fileScale, undefined, 'no @1x logic');
+  assert.strictEqual(Render.chosenSize, undefined, 'the file is the crop');
+  // Ratio 1: the full pixel size (style.css, --crop-w/--crop-h); ratio 2: the attributes, half of it.
+  assert.deepStrictEqual(Render.cssSize(960, 720, 1), { width: 960, height: 720 });
+  assert.deepStrictEqual(Render.cssSize(960, 720, 2), { width: 480, height: 360 });
 });
 
-test('caption fields follow the chosen file', () => {
-  assert.strictEqual(Render.scaleText('c.png'), 'shown 1:1');
-  assert.strictEqual(Render.scaleText('c@1x.png'), '2×2 average, shown 1:1');
+test('caption range follows the chosen file', () => {
+  assert.strictEqual(Render.scaleText, undefined, 'the scale is always "shown 1:1"');
   assert.strictEqual(Render.rangeText('c.png'), 'SDR PNG');
-  assert.strictEqual(Render.rangeText('c-hdr@1x.avif'), 'HDR PQ AVIF');
+  assert.strictEqual(Render.rangeText('c-hdr.avif'), 'HDR PQ AVIF');
   assert.strictEqual(Render.rangeText('c.webp'), null);
 });
 
@@ -211,8 +199,7 @@ test('keys pan and zoom', () => {
 
 /* ---- compare.js ---- */
 test('the divider sits on whole device pixels', () => {
-  assert.strictEqual(Compare.deviceWidth(960, 'a.png'), 960);
-  assert.strictEqual(Compare.deviceWidth(960, 'a@1x.png'), 480);
+  assert.strictEqual(Compare.deviceWidth, undefined, 'the range counts crop pixels');
   for (const r of RATIOS) for (const v of [0, 1, 239, 480, 959]) {
     const css = Compare.splitCss(v, r);
     assert.ok(css * r >= v - 1e-9 && css * r - v < r / 64 + 1e-9 && Number.isInteger(css * 64), `ratio ${r} value ${v}`);
@@ -254,12 +241,17 @@ test('no canvas, no clip-path or filters on renders', () => {
   assert.ok(/\.compare\.is-live > \.compare-over \{[^}]*overflow: hidden/.test(css), 'slider clips by overflow');
 });
 
-test('crop markup: 2x file at half size, @1x candidate, HDR source first', () => {
-  const html = read('_includes/crop.html');
-  assert.ok(/srcset="\{\{ c_file_1x_url \}\} 1x, \{\{ c_file_url \}\} 2x"/.test(html));
-  assert.ok(/width="\{\{ c_half_w \}\}" height="\{\{ c_half_h \}\}" data-w="\{\{ c_w \}\}" data-h="\{\{ c_h \}\}"/.test(html));
-  assert.ok(/<source media="\(dynamic-range: high\)" type="image\/avif"/.test(html));
-  assert.ok(/class="render-scroll"/.test(html) && /<span class="render-scale">shown 1:1<\/span>/.test(html));
+test('crop markup: one file at half size, full size at 1 dppx, HDR source first', () => {
+  for (const f of ['_includes/crop.html', '_includes/compare.html']) {
+    const html = read(f);
+    assert.ok(!/@1x|_1x|srcset="[^"]*\s1x/.test(html), f + ': no @1x file or 1x candidate');
+    assert.ok(/<img class="render" src="\{\{ c(mp)?_file(_url)? \}\}" width="\{\{ c(mp)?_half_w \}\}" height="\{\{ c(mp)?_half_h \}\}" style="--crop-w: \{\{ c(mp)?_w \}\}px; --crop-h: \{\{ c(mp)?_h \}\}px" data-w/.test(html), f + ': img');
+    assert.ok(/<source media="\(dynamic-range: high\)" type="image\/avif" srcset="\{\{ c(mp)?_hdr(_url)? \}\}">/.test(html), f + ': HDR source');
+    assert.ok(/class="render-scroll"/.test(html) && /shown 1:1/.test(html), f + ': scroll box and scale');
+  }
+  const css = read('assets/css/style.css');
+  assert.ok(/@media \(max-resolution: 1dppx\) \{ img\.render\[style\*="--crop-w"\] \{ width: var\(--crop-w\); height: var\(--crop-h\); \} \}/.test(css),
+    'style.css gives crops their full size at 1 dppx');
 });
 
 console.log('media: ' + n + ' tests passed');

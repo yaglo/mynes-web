@@ -1,12 +1,11 @@
 /* Renders at one source pixel per device pixel.
  *
  * Crops (_includes/crop.html and compare.html) are <img class="render">
- * with a 1x candidate (the @1x file, a 2x2 average of the crop) and a 2x
- * candidate (the crop), width and height at half the crop's pixel size, and
- * the crop's size in data-w and data-h. At device pixel ratios 1 and 2 the
- * browser's choice is already 1:1. At other ratios (phones at 3, laptops at
- * 1.25 or 1.5, browser zoom) this script sets the CSS size to the chosen
- * file's pixel size divided by devicePixelRatio, and again whenever the ratio
+ * with one file, the crop, width and height at half its pixel size, and its
+ * size in data-w and data-h. At device pixel ratios 1 and 2 the markup and
+ * style.css already show it 1:1. At other ratios (phones at 3, laptops at
+ * 1.25 or 1.5, browser zoom) this script sets the CSS size to the file's
+ * pixel size divided by devicePixelRatio, and again whenever the ratio
  * changes, and moves each render onto whole device pixels. It only sets
  * sizes and offsets; nothing is redrawn. Renders are drawn nearest-neighbor
  * (style.css), so the 1/64 CSS px that layout rounding can add moves no
@@ -20,9 +19,8 @@
  * size (data-posters lists them as srcset-style "url 960w").
  *
  * Captions carry the fields that depend on the file the browser chose:
- * .render-scale ("shown 1:1" or "2×2 average, shown 1:1"), .render-range
- * ("SDR PNG" or "HDR PQ AVIF") and, for clips, .render-file (codec, size and
- * range of the source that plays).
+ * .render-range ("SDR PNG" or "HDR PQ AVIF") and, for clips, .render-file
+ * (codec, size and range of the source that plays).
  *
  * The pan viewer (viewer.js) sizes its own media. The pure helpers in
  * `Render` have no DOM dependency and are exported for tools/test_media.js.
@@ -33,9 +31,6 @@
   var Render = {};
 
   function clean(url) { return String(url || '').split(/[?#]/)[0]; }
-
-  /** 2 when a file is the @1x variant of a crop (half its size), else 1. */
-  Render.fileScale = function (url) { return /@1x\.[a-z0-9]+$/i.test(clean(url)) ? 2 : 1; };
 
   /** A CSS length of px device pixels. Browsers lay out in 1/64 CSS px, and
    *  px / dpr often falls between two such steps (1280 / 3 = 426.67); the
@@ -50,16 +45,6 @@
   /** CSS size that shows a w x h pixel file at one pixel per device pixel. */
   Render.cssSize = function (w, h, dpr) {
     return { width: Render.cssLength(w, dpr), height: Render.cssLength(h, dpr) };
-  };
-
-  /** Pixel size of the file an img.render shows, from its data-w/data-h (the 2x file) and currentSrc. */
-  Render.chosenSize = function (dataW, dataH, url) {
-    var k = Render.fileScale(url);
-    return { width: dataW / k, height: dataH / k };
-  };
-
-  Render.scaleText = function (url) {
-    return Render.fileScale(url) === 2 ? '2×2 average, shown 1:1' : 'shown 1:1';
   };
 
   Render.rangeText = function (url) {
@@ -177,11 +162,8 @@
     var w = +img.getAttribute('data-w'), h = +img.getAttribute('data-h');
     var url = img.currentSrc || img.src;
     if (!(w > 0 && h > 0) || !url) return;
-    var size = Render.chosenSize(w, h, url);
-    setSize(img, Render.cssSize(size.width, size.height, dpr()));
-    var fig = img.closest('figure');
-    setText(fig, '.render-scale', Render.scaleText(url));
-    setText(fig, '.render-range', Render.rangeText(url));
+    setSize(img, Render.cssSize(w, h, dpr()));
+    setText(img.closest('figure'), '.render-range', Render.rangeText(url));
     img.dispatchEvent(new CustomEvent('render:fit', { bubbles: true }));
   }
 

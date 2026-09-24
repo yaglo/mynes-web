@@ -43,9 +43,9 @@ This note covers how the MyNES GPU frontend uses the headroom of an HDR display,
 This image should look dimmer than the HDR images below it.
 
 {% capture sdr_alt %}{{ hc_game.title }}, {{ hc_game.scene }}, on the {{ hc_preset.name }} preset, SDR control image{% endcapture %}
-{% include crop.html file=hc_crop.sdr file_1x=hc_crop.sdr_1x width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=sdr_alt anchor="sdr-control" %}
+{% include crop.html file=hc_crop.sdr width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=sdr_alt anchor="sdr-control" %}
 {% capture hdr_alt %}{{ hc_game.title }}, {{ hc_game.scene }}, on the {{ hc_preset.name }} preset, HDR file{% endcapture %}
-{% include crop.html file=hc_crop.sdr file_1x=hc_crop.sdr_1x hdr=hc_crop.hdr hdr_1x=hc_crop.hdr_1x width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=hdr_alt anchor="hdr-image" %}
+{% include crop.html file=hc_crop.sdr hdr=hc_crop.hdr width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal alt=hdr_alt anchor="hdr-image" %}
 {% endif %}
 ## Test conditions
 

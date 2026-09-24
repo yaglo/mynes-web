@@ -5,10 +5,9 @@
 # multiples of 6 where the crop allows it: then 1:1 is exact at pixel ratios
 # 1.5 and 3 too, where a size that is not a multiple of 3 falls between the
 # 1/64 CSS px steps browsers lay out in.
-#   file      the 1:1 crop (the 2x candidate), or the full frame for pan.html
-#   file_1x   the crop reduced by Image.reduce(2); tools/make_crop.py writes
-#             both from a frame
-#   hdr, hdr_1x  PQ AVIF versions (BT.2020, CICP 9/16/9) when there are any
+#   file      the 1:1 crop (tools/make_crop.py cuts it from a frame), or the
+#             full frame for pan.html
+#   hdr       a PQ AVIF version (BT.2020, CICP 9/16/9) when there is one
 #   full      the lossless frame the figure links to
 #   crop      [x, y, width, height] of the crop in the frame; all even
 #   frame     [width, height] of the frame
@@ -16,14 +15,13 @@
 #   preset_name), signal (the connection the render used)
 #   alt       one sentence naming the game, the scene and the preset
 #   caption   replaces the generated caption (for images that are not a
-#             single crop); it keeps the render-scale and render-range spans
+#             single crop); it keeps the render-range span
 #   x, y      pan.html: the source pixel at the centre of the view at first
 
 # Home page slider: Mario on the first hill of World 1-1, the first frame of
 # the switcher's clip, cut from the showcase stills.
 super-mario-bros-sony-pvm-14l2-hill:
   file: assets/renders/super-mario-bros-sony-pvm-14l2-composite-3840x2880-crop-480-2160-960x720.png
-  file_1x: assets/renders/super-mario-bros-sony-pvm-14l2-composite-3840x2880-crop-480-2160-960x720@1x.png
   full: assets/hero/super-mario-bros/sony_pvm_14l2/3840x2880/still-sdr.png
   crop: [480, 2160, 960, 720]
   frame: [3840, 2880]
@@ -35,7 +33,6 @@ super-mario-bros-sony-pvm-14l2-hill:
 
 super-mario-bros-stass-favourite-hill:
   file: assets/renders/super-mario-bros-stass-favourite-rf-3840x2880-crop-480-2160-960x720.png
-  file_1x: assets/renders/super-mario-bros-stass-favourite-rf-3840x2880-crop-480-2160-960x720@1x.png
   full: assets/hero/super-mario-bros/stass_favourite/3840x2880/still-sdr.png
   crop: [480, 2160, 960, 720]
   frame: [3840, 2880]
@@ -48,8 +45,7 @@ super-mario-bros-stass-favourite-hill:
 # Close-ups page: the beam height fixture.
 beam-height-fixture-pvm:
   file: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-720x396.png
-  file_1x: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-720x396@1x.png
   full: assets/renders/beam-height-fixture-sony-pvm-14l2-composite-levels.png
   crop: [0, 2, 720, 396]
   alt: Dark gray, mid gray and white patches and single-line strokes on the Sony PVM-14L2 preset.
-  caption: 'Beam height fixture: PPU codes $00, $10 and $20 on $0F black, phase 0. Sony PVM-14L2 preset, composite. 720×396 image of labeled native-pixel crops, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.'
+  caption: 'Beam height fixture: PPU codes $00, $10 and $20 on $0F black, phase 0. Sony PVM-14L2 preset, composite. 720×396 image of labeled native-pixel crops, shown 1:1. <span class="render-range">SDR PNG</span>.'

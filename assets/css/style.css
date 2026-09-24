@@ -162,10 +162,11 @@ strong { font-weight: 650; }
   .settings dt { margin-top: 0.4rem; }
 }
 
-/* Renders: one source pixel per device pixel. Crops are shown at half their
-   pixel size with an @1x candidate for 1x displays (_includes/crop.html);
-   clips at half the pixel size of their 2x source (_includes/clip.html);
-   assets/js/render.js sizes both for other pixel ratios. Nothing here sets
+/* Renders: one source pixel per device pixel. Crops are one file, shown at
+   half their pixel size (_includes/crop.html), and at their full pixel size
+   at 1 dppx (below); clips at half the pixel size of their 2x source
+   (_includes/clip.html); assets/js/render.js sizes both for other pixel
+   ratios. Nothing here sets
    a percentage width, max-width, object-fit, aspect-ratio, transform,
    filter or border-radius on a render. A render wider than the window
    scrolls sideways inside .render-scroll; the page itself does not. */
@@ -186,6 +187,9 @@ img.render, video.render { max-width: none; image-rendering: pixelated; }
    2 dppx); at 1 dppx it takes the full size, so it is 1:1 there without
    JavaScript and render.js does not change its layout. */
 @media (max-resolution: 1dppx) { video.render[style*="--clip-w"] { width: var(--clip-w); height: var(--clip-h); } }
+/* A crop is half its pixel size in its attributes (1:1 at 2 dppx); at 1 dppx
+   it takes the full size, so it is 1:1 there without JavaScript. */
+@media (max-resolution: 1dppx) { img.render[style*="--crop-w"] { width: var(--crop-w); height: var(--crop-h); } }
 figure.render figcaption, .pan-figure figcaption, .compare-figure figcaption { max-width: 60rem; }
 .flicker-warning { border-left: 3px solid var(--accent); padding-left: 0.8rem; }
 

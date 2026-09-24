@@ -3,5 +3,5 @@ The detail crop figure for the hero clip read by hero-clip.html (call that
 first), when the clip has a crop. Usage: {% include hero-crop.html %}
 {%- endcomment -%}
 {%- if hc_crop -%}
-{% include crop.html file=hc_crop.sdr file_1x=hc_crop.sdr_1x hdr=hc_crop.hdr hdr_1x=hc_crop.hdr_1x width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal %}
+{% include crop.html file=hc_crop.sdr hdr=hc_crop.hdr width=hc_crop.width height=hc_crop.height x=hc_crop.x y=hc_crop.y frame_width=hc_still_w frame_height=hc_still_h full=hc_still game=hc_game.title scene=hc_game.scene preset=hc_preset.id signal=hc_signal %}
 {%- endif -%}

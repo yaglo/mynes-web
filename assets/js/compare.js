@@ -9,9 +9,8 @@
  * canvas, clip-path, filter, blend mode or opacity touches the renders.
  *
  * --split is always a whole number of device pixels: the range input counts
- * device pixels of the file on screen (the crop, or its @1x file where the
- * browser picked that), and the CSS length is that count divided by
- * devicePixelRatio. The range works with the arrow keys (1 device pixel,
+ * pixels of the crop, which are device pixels on screen, and the CSS length
+ * is that count divided by devicePixelRatio. The range works with the arrow keys (1 device pixel,
  * 10 with Shift), Page Up and Page Down (a tenth of the width), Home and End.
  * Dragging on the picture with a mouse or pen moves the divider; "Hold to
  * compare" shows the left render over the whole area while it is held
@@ -26,11 +25,6 @@
   'use strict';
 
   var Compare = {};
-
-  function fileScale(url) { return /@1x\.[a-z0-9]+$/i.test(String(url || '').split(/[?#]/)[0]) ? 2 : 1; }
-
-  /** Device pixel width of the file an img.render shows. */
-  Compare.deviceWidth = function (dataW, url) { return Math.round(dataW / fileScale(url)); };
 
   Compare.clamp = function (value, max) { return Math.max(0, Math.min(max, Math.round(value))); };
 
@@ -93,8 +87,7 @@
     var scroller = this.box.closest('.render-scroll');
     this.pannable = !!scroller && scroller.scrollWidth > scroller.clientWidth + 1;
     this.box.classList.toggle('is-pannable', this.pannable);
-    var w = +this.img.getAttribute('data-w');
-    var max = Compare.deviceWidth(w, this.img.currentSrc || this.img.getAttribute('src'));
+    var max = Math.round(+this.img.getAttribute('data-w'));
     if (max !== this.max) {
       this.value = Compare.rescale(this.value, this.max, max);
       this.max = max;

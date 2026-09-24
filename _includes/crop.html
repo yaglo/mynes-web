@@ -1,43 +1,37 @@
 {%- comment -%}
 A 1:1 crop of a render, shown at one source pixel per device pixel.
 
-The crop file (the 2x candidate) is shown at half its pixel width and height,
-so on a 2x display each file pixel is one device pixel. The 1x candidate is
-the @1x file, the crop reduced by an exact 2x2 box average (Pillow
-Image.reduce(2)), which a 1x display shows 1:1. assets/js/render.js sizes the
-image for other pixel ratios. On a window narrower than the crop the crop
-scrolls sideways inside .render-scroll; it is never scaled. With an HDR AVIF
-(hdr, hdr_1x) a <source media="(dynamic-range: high)"> offers it to HDR
+The crop is one file. Its width and height attributes are half its pixel
+size, so a 2x display shows each file pixel on one device pixel; at 1 dppx a
+rule in style.css gives it the full pixel size from --crop-w and --crop-h,
+so a 1x display shows it 1:1 too, without JavaScript. assets/js/render.js
+sizes the image for other pixel ratios. On a window narrower than the crop
+the crop scrolls sideways inside .render-scroll; it is never scaled. With an
+HDR AVIF (hdr) a <source media="(dynamic-range: high)"> offers it to HDR
 displays and the PNG stays the fallback. The image links to the full frame
 (full) or to the crop itself.
 
 Usage, from _data/renders.yml:
   {% include crop.html id="super-mario-bros-sony-pvm-14l2-hill" %}
 or with every field given (the gallery pages do this with manifest data):
-  {% include crop.html file="assets/.../crop-sdr.png" file_1x="assets/.../crop-sdr@1x.png"
-     hdr="assets/.../crop-hdr.avif" hdr_1x="assets/.../crop-hdr@1x.avif"
+  {% include crop.html file="assets/.../crop-sdr.png" hdr="assets/.../crop-hdr.avif"
      width=1500 height=1124 x=1170 y=1168 frame_width=3840 frame_height=2880
      full="assets/.../still-sdr.png" game="Metroid" scene="Brinstar start"
      preset="sony_pvm_14l2" signal="composite" %}
 
-Fields: file (required, a PNG with even width and height), file_1x (default:
-file with @1x before .png), hdr, hdr_1x, width and height (the crop's pixel
-size; required), x and y (its position in the frame), frame_width and
+Fields: file (required, a PNG with even width and height), hdr, width and
+height (the crop's pixel size; required), x and y (its position in the frame), frame_width and
 frame_height, full, game, scene, preset (an id from the hero manifest or
 _data/presets.yml) or preset_name, signal, alt (default: game, scene and
 preset), note (one sentence after the caption fields), caption (replaces the
 generated caption), anchor (id of the figure).
-In _data/renders.yml the same fields are named file, file_1x, hdr, hdr_1x,
-full, game, scene, preset, preset_name, signal, alt, note, caption, and
+In _data/renders.yml the same fields are named file, hdr, full, game, scene, preset, preset_name, signal, alt, note, caption, and
 crop: [x, y, width, height] and frame: [width, height].
 {%- endcomment -%}
 {%- assign r = nil -%}
 {%- if include.id -%}{%- assign r = site.data.renders[include.id] -%}{%- endif -%}
 {%- assign c_file = include.file | default: r.file -%}
-{%- assign c_file_1x = include.file_1x | default: r.file_1x -%}
-{%- unless c_file_1x -%}{%- assign c_file_1x = c_file | split: ".png" | first | append: "@1x.png" -%}{%- endunless -%}
 {%- assign c_hdr = include.hdr | default: r.hdr -%}
-{%- assign c_hdr_1x = include.hdr_1x | default: r.hdr_1x -%}
 {%- assign c_w = include.width | default: r.crop[2] | default: r.width -%}
 {%- assign c_h = include.height | default: r.crop[3] | default: r.height -%}
 {%- assign c_x = include.x | default: r.crop[0] -%}
@@ -59,15 +53,13 @@ crop: [x, y, width, height] and frame: [width, height].
 {%- assign c_half_w = c_w | divided_by: 2 -%}
 {%- assign c_half_h = c_h | divided_by: 2 -%}
 {%- include url.html path=c_file -%}{%- assign c_file_url = url_out -%}
-{%- include url.html path=c_file_1x -%}{%- assign c_file_1x_url = url_out -%}
 {%- include url.html path=c_hdr -%}{%- assign c_hdr_url = url_out -%}
-{%- include url.html path=c_hdr_1x -%}{%- assign c_hdr_1x_url = url_out -%}
 {%- assign c_full = include.full | default: r.full | default: c_file -%}
 {%- include url.html path=c_full -%}{%- assign c_full_url = url_out -%}
 {%- assign c_caption = include.caption | default: r.caption -%}
 <figure class="render"{% if include.anchor %} id="{{ include.anchor }}"{% endif %}>
 <div class="render-scroll"><a class="render-link" href="{{ c_full_url }}"><picture>
-{%- if c_hdr_url != "" %}<source media="(dynamic-range: high)" type="image/avif" srcset="{% if c_hdr_1x_url != "" %}{{ c_hdr_1x_url }} 1x, {% endif %}{{ c_hdr_url }} 2x">{% endif -%}
-<img class="render" src="{{ c_file_1x_url }}" srcset="{{ c_file_1x_url }} 1x, {{ c_file_url }} 2x" width="{{ c_half_w }}" height="{{ c_half_h }}" data-w="{{ c_w }}" data-h="{{ c_h }}" alt="{{ c_alt | strip | escape }}" loading="lazy" decoding="async"></picture></a></div>
-<figcaption>{% if c_caption %}{{ c_caption }}{% else %}{% if c_game %}{{ c_game }}{% if c_scene %}, {{ c_scene }}{% endif %}. {% endif %}{% if c_preset_name %}{{ c_preset_name }} preset{% if c_signal %}, {{ c_signal }}{% endif %}. {% endif %}{{ c_w }}×{{ c_h }} {% if c_x != nil and c_fw %}crop at ({{ c_x }}, {{ c_y }}) of a {{ c_fw }}×{{ c_fh }} frame{% else %}image{% endif %}, <span class="render-scale">shown 1:1</span>. <span class="render-range">SDR PNG</span>.{% if c_note %} {{ c_note }}{% endif %}{% endif %}</figcaption>
+{%- if c_hdr_url != "" %}<source media="(dynamic-range: high)" type="image/avif" srcset="{{ c_hdr_url }}">{% endif -%}
+<img class="render" src="{{ c_file_url }}" width="{{ c_half_w }}" height="{{ c_half_h }}" style="--crop-w: {{ c_w }}px; --crop-h: {{ c_h }}px" data-w="{{ c_w }}" data-h="{{ c_h }}" alt="{{ c_alt | strip | escape }}" loading="lazy" decoding="async"></picture></a></div>
+<figcaption>{% if c_caption %}{{ c_caption }}{% else %}{% if c_game %}{{ c_game }}{% if c_scene %}, {{ c_scene }}{% endif %}. {% endif %}{% if c_preset_name %}{{ c_preset_name }} preset{% if c_signal %}, {{ c_signal }}{% endif %}. {% endif %}{{ c_w }}×{{ c_h }} {% if c_x != nil and c_fw %}crop at ({{ c_x }}, {{ c_y }}) of a {{ c_fw }}×{{ c_fh }} frame{% else %}image{% endif %}, shown 1:1. <span class="render-range">SDR PNG</span>.{% if c_note %} {{ c_note }}{% endif %}{% endif %}</figcaption>
 </figure>

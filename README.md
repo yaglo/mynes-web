@@ -24,13 +24,13 @@ GitHub allows: `jekyll-seo-tag`, `jekyll-sitemap`, `jekyll-feed`,
 | `redirects/` | Redirects for old URLs that have no page of their own |
 | `_data/` | `hero.json` (a copy of the hero manifest), `renders.yml`, `presets.yml`, `facts.yml`, `release.yml` |
 | `_includes/crop.html`, `clip.html`, `pan.html`, `compare.html` | Renders at one source pixel per device pixel (see [Render includes](#render-includes)) |
-| `assets/renders/` | 1:1 crops cut from the 3840×2880 frames, and their `@1x` files |
+| `assets/renders/` | 1:1 crops cut from the 3840×2880 frames |
 | `assets/hero/` | Manifest, posters and 3840×2880 lens stills for the television switcher (see [The television switcher](#the-television-switcher-assetshero)) |
 | `assets/js/tv-switcher.js`, `assets/css/tv.css`, `_includes/tv-switcher.html` | The switcher's script, styles and markup |
 | `assets/js/render.js`, `viewer.js`, `compare.js` | Sizing of renders, the pan viewer and the comparison slider |
 | `tools/check_site.py`, `tools/old-urls.txt` | Link and asset checker for a built `_site`; it also checks that every URL of the site before the restructure still answers |
 | `tools/gallery_pages.py` | Writes the stub page of each game and preset of `_data/hero.json`; `--check` finds missing ones |
-| `tools/make_crop.py` | Cuts a 1:1 crop from a frame and writes its `@1x` file |
+| `tools/make_crop.py` | Cuts a 1:1 crop from a frame |
 | `tools/check_render_pixels.js` | Headless Chrome: each render on screen equals its file pixel for pixel at ratios 1, 1.5, 2 and 3 |
 | `tools/test_*.py`, `tools/test_media.js` | Tests for the tools and the media scripts |
 | `tools/test_tv_switcher.js` | Node tests for the switcher's pure helpers, both manifests, the markup and the CSS |
@@ -64,10 +64,13 @@ images to the column. Renders keep their pixel size and scroll sideways in
 `.render-scroll` on narrow windows.
 
 - `{% include crop.html id="..." %}`: a 1:1 crop from `_data/renders.yml`,
-  or with every field given as a parameter. The crop is the `2x` candidate,
-  shown at half its pixel size, and its `@1x` file (`Image.reduce(2)`) is the
-  `1x` candidate. An HDR AVIF, when given, is offered to
-  `(dynamic-range: high)` displays. The caption is built from the fields.
+  or with every field given as a parameter. The crop is one file, shown 1:1
+  at every pixel ratio: its attributes are half its pixel size for 2 dppx,
+  and at 1 dppx `style.css` gives it the full size from `--crop-w` and
+  `--crop-h`. There is no reduced copy for 1× displays; the crop is twice as
+  large on their screens and scrolls sideways when it is wider than the
+  column. An HDR AVIF, when given, is offered to `(dynamic-range: high)`
+  displays. The caption is built from the fields.
 - `{% include pan.html id="..." %}`, or with `src`, `hdr`, `width`, `height`,
   `x`, `y`, `alt`, `caption` and `alternates`: a full frame in a scroll box at
   1:1, with drag, keys, 1:1, 2:1 and 4:1 zoom and an overview map
@@ -81,8 +84,8 @@ images to the column. Renders keep their pixel size and scroll sideways in
 `assets/js/render.js` sizes renders at pixel ratios other than 1 and 2,
 moves each render box onto whole device pixels, and writes the caption fields
 that depend on the file the browser chose.
-`tools/make_crop.py FRAME.png X Y W H OUT.png` cuts a crop and its `@1x`
-file. The width and height must be even. Multiples of 6 are also exact at
+`tools/make_crop.py FRAME.png X Y W H OUT.png` cuts a crop. `X`, `Y`, `W`
+and `H` must be even. Multiples of 6 are also exact at
 ratios 1.5 and 3, and multiples of 10 at 1.25.
 
 ## Gallery data

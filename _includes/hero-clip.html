@@ -10,7 +10,7 @@ hc_stage: the version 2 stage list; hc_video: a version 1 clip path (one
 hc_posters: the poster list (version 2) or path (version 1).
 hc_still, hc_still_hdr, hc_still_w, hc_still_h, hc_still_frame: the full
 frame (version 2 still, or the version 1 full PNG) and its HDR AVIF.
-hc_crop: the detail crop, {sdr, sdr_1x, hdr, hdr_1x, x, y, width, height}.
+hc_crop: the detail crop, {sdr, hdr, x, y, width, height}.
 hc_any: true when the clip has anything to show.
 {%- endcomment -%}
 {%- assign hc = site.data.hero.clips[include.game][include.preset] -%}

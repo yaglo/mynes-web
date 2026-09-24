@@ -121,13 +121,13 @@ function checkManifest(raw, label) {
         }
         if ((c.stage || []).some((s) => s.hdr)) assert.ok(c.hdr && c.hdr.white_nits > 0, where + ': HDR clips need the hdr block');
         if (c.crop) {
-          // The gallery's detail crop: four files, even size and position, a multiple of 6 where possible.
-          for (const k of ['sdr', 'sdr_1x', 'hdr', 'hdr_1x']) file(where + ' crop', c.crop[k]);
-          assert.ok(c.crop.sdr.endsWith('.png') && c.crop.sdr_1x.endsWith('@1x.png'), where + ': crop PNGs');
-          assert.ok(c.crop.hdr.endsWith('.avif') && c.crop.hdr_1x.endsWith('@1x.avif'), where + ': crop AVIFs');
+          // The gallery's detail crop: an SDR PNG and an HDR AVIF, shown 1:1 (a manifest from before the
+          // pipeline stopped writing @1x files still lists them; the site no longer reads them).
+          for (const k of ['sdr', 'hdr']) file(where + ' crop', c.crop[k]);
+          assert.ok(c.crop.sdr.endsWith('.png'), where + ': crop PNG');
+          assert.ok(c.crop.hdr.endsWith('.avif'), where + ': crop AVIF');
           for (const k of ['x', 'y', 'width', 'height']) assert.ok(Number.isInteger(c.crop[k]) && c.crop[k] % 2 === 0, where + ': crop ' + k + ' even');
           assert.deepStrictEqual(imageSize(path.join(root, c.crop.sdr)), [c.crop.width, c.crop.height], where + ': crop size');
-          assert.deepStrictEqual(imageSize(path.join(root, c.crop.sdr_1x)), [c.crop.width / 2, c.crop.height / 2], where + ': crop @1x size');
           if (c.still) assert.ok(c.crop.x + c.crop.width <= c.still.width && c.crop.y + c.crop.height <= c.still.height, where + ': crop inside the still');
         }
         // Stage and lens clips of one preset share frame count; HDR files carry PQ BT.2020 tags.
